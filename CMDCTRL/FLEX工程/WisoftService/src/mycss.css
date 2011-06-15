@@ -1,0 +1,23 @@
+/* CSS file */
+
+DataGrid {
+   horizontalGridLines: true;
+   fontSize: 12;
+   headerStyleName: "mydataGridHeaderStyle";
+	verticalScrollBarStyleName: dataGridVerticalScrollBar;
+}
+
+.mydataGridHeaderStyle {
+   fontFamily: Verdana;
+   fontSize: 14;
+}
+Panel
+{
+	fontFamily: "微软雅黑";
+	fontSize: 16;
+}
+.dataGridVerticalScrollBar
+{
+}
+
+
