@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="dom4j-2.0.0-ALPHA-2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.jface.text_3.6.1.r361_v20100825-0800.jar" sourcepath="D:/eclipse/plugins/org.eclipse.jface.text.source_3.6.1.r361_v20100825-0800.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.jface_3.6.2.M20110210-1200.jar" sourcepath="D:/eclipse/plugins/org.eclipse.jface.source_3.6.2.M20110210-1200.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.6.2.v3659c.jar" sourcepath="D:/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64.source_3.6.2.v3659c.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.core.commands_3.6.0.I20100512-1500.jar" sourcepath="D:/eclipse/plugins/org.eclipse.core.commands.source_3.6.0.I20100512-1500.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.core.runtime_3.6.0.v20100505.jar" sourcepath="D:/eclipse/plugins/org.eclipse.core.runtime.source_3.6.0.v20100505.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20100503.jar" sourcepath="D:/eclipse/plugins/org.eclipse.equinox.common.source_3.6.0.v20100503.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse/plugins/org.eclipse.equinox.registry_3.5.0.v20100503.jar" sourcepath="D:/eclipse/plugins/org.eclipse.equinox.registry.source_3.5.0.v20100503.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
