@@ -1,11 +1,8 @@
 package com.zxp.cctrl;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,6 +19,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
@@ -30,7 +28,9 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 
 public class MainWND {
 
@@ -281,6 +281,107 @@ public class MainWND {
 			}
 		} 
 		}); 
+
+		// 拖放开始-------------------------------
+		Listener listener = new Listener() {  
+            boolean drag = false;  
+            boolean exitDrag = false;  
+            TabItem dragItem;  
+            Cursor cursorSizeAll = new Cursor(null, SWT.CURSOR_SIZEALL);  
+            Cursor cursorIbeam = new Cursor(null, SWT.CURSOR_NO);  
+            Cursor cursorArrow = new Cursor(null, SWT.CURSOR_ARROW);  
+  
+            public void handleEvent(Event e) {  
+                Point p = new Point(e.x, e.y);  
+                if (e.type == SWT.DragDetect) {  
+                    p = tabFolder.toControl(shell.getDisplay().getCursorLocation());
+                }  
+                switch (e.type) {  
+                    // 拖拉Tab  
+                    case SWT.DragDetect: {  
+                        TabItem item = tabFolder.getItem(p);  
+                        if (item == null) {  
+                            return;  
+                        }  
+                          
+                        drag = true;  
+                        exitDrag = false;  
+                        dragItem = item;  
+                          
+                        // 换鼠标形状  
+                        tabFolder.getShell().setCursor(cursorIbeam);  
+                        break;  
+                    }  
+                    // 鼠标进入区域  
+                    case SWT.MouseEnter:  
+                        if (exitDrag) {  
+                            exitDrag = false;  
+                            drag = e.button != 0;  
+                        }  
+                        break;  
+                    // 鼠标离开区域  
+                    case SWT.MouseExit:  
+                        if (drag) {  
+                          //  tabFolder.setInsertMark(null, false);  
+                            exitDrag = true;  
+                            drag = false;  
+                              
+                            // 换鼠标形状  
+                            tabFolder.getShell().setCursor(cursorArrow);  
+                        }  
+                        break;  
+                    // 松开左键  
+                    case SWT.MouseUp: {  
+                        if (!drag) {  
+                            return;  
+                        }  
+                       // tabFolder.setInsertMark(null, false);  
+                        TabItem item = tabFolder.getItem(p);  
+                          
+                        if (item != null) {  
+                            int index = tabFolder.indexOf(item);  
+                            int newIndex = tabFolder.indexOf(item);  
+                            int oldIndex = tabFolder.indexOf(dragItem);  
+                            if (newIndex != oldIndex) {  
+                                boolean after = newIndex > oldIndex;  
+                                index = after ? index + 1 : index/* - 1*/;  
+                                index = Math.max(0, index);  
+                                  
+                                TabItem newItem = new TabItem(tabFolder, SWT.NONE, index);  
+                                newItem.setText(dragItem.getText());  
+                                  
+                                Control c = dragItem.getControl();  
+                                dragItem.setControl(null);  
+                                newItem.setControl(c);  
+                                dragItem.dispose();  
+                                allcmdunit.add(newIndex, allcmdunit.get(oldIndex));
+                                allcmdunit.remove(oldIndex);
+                                tabFolder.setSelection(newItem);
+                                  
+                            }  
+                        }  
+                        drag = false;  
+                        exitDrag = false;  
+                        dragItem = null;  
+                          
+                        // 换鼠标形状  
+                        tabFolder.getShell().setCursor(cursorArrow);  
+                        break;  
+                    }  
+                    // 鼠标移动  
+                    case SWT.MouseMove: {  
+                        if (!drag) {  
+                            return;  
+                        }  
+                    
+                          
+                        // 换鼠标形状  
+                        tabFolder.getShell().setCursor(cursorSizeAll);  
+                        break;  
+                    }  
+                }  
+            }  
+        };  
 		
 	}
 	
