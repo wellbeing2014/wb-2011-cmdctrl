@@ -29,7 +29,7 @@ public class Cmdunit extends Composite {
 	public int num = 0;
 	public int state = 3;//0表示正在启动，1表示已启动,2表示正在停止，3表示已停止
 	//private StringBuffer log = new StringBuffer();
-	//private int logcount = 0;
+	private int logcount = 0;
 	
 	
 	private Text text;
@@ -331,12 +331,22 @@ public class Cmdunit extends Composite {
 		{
 			state = 1;// 启动完成。
 		}
+		
 		Display.getDefault().asyncExec(new Runnable() {   
 			//这个线程是调用UI线程控件
-			public void run() {   
-					text.append(str+"\n");
-					FileConfig.writeLog(str+"\r\n",runmodule.logpath+runmodule.Modulename+".log"  );
-			}   
+			public void run() {
+					logcount++;
+					if(logcount>499)
+					{
+						text.setText("------------------------------已满500行，自动清理日志--------------------------");
+						logcount=0;
+					}
+					else
+					{
+						text.append(str+"\n");
+						FileConfig.writeLog(str+"\r\n",runmodule.logpath+runmodule.Modulename+".log"  );
+					}
+				}   
 		});   
 	}
 	/**
@@ -373,18 +383,18 @@ public class Cmdunit extends Composite {
 	
 	
 	//定义事件源容器
-	private Vector vectorListeners=new Vector();
+	private CmdStatusChangeListener vectorListeners  ;
     
 	//添加事件方法
     public synchronized void addCmdStatusChangeListener(CmdStatusChangeListener ml)
     {
-        vectorListeners.addElement(ml);
+        vectorListeners =ml;
     }
     
     //删除事件方法
-    public synchronized void removeCmdStatusChangeListener(CmdStatusChangeListener ml)
+    public synchronized void removeCmdStatusChangeListener()
     {
-        vectorListeners.removeElement(ml);
+        vectorListeners=null;
     }
     
     //触发事件的方法
@@ -419,18 +429,14 @@ public class Cmdunit extends Composite {
 		    		button_1.setEnabled(true);
 		    		state = 2;
 		    	}
-				Vector tempVector=null;
 				
 				CmdStatusChangeEvent e=new CmdStatusChangeEvent(isStart);
 				
 				synchronized(this)
 				{
-					tempVector=(Vector)vectorListeners.clone();
-					
-					for(int i=0;i<tempVector.size();i++)
+					if(vectorListeners!=null)
 					{
-						CmdStatusChangeListener ml=(CmdStatusChangeListener)tempVector.elementAt(i);
-						ml.cmdStatusChanged(e);
+						vectorListeners.cmdStatusChanged(e);
 					}
 				}
 				
