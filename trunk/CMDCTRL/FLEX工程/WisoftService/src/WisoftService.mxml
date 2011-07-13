@@ -75,11 +75,10 @@
 			{
 				
 				//path =path.replace("WisoftService.html","");
-				var path1:Array = path.split("WisoftService.html");
-				path=path1[0];
-				
-				path = path+"services/messageForFeiQ?wsdl";
-				webservice.wsdl = path;
+				var path1:Array = path.split("WisoftService/WisoftService.html");
+				path = path1[0];
+				var pathwsdl:String=path1[0]+"WisoftService/services/messageForFeiQ?wsdl";
+				webservice.wsdl = pathwsdl;
 			}
 			private function onTimer(event:TimerEvent):void{
          		webservice.client.send("refresh");
@@ -113,6 +112,13 @@
    			public function runweb(netaddr:String):void
           	{
    				var request:URLRequest = new URLRequest(netaddr); 
+   			 	navigateToURL(request,'_blank'); //  新窗口 
+          		
+          	}
+          	public function openLog(name:String):void
+          	{
+          		
+   				var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
    			 	navigateToURL(request,'_blank'); //  新窗口 
           		
           	}
@@ -216,6 +222,8 @@
 				  <mx:Button id="tz" click="tingzhi(data)" label="停止" enabled="{(data.stat==1)&amp;&amp;(istz)}">
 				  </mx:Button>
 				  <mx:Button click="outerDocument.runweb(data.netaddr)" label="进入系统" >
+				  </mx:Button>
+				  <mx:Button click="outerDocument.openLog(data.name)" label="查看日志" >
 				  </mx:Button>
                   </mx:HBox>
                    
