@@ -11,6 +11,7 @@
 			import mx.managers.BrowserManager;
 			import mx.managers.IBrowserManager;
 			import mx.rpc.soap.mxml.WebService;
+			import mx.managers.PopUpManager;
 			[Bindable]
 			private var cmdlist:ArrayCollection = new ArrayCollection() ;
 			private var cmdlist1:ArrayCollection = new ArrayCollection() ;
@@ -118,10 +119,15 @@
           	public function openLog(name:String):void
           	{
           		
-   				var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
-   			 	navigateToURL(request,'_blank'); //  新窗口 
-          		
+   				//var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
+   			 	//navigateToURL(request,'_blank'); //  新窗口 
+   			//var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
+              PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true)); 
+
+			//log.logname = path+"logfile/"+name+".log";
+   			 	   
           	}
+          	
 		]]>
 	</mx:Script>
 
@@ -130,7 +136,7 @@
 			<mx:columns>
 				<mx:DataGridColumn headerText="序号" dataField="no" width="50"/>
 				<mx:DataGridColumn headerText="服务名称" dataField="name"/>
-				<mx:DataGridColumn headerText="服务状态" textAlign="center" width="50"  >
+				<mx:DataGridColumn headerText="服务状态" textAlign="center" width="68"  >
 					<mx:itemRenderer>
                     <mx:Component>
                     	<mx:HBox verticalAlign="middle" horizontalAlign="center">
