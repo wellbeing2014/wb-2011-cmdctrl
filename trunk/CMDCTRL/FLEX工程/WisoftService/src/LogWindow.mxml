@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="570" height="460" title=" 查看日志"
+	 creationComplete="init()" showCloseButton="true" close="closewin()" horizontalAlign="center" verticalAlign="middle" >
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			public var logname:String=null ;
+	   		
+		 private function init():void
+		 {
+		 	var loader:URLLoader=new URLLoader();
+              var urlFilepath:URLRequest=new URLRequest(logname);
+              loader.addEventListener(Event.COMPLETE,loadTextComplete);
+              loader.load(urlFilepath);
+  
+		 }
+		 
+	   	private function loadTextComplete(evt:Event):void
+	   	{ 
+	   		var xmlStr:String= evt.target.data.toString(); 
+	    	Alert.show(xmlStr);
+  		}
+			private function closewin():void
+	   	{ 
+	   		
+	    	PopUpManager.removePopUp(this);
+  		}
+		]]>
+		
+	
+	
+	</mx:Script>
+	<mx:TextArea editable="true" bottom="10" top="10" right="10" left="10" wordWrap="false" enabled="true"/>
+</mx:TitleWindow>
