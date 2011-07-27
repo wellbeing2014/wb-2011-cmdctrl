@@ -55,17 +55,12 @@
 			private function resultdocmd(event:ResultEvent):void
 			{
 				var a:String = event.result as String;
-				if(a)
-				{
-					Alert.show(a);
-				}
-				else 
-					Alert.show(a);
-				
+				Alert.show(a);
 			}
 			
 			private function init()
 			{
+				
 				timer.addEventListener(TimerEvent.TIMER, onTimer);
 				timer.start();
 				timer1.addEventListener(TimerEvent.TIMER, onTimer1);
@@ -121,10 +116,12 @@
           		
    				//var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
    			 	//navigateToURL(request,'_blank'); //  新窗口 
-   			//var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
-              PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true)); 
-
-			//log.logname = path+"logfile/"+name+".log";
+   				var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
+				log.logname = path+"logfile/"+name+".log";
+				log.title = name+"日志详细";
+				//log.logname = name+".log";
+            	PopUpManager.centerPopUp(log);
+				//PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true));
    			 	   
           	}
           	

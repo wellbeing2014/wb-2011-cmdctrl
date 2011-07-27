@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="570" height="460" title=" 查看日志"
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="700" height="500" title=" 查看日志"
 	 creationComplete="init()" showCloseButton="true" close="closewin()" horizontalAlign="center" verticalAlign="middle" >
+	<mx:Style source="mycss.css"/>
 	<mx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
 			import mx.managers.PopUpManager;
+			import mx.rpc.http.HTTPService; 
+			import mx.rpc.events.ResultEvent; 
+			import mx.events.FlexEvent; 
+			
 			public var logname:String=null ;
+	       	private var txtLoader:HTTPService=new HTTPService(); 
+
 	   		
-		 private function init():void
-		 {
-		 	var loader:URLLoader=new URLLoader();
-              var urlFilepath:URLRequest=new URLRequest(logname);
-              loader.addEventListener(Event.COMPLETE,loadTextComplete);
-              loader.load(urlFilepath);
-  
-		 }
-		 
-	   	private function loadTextComplete(evt:Event):void
-	   	{ 
-	   		var xmlStr:String= evt.target.data.toString(); 
-	    	Alert.show(xmlStr);
-  		}
+		   private var loader:URLLoader=new URLLoader(); 
+	       private function init():void 
+	       { 
+	         	var service:HTTPService = new HTTPService();
+	         	
+	    		service.url = encodeURI(logname);
+	     		service.useProxy = false;
+	     		service.resultFormat="text";
+	     		service.addEventListener(ResultEvent.RESULT,onResultHandler);
+	     		service.send();
+
+	       } 
+	        
+	       //数据加载完毕，为文本赋值 
+	       private function onResultHandler(evt:ResultEvent):void 
+	       { 
+	         	var aa:String = evt.result.toString();
+	         	textArea.text = aa;
+	         	textArea.verticalScrollPosition = textArea.maxVerticalScrollPosition;
+	       } 
+
 			private function closewin():void
-	   	{ 
-	   		
-	    	PopUpManager.removePopUp(this);
-  		}
+		   	{ 
+		    	PopUpManager.removePopUp(this);
+		  	}
+		  	
+		  	
+
 		]]>
 		
 	
 	
 	</mx:Script>
-	<mx:TextArea editable="true" bottom="10" top="10" right="10" left="10" wordWrap="false" enabled="true"/>
+	<mx:TextArea id = "textArea"  editable="false"  wordWrap="true" enabled="true" left="0" bottom="0" right="0" top="0" horizontalScrollPolicy="off"/>
 </mx:TitleWindow>
