@@ -19,5 +19,12 @@ Panel
 .dataGridVerticalScrollBar
 {
 }
+TextArea
+{
+	fontFamily: Arial;
+	fontSize: 12;
+	leading: 2;
+	color: #064A59;
+}
 
 
