@@ -24,4 +24,14 @@
   <welcome-file-list>
     <welcome-file>/framework/Index.html</welcome-file>
   </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>BugQuery</display-name>
+    <servlet-name>BugQuery</servlet-name>
+    <servlet-class>com.wisoft.servlet.BugQuery</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>BugQuery</servlet-name>
+    <url-pattern>/BugQuery</url-pattern>
+  </servlet-mapping>
 </web-app>
