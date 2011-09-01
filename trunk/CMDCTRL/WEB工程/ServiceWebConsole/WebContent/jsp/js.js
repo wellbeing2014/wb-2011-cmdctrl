@@ -1,3 +1,4 @@
+
 var input = document.getElementById("reasonInput");
 var XMLHttpReq;
 function createXMLHttpRequest(){
