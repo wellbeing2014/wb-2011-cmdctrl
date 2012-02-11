@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" fontSize="12"  x="348" y="139" title="正在启动服务"  showCloseButton="true"  
+   close="remove()" horizontalAlign="middle" layout="vertical" borderAlpha="1" creationCompleteEffect="Zoom">
+ <mx:Script>
+  <![CDATA[
+  import mx.utils.ArrayUtil;
+  import mx.rpc.events.ResultEvent;
+  import mx.controls.Alert;
+  import mx.managers.PopUpManager;
+  private var flag:Boolean=false;
+  
+  [Bindable]
+  public var data1: Object;
+
+    private function remove() : void
+     {
+       PopUpManager.removePopUp (this);
+     } 
+     private function submitData():void {
+       
+            }
+         private function doresult(event:ResultEvent):void{
+          
+                 Alert.show("密码错误");
+ 
+          }          
+   ]]>
+ </mx:Script>
+
+    <mx:Form>
+    <mx:FormItem label="管理员密码："><mx:TextInput id="password" displayAsPassword="true" width="107"/>
+    
+    </mx:FormItem>
+    <mx:HBox width="100%"  horizontalAlign="center" >
+    <mx:Button  label="确定" id="ok_btn" click="submitData();"/>
+   
+    <mx:Button  label="取消" id="cancel_btn" click="remove();"/>
+   </mx:HBox>
+   </mx:Form>
+  
+</mx:TitleWindow>
