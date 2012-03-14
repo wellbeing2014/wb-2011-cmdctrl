@@ -1,0 +1,249 @@
+package com.wisoft.im.feiq;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+import flex.messaging.MessageBroker;
+import flex.messaging.messages.AsyncMessage;
+import flex.messaging.util.UUIDUtils;
+
+public class TCPClient {
+
+	public Socket s ;
+	private String ip;
+	
+	
+	private List<String> allowiplist ;
+	public List<String> getAllowiplist() {
+		return allowiplist;
+	}
+	public void setAllowiplist(List<String> allowiplist) {
+		this.allowiplist = allowiplist;
+	}
+	
+	private String adminPassWord;
+	public String getAdminPassWord() {
+		return adminPassWord;
+	}
+	public void setAdminPassWord(String adminPassWord) {
+		this.adminPassWord = adminPassWord;
+	}
+	
+	public static String returnstr=null;
+	SendThread sendthread;
+	RecThread recthread;
+	public static boolean stoped= false;
+	public TCPClient()
+	{
+		
+	}
+	public TCPClient(String ip)
+	{
+		this.ip = ip;
+		try {
+			s = new Socket(InetAddress.getByName(ip), 9527);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			System.out.println("连接服务器失败，请确认服务器是否启动！");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("连接服务器失败，请确认服务器是否启动！");
+		}
+		recthread = new RecThread("recthread",s);
+		recthread.start();
+		sendthread=new  SendThread("sendthread",s);
+		sendthread.start();
+	}
+	
+	/**
+	 *  发布控制台各服务状态信息
+	 * @return
+	 */
+	public static  List<Cmdstat> broadcast() {
+		List<Cmdstat> cmds= new ArrayList<Cmdstat>();
+	    String state=returnstr;
+	    String[] cmdlist=state.split("\\|");
+	    for(int i=0;i<cmdlist.length;i++)
+	    {
+	    	Cmdstat temp = new Cmdstat();
+	    	String[] temp1 = cmdlist[i].split("&");
+	    	int no = Integer.parseInt(temp1[0]);
+	    	String name = temp1[1];
+	    	int stat = Integer.parseInt(temp1[2]);
+	    	String netaddr= temp1[3];
+	    	temp.setNetaddr(netaddr);
+	    	temp.setName(name);
+	    	temp.setNo(no);
+	    	temp.setStat(stat);
+	    	cmds.add(temp);
+	    }
+	    return cmds;
+	}
+	
+	/**
+	 * 通过IP认证的用户进行操作
+	 * @param str
+	 * @param ip
+	 * @return
+	 */
+	public String send(String str,String ip)
+	{
+		if (this.allowiplist.contains(ip))
+		{
+			sendthread.str = str;
+			return "操作成功";
+		}
+		else
+			return "操作失败，IP地址不受信任。";
+	}
+	
+	/**
+	 * 管理员界面操作命令，不需要验证IP
+	 * @param str
+	 * @param ip
+	 * @return
+	 */
+	public String Adminsend(String str)
+	{
+		if (this.allowiplist.contains(ip))
+		{
+			sendthread.str = str;
+			return "操作成功";
+		}
+		else
+			return "操作失败，IP地址不受信任。";
+	}
+	
+	public String receive()
+	{
+		return this.returnstr;
+	}
+}
+
+/**
+ * 与控制台通讯的发送命令线程
+ * @author 朱新培
+ *
+ */
+class SendThread extends Thread {
+	public String str =null;
+	private Socket s;
+    public SendThread(String threadName,Socket s) {
+        super(threadName);
+        this.s = s;
+    }
+    public SendThread()
+    {
+    	
+    }
+    public void run() {
+        while(!Thread.interrupted())
+        {
+        	try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	if(str!=null)
+        	{
+        		try {
+        			OutputStream ops = s.getOutputStream();
+        			ops.write(str.getBytes("GBK"));
+        			ops.flush();
+        			str = null;
+        		} catch (UnknownHostException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		} catch (IOException e) {
+        			// TODO Auto-generated catch block
+        			e.printStackTrace();
+        		}  
+        	}
+        	if(TCPClient.stoped)
+			{
+				break;
+			}
+        }
+    }
+}
+/**
+ * 与控制台通讯的接收各服务状态的线程
+ * @author 朱新培
+ *
+ */
+class RecThread extends Thread {
+	private Socket s;
+    public RecThread(String threadName,Socket s) {
+        super(threadName);
+        this.s = s;
+    }
+    public RecThread()
+    {
+    	
+    }
+    public void run() {
+
+		// TODO Auto-generated method stub
+		InputStream ips;
+		try {
+			ips = s.getInputStream();
+			byte[] str1 = new byte[25600];
+			int len;
+			while(!Thread.interrupted())
+			{
+				if((len=ips.read(str1))!=-1)
+				{
+					TCPClient.returnstr = new String(str1,0,len);
+				}
+				if(TCPClient.stoped)
+				{
+					break;
+				}
+			}
+			ips.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+}
+
+/**
+ * 为各WEB客户端进行推送各服务状态数据
+ * @author 朱新培
+ *
+ */
+class FeedThread extends Thread {
+	public boolean running = true;
+	public void run() {
+		MessageBroker msgBroker = 
+		MessageBroker.getMessageBroker(null);
+		String clientID = UUIDUtils.createUUID();
+		int i = 0;
+		while (running) {
+			
+			List<Cmdstat> cmdlist=TCPClient.broadcast();
+			AsyncMessage msg = new AsyncMessage();
+			msg.setDestination("tick-data-feed");
+			msg.setHeader("DSSubtopic", "List<Cmdstat>");
+			msg.setClientId(clientID);
+			msg.setMessageId(UUIDUtils.createUUID());
+			msg.setTimestamp(System.currentTimeMillis());
+			msg.setBody(cmdlist);
+			msgBroker.routeMessageToService(msg, null);
+			i++;
+			try {
+				Thread.sleep(2000);
+			} 
+			catch (InterruptedException e) {
+			}
+		}
+	}
+}
