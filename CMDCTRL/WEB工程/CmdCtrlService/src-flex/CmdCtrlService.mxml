@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  
+	preinitialize="pinit()" creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
 		import mx.controls.Alert;
@@ -16,11 +17,6 @@
 		import mx.rpc.soap.mxml.WebService;
 		import mx.managers.PopUpManager;
 		
-		private function messageHandler(event:MessageEvent):void 
-		{ 
-//			var tick:TickVO = event.message.body as TickVO; 
-//			txtTick.text = tick.messageCN+tick.seqNo; 
-		} 
 		
 		//----------------------------------------------------------------
 		
@@ -47,17 +43,18 @@
 			private function resultgetAllCMD(event:ResultEvent):void
 			{
 				cmdlist1 = event.result as ArrayCollection;
-				if(cmdlist.length==0||isrefresh)
+				
+				if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
 				{
 					cmdlist = cmdlist1;
 					isrefresh = false;
 				}
-				else
+				else //只刷新状态
 				{
 					for(var i:int=0;i<cmdlist1.length;i++)
 					{
-						var obj:Object=cmdlist.getItemAt(i);
-						var obj1:Object=cmdlist1.getItemAt(i);
+						var obj:Cmdstat=cmdlist.getItemAt(i) as Cmdstat;
+						var obj1:Cmdstat=cmdlist1.getItemAt(i) as Cmdstat;
 						obj.stat = obj1.stat;
 						cmdlist.setItemAt(obj,i);
 					}
@@ -82,18 +79,17 @@
 			{
 				
 				//path =path.replace("WisoftService.html","");
-				var path1:Array = path.split("WisoftService/WisoftService.html");
-				path = path1[0];
-				var pathwsdl:String=path1[0]+"WisoftService/services/messageForFeiQ?wsdl";
-				webservice.wsdl = pathwsdl;
+//				var path1:Array = path.split("WisoftService/WisoftService.html");
+//				path = path1[0];
+//				var pathwsdl:String=path1[0]+"WisoftService/services/messageForFeiQ?wsdl";
+//				webservice.wsdl = pathwsdl;
 				
 				var consumer:Consumer = new Consumer(); 
 				consumer.destination = "tick-data-feed"; 
-				consumer.subtopic = "tick"; 
+				consumer.subtopic = "List<Cmdstat>"; 
 				consumer.channelSet = new ChannelSet(["my-streaming-amf"]);
 				//添加message的监听，当后台有消息发送时，调用messageHandler 
 				consumer.addEventListener(MessageEvent.MESSAGE, messageHandler); 
-				
 				consumer.subscribe(); 
 			}
 			private function onTimer(event:TimerEvent):void{
@@ -143,6 +139,29 @@
             	PopUpManager.centerPopUp(log);
 				//PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true));
           	}
+		private function messageHandler(event:MessageEvent):void 
+		{ 
+//			var tick:TickVO = event.message.body as TickVO; 
+//			txtTick.text = tick.messageCN+tick.seqNo; \
+				trace("哈哈哈哈哈 ");
+				cmdlist1 = event.message.body as ArrayCollection;
+				
+				if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
+				{
+					cmdlist = cmdlist1;
+					isrefresh = false;
+				}
+				else //只刷新状态
+				{
+					for(var i:int=0;i<cmdlist1.length;i++)
+					{
+						var obj:Object=cmdlist.getItemAt(i);
+						var obj1:Object=cmdlist1.getItemAt(i);
+						obj.stat = obj1.stat;
+						cmdlist.setItemAt(obj,i);
+					}
+				}
+		} 
 		
 		
 		
@@ -258,7 +277,6 @@
 		</mx:DataGrid>
 	</mx:Panel>
 	<mx:WebService id="webservice" fault="faultMessage(event)" >
-		
 		<mx:operation name="docmd" result="resultdocmd(event)">
 		</mx:operation>
 	</mx:WebService>
