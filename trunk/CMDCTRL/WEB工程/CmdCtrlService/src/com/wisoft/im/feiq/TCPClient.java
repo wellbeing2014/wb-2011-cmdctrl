@@ -59,6 +59,8 @@ public class TCPClient {
 		recthread.start();
 		sendthread=new  SendThread("sendthread",s);
 		sendthread.start();
+		FeedThread ft = new FeedThread();
+		ft.start();
 	}
 	
 	/**
@@ -67,7 +69,8 @@ public class TCPClient {
 	 */
 	public static  List<Cmdstat> broadcast() {
 		List<Cmdstat> cmds= new ArrayList<Cmdstat>();
-	    String state=returnstr;
+	    //String state=returnstr;
+	    String state="0&ÎÞÎýQLYG&1&AAA|1&ÎÞÎý1QLYG&2&AAA|2&ÎÞÎý2QLYG&3&AAA";
 	    String[] cmdlist=state.split("\\|");
 	    for(int i=0;i<cmdlist.length;i++)
 	    {
@@ -223,12 +226,17 @@ class RecThread extends Thread {
 class FeedThread extends Thread {
 	public boolean running = true;
 	public void run() {
-		MessageBroker msgBroker = 
-		MessageBroker.getMessageBroker(null);
+		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
+		try {
+			Thread.sleep(2000);
+		} 
+		catch (InterruptedException e) {
+		}
 		String clientID = UUIDUtils.createUUID();
 		int i = 0;
 		while (running) {
 			
+			System.out.println("1231231231231231"+i);
 			List<Cmdstat> cmdlist=TCPClient.broadcast();
 			AsyncMessage msg = new AsyncMessage();
 			msg.setDestination("tick-data-feed");

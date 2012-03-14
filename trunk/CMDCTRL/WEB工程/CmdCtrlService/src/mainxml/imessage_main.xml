@@ -3,7 +3,7 @@
 <beans>
 	<import resource="../imessage/imessage_ws.xml" />
 	<import resource="../imessage/imessage_bo.xml" />
-	<import resource="../imessage/imessage_dao.xml"/>
-	<import resource="../imessage/imessage_params.xml"/>
-	<import resource="../imessage/imessage_po.xml"/>
+	<import resource="../imessage/imessage_dao.xml" />
+	<import resource="../imessage/imessage_params.xml" />
+	<import resource="../imessage/imessage_po.xml" />
 </beans>
