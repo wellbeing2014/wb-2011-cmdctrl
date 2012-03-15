@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="312" height="180" title="请输入管理员密码">
+	<mx:TextInput x="66" y="43" displayAsPassword="true"/>
+	<mx:Button x="86" y="94" label="确定"/>
+	<mx:Button x="152" y="94" label="取消" click=""/>
+	
+</mx:Panel>
