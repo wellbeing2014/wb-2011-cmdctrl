@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  
-	preinitialize="pinit()" creationComplete="init()">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  preinitialize="pinit()" creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+		import com.flex.Cmdstat;
 		import mx.controls.Alert;
 		import mx.messaging.ChannelSet;
 		import mx.messaging.Consumer;
 		import mx.messaging.events.MessageEvent;
-		import com.flex.Cmdstat;
 		import mx.rpc.events.ResultEvent;
 		import mx.rpc.events.FaultEvent;
 		import mx.collections.ArrayCollection;
 		import mx.controls.Alert;
 		import mx.managers.BrowserManager;
 		import mx.managers.IBrowserManager;
-		import mx.rpc.soap.mxml.WebService;
 		import mx.managers.PopUpManager;
+		
 		
 		
 		//----------------------------------------------------------------
@@ -23,67 +22,24 @@
 			[Bindable]
 			private var cmdlist:ArrayCollection = new ArrayCollection() ;
 			private var cmdlist1:ArrayCollection = new ArrayCollection() ;
-			private var timer:Timer = new Timer(1000);
-			private var timer1:Timer = new Timer(60000);
+			private var timer1:Timer = new Timer(60000);//刷新整个数据源的频率
 			private var isrefresh:Boolean=false;
 			private var isstop:Boolean = false;
 			private var path:String = ExternalInterface.call("getHerf");
 			[Bindable]
 			public var tiaozhuanNO:ArrayCollection = new ArrayCollection();
+			private var ctrl_type:String = "";
 			
-			private function faultMessage(event:FaultEvent):void
-			{
-          		if(!isstop)
-          		{
-					Alert.show("服务访问失败！");
-					isstop = true;
-					timer.stop();
-          		}//resultgetAllCMD(new ResultEvent());
-			}
-			private function resultgetAllCMD(event:ResultEvent):void
-			{
-				cmdlist1 = event.result as ArrayCollection;
-				
-				if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
-				{
-					cmdlist = cmdlist1;
-					isrefresh = false;
-				}
-				else //只刷新状态
-				{
-					for(var i:int=0;i<cmdlist1.length;i++)
-					{
-						var obj:Cmdstat=cmdlist.getItemAt(i) as Cmdstat;
-						var obj1:Cmdstat=cmdlist1.getItemAt(i) as Cmdstat;
-						obj.stat = obj1.stat;
-						cmdlist.setItemAt(obj,i);
-					}
-				}
-			}
-			private function resultdocmd(event:ResultEvent):void
-			{
-				var a:String = event.result as String;
-				Alert.show(a);
-			}
 			
-			private function init()
+			private function init():void
 			{
-				
-				timer.addEventListener(TimerEvent.TIMER, onTimer);
-				timer.start();
+				ctrl_type =this.parameters.model;
+				//Alert.show(ctrl_type);
 				timer1.addEventListener(TimerEvent.TIMER, onTimer1);
 				timer1.start();
-				
 			}
-			private function pinit()
+			private function pinit():void
 			{
-				
-				//path =path.replace("WisoftService.html","");
-//				var path1:Array = path.split("WisoftService/WisoftService.html");
-//				path = path1[0];
-//				var pathwsdl:String=path1[0]+"WisoftService/services/messageForFeiQ?wsdl";
-//				webservice.wsdl = pathwsdl;
-				
 				var consumer:Consumer = new Consumer(); 
 				consumer.destination = "tick-data-feed"; 
 				consumer.subtopic = "List<Cmdstat>"; 
@@ -92,9 +48,7 @@
 				consumer.addEventListener(MessageEvent.MESSAGE, messageHandler); 
 				consumer.subscribe(); 
 			}
-			private function onTimer(event:TimerEvent):void{
-         		webservice.client.send("refresh");
-   			}
+			
    			private function onTimer1(event:TimerEvent):void{
          		isrefresh = true;
    			}
@@ -121,53 +75,78 @@
          		}
          		return rtn;
    			}
-   			public function runweb(netaddr:String):void
-          	{
-   				var request:URLRequest = new URLRequest(netaddr); 
-   			 	navigateToURL(request,'_blank'); //  新窗口 
-          		
-          	}
-          	public function openLog(name:String):void
-          	{
-          		
-   				//var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
-   			 	//navigateToURL(request,'_blank'); //  新窗口 
-   				var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
-				log.logname = path+"logfile/"+name+".log";
-				log.title = name+"日志详细";
-				//log.logname = name+".log";
-            	PopUpManager.centerPopUp(log);
-				//PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true));
-          	}
+   			
+   		//跳转网页
+   		public function runweb(netaddr:String):void
+      	{
+   			var request:URLRequest = new URLRequest(netaddr); 
+   		 	navigateToURL(request,'_blank'); //  新窗口 
+      	}
+      	
+      	//打开日志文件
+      	public function openLog(name:String):void
+      	{
+      		
+   			//var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
+   		 	//navigateToURL(request,'_blank'); //  新窗口 
+   			var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
+			log.logname = path+"logfile/"+name+".log";
+			log.title = name+"日志详细";
+			//log.logname = name+".log";
+        	PopUpManager.centerPopUp(log);
+			//PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true));
+      	}
+      	
+      	//监听推送消息事件
 		private function messageHandler(event:MessageEvent):void 
 		{ 
-//			var tick:TickVO = event.message.body as TickVO; 
-//			txtTick.text = tick.messageCN+tick.seqNo; \
-				trace("哈哈哈哈哈 ");
-				cmdlist1 = event.message.body as ArrayCollection;
-				
-				if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
+			cmdlist1 = event.message.body as ArrayCollection;
+			
+			if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
+			{
+				cmdlist = cmdlist1;
+				isrefresh = false;
+			}
+			else //只刷新状态
+			{
+				for(var i:int=0;i<cmdlist1.length;i++)
 				{
-					cmdlist = cmdlist1;
-					isrefresh = false;
+					var obj=cmdlist.getItemAt(i) as Cmdstat;
+					var obj1=cmdlist1.getItemAt(i) as Cmdstat;
+					obj.stat = obj1.stat;
+					cmdlist.setItemAt(obj,i);
 				}
-				else //只刷新状态
-				{
-					for(var i:int=0;i<cmdlist1.length;i++)
-					{
-						var obj:Object=cmdlist.getItemAt(i);
-						var obj1:Object=cmdlist1.getItemAt(i);
-						obj.stat = obj1.stat;
-						cmdlist.setItemAt(obj,i);
-					}
-				}
+			}
 		} 
 		
+		//访问服务失败的方法
+		private function faultMessage(event:FaultEvent):void
+		{
+      		if(!isstop)
+      		{
+				Alert.show("服务访问失败！");
+				isstop = true;
+      		}
+		}
 		
-		
+		//webservice执行命令回掉方法
+		private function resultdocmd(event:ResultEvent):void
+		{
+			var a:String = event.result as String;
+			Alert.show(a);
+		}
+	
+		public function doROFunc_docmd(str:String):void
+		{
+			
+			var pwd:EnterPwd = EnterPwd(PopUpManager.createPopUp(this,EnterPwd,true));
+			
+        	PopUpManager.centerPopUp(pwd);
+		//	ro.docmd(str);
+		}
 		]]>
 </mx:Script>
-	<mx:Panel layout="absolute" left="10" right="10" bottom="10" top="10" title="中科服务管理系统WEB入口">
+	<mx:Panel layout="absolute" left="10" right="10" bottom="10" top="30" title="中科服务管理系统WEB入口">
 		<mx:DataGrid left="0" right="0" bottom="0" top="0" dataProvider="{cmdlist}">
 			<mx:columns>
 				<mx:DataGridColumn headerText="序号" dataField="no" width="50"/>
@@ -178,12 +157,14 @@
                     	<mx:HBox verticalAlign="middle" horizontalAlign="center">
                     		<mx:Script>
                     			<![CDATA[
+                    				import com.flex.Cmdstat;
                     			 [Bindable]private var path:String="";
                     			 [Bindable]private var stattip:String="";
                     			  override public function set data(value:Object):void 
                     			  {
-								   super.data = value;
-								   switch(value.stat)
+								   super.data  =  value;
+								   var cs:Cmdstat = value as Cmdstat;
+								   switch(cs.stat)
 					         		{
 					         			case 0 : 
 					         				stattip= "正在启动";
@@ -244,7 +225,7 @@
 			         		if (event.detail==Alert.YES)
                     		outerDocument.tiaozhuanNO.addItem(data1.no);
                 			var send:String= data1.no+"&"+data1.name+"&"+"1";
-			          		Application.application.webservice.docmd.send(send);
+			          		Application.application.doROFunc_docmd(send);
 			          	}
 			          	
 			          	
@@ -254,8 +235,10 @@
 			         		istz = false;
 			         		tz.enabled=false;
 			         		var send:String= data.no+"&"+data.name+"&"+"2";
-			          		Application.application.webservice.docmd.send(send);
+			          		Application.application.doROFunc_docmd(send);
 			          	}
+			          	
+			          	
 			          	
 						]]>
 					</mx:Script>
@@ -276,8 +259,12 @@
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:Panel>
-	<mx:WebService id="webservice" fault="faultMessage(event)" >
-		<mx:operation name="docmd" result="resultdocmd(event)">
-		</mx:operation>
-	</mx:WebService>
+	<mx:RemoteObject id="ro" destination="hw">  
+		<mx:method name="docmd" result="resultdocmd(event)"/>  
+		<mx:method name="sayHello" result="resultdocmd(event)"/>  
+    </mx:RemoteObject>  
+	  
+	
+	<mx:Button x="10" y="0" label="Button" click="ro.docmd('aaa')"/>
+
 </mx:Application>

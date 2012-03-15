@@ -22,10 +22,7 @@
 		<listener-class>flex.messaging.HttpFlexSession</listener-class>
 	</listener>
 
-	<servlet>
-		<servlet-name>TuiSongServlet</servlet-name>
-		<servlet-class>com.wisoft.servlet.TuiSongServlet</servlet-class>
-	</servlet>
+	
 
 	<!-- MessageBroker Servlet -->
 	<servlet>
@@ -46,10 +43,7 @@
 		<servlet-name>MessageBrokerServlet</servlet-name>
 		<url-pattern>/messagebroker/*</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>TuiSongServlet</servlet-name>
-		<url-pattern>/TuiSongServlet</url-pattern>
-	</servlet-mapping>
+	
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
