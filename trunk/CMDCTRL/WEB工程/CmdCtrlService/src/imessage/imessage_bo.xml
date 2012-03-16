@@ -7,14 +7,7 @@
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
-	<bean id="ImessageForFeiQWS" class="com.wisoft.im.feiq.ImessageForFeiQWS"
-		abstract="false" lazy-init="default" autowire="default"
-		dependency-check="default">
-		<property name="tcpclient" ref="TCPClient"></property>
-	</bean>
-	<bean id="HelloWorld" class="com.wisoft.im.feiq.HelloWorld">
-		<property name="tcpclient" ref="TCPClient"></property>
-	</bean>
+	
 	<bean id="TCPClient" class="com.wisoft.im.feiq.TCPClient" scope="singleton">
 		<constructor-arg>
 			<value>192.10.110.206</value>
@@ -26,6 +19,9 @@
 				<value>192.10.110.179</value>
 				<value></value>
 			</list>
+		</property>
+		<property name="adminPassWord">
+			<value>wisoft</value>
 		</property>
 
 	</bean>

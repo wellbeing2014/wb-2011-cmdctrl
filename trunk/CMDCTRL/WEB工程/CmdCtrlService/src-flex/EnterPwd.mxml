@@ -8,18 +8,28 @@
 			
 			[Bindable]public var callbackFunction:Function;
 			[Bindable]public var mainObj:Object;
+			[Bindable]public var opratestr:String;
 			
 			private function Window_close():void { 
                 PopUpManager.removePopUp(this) 
             } 
             
             private function doyes():void { 
-            	callbackFunction.call(mainObj,this.pwdtext.text);
+            	callbackFunction.call(mainObj,opratestr,this.pwdtext.text);
                 PopUpManager.removePopUp(this);
             } 
+            
+			private function sendKeyHandler(evt:KeyboardEvent):void
+			{
+				if(evt.keyCode == 13)
+				{
+				   this.doyes();
+				}
+			}
+
 		]]>
 	</mx:Script>
-	<mx:TextInput id="pwdtext" x="66" y="43" displayAsPassword="true"/>
+	<mx:TextInput id="pwdtext" x="66" y="43" displayAsPassword="true" keyDown="sendKeyHandler(event)"/>
 	<mx:Button x="86" y="94" label="确定" click="doyes()"/>
 	<mx:Button x="152" y="94" label="取消" click="Window_close()"/>
 	

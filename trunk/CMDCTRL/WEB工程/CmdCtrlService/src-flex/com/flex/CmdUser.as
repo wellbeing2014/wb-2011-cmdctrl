@@ -1,55 +1,57 @@
 package com.flex
 {
+	[RemoteClass(alias="com.wisoft.im.feiq.CmdUser")] 
+	[Bindable]
 	public class CmdUser
 	{
-		private var cmdno:int;
+		private var _cmdno:int;
 		
-		private var username:String;
+		private var _username:String;
 		
-		private var password:String;
+		private var _password:String;
 		
-		private var content:String;
+		private var _content:String;
 		
 		public function CmdUser()
 		{
 		}
 		
-		public function get getCmdno():int
+		public function get cmdno():int
 		{
-			return this.cmdno;
+			return this._cmdno;
 		}
-		public function set setCmdno(value:int):void
+		public function set cmdno(value:int):void
 		{
-			this.cmdno = value;
-		}
-		
-		
-		public function get getusername():String
-		{
-			return this.username;
-		}
-		public function set setusername(value:String):void
-		{
-			this.username = value;
-		}
-		
-		public function get getpassword():String
-		{
-			return this.password;
-		}
-		public function set setpassword(value:String):void
-		{
-			this.password = value;
+			this._cmdno = value;
 		}
 		
 		
-		public function get getcontent():String
+		public function get username():String
 		{
-			return this.content;
+			return this._username;
 		}
-		public function set setcontent(value:String):void
+		public function set username(value:String):void
 		{
-			this.content = value;
+			this._username = value;
+		}
+		
+		public function get password():String
+		{
+			return this._password;
+		}
+		public function set password(value:String):void
+		{
+			this._password = value;
+		}
+		
+		
+		public function get content():String
+		{
+			return this._content;
+		}
+		public function set content(value:String):void
+		{
+			this._content = value;
 		}
 	}
 }
