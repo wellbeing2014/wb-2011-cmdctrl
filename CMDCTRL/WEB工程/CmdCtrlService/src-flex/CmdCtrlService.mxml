@@ -17,7 +17,7 @@
 		import mx.managers.IBrowserManager;
 		import mx.managers.PopUpManager;
 		import mx.events.ItemClickEvent; 
-		
+		import com.flex.CmdUser;
 		
 		//----------------------------------------------------------------
 		
@@ -104,7 +104,6 @@
 		private function messageHandler(event:MessageEvent):void 
 		{ 
 			cmdlist1 = event.message.body as ArrayCollection;
-			
 			if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
 			{
 				cmdlist = cmdlist1;
@@ -141,38 +140,35 @@
 	
 		public function doROFunc_docmd(str:String):void
 		{
-			Alert.show(_MODEL);
 			if(_MODEL == "ADMIN")
 			{
 				var pwd:EnterPwd = EnterPwd(PopUpManager.createPopUp(this,EnterPwd,true));
 				pwd.mainObj = this;
-				pwd.callbackFunction = operate;
+				pwd.opratestr = str;
+				pwd.callbackFunction = operate_admin;
 	        	PopUpManager.centerPopUp(pwd);
    			}
    			else
    			if(_MODEL == "USER")
    			{
    				var userpwd:EnterUserPwd = EnterUserPwd(PopUpManager.createPopUp(this,EnterUserPwd,true));
-   				
-   				userpwd.userinfo.setCmdno = str.split("&")[0] as int;
-   				
+   				userpwd.opratestr = str;
+   				//userpwd.userinfo.setCmdno = str.split("&")[0] as int;
+   				userpwd.callbackFunction = operate_user;
 	        	PopUpManager.centerPopUp(userpwd);
    			}
+   			else
+   			 	ro.docmd(str);
 		//	ro.docmd(str);
 		}
 		
-		private function operate(str:String):void
+		private function operate_admin(str:String,pwd:String):void
 		{
-			if(_MODEL == "USER")
-			{
-				ro.docmdUser(str);
-			}
-			else if(_MODEL == "ADMIN")
-			{
-				ro.docmdAdmin(str);
-			}
-			else
-				ro.docmd(str);
+			ro.docmdAdmin(str,pwd);
+		}
+		private function operate_user(str:String,user:CmdUser,isdelete:Boolean):void
+		{
+			ro.docmdUser(str,user,isdelete);
 		}
 		
 		private function changeModel(event:ItemClickEvent):void
@@ -200,7 +196,7 @@
 		<mx:Object name="自定义模式" moduleurl =""></mx:Object>
 	</mx:Array>	
 	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle">
-	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar"  toggleOnClick="true" itemClick="changeModel(event)">
+	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar" toggleOnClick="false" itemClick="changeModel(event)">
 	</mx:ToggleButtonBar>
 	</mx:HBox>
 	<mx:Panel layout="absolute" left="10" right="10" bottom="10" top="30" title="中科服务管理系统WEB入口">

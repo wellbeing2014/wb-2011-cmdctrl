@@ -42,7 +42,7 @@ public class HelloWorld  {
 	public  String docmdAdmin(String str,String password) {
 		
 		String adminpwd = this.tcpclient.getAdminPassWord();
-		if(adminpwd.equals(str))
+		if(adminpwd.equals(password))
 		{
 			return this.tcpclient.send(str);
 		}
@@ -50,17 +50,31 @@ public class HelloWorld  {
 			return "操作失败，管理员密码不正确。";
 	}
 	
-	public  String docmdUser(String str,String password) {
+	public  String docmdUser(String str,CmdUser user,boolean isdelete) {
 		int cmdno = Integer.parseInt(str.split("&")[0]);
 		CmdUser cu = getcmdUser(cmdno);
-		if(cu!=null)
+		if(user!=null)
 		{
-			if(password.equals(cu.getPassword()))
+			if(cu!=null)
 			{
-				return this.tcpclient.send(str);
+				if(user.getPassword().equals(cu.getPassword()))
+				{
+					if(isdelete)
+					{
+						this.tcpclient.map.remove(cmdno);
+					}
+					return this.docmd(str);
+				}
+				else
+					return "操作失败，用户密码不正确，请联系用户";
 			}
 			else
-				return "操作失败，用户密码不正确，请联系用户";
+			{
+				this.tcpclient.map.remove(cmdno);
+				this.tcpclient.map.put(cmdno, user);
+				return this.docmd(str);
+			}
+			
 		}
 		else
 			return "你不允许该操作。";
