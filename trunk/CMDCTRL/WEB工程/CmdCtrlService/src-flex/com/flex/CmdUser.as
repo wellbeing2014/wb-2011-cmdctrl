@@ -14,40 +14,40 @@ package com.flex
 		{
 		}
 		
-		public get cmdno():int
+		public function get getCmdno():int
 		{
 			return this.cmdno;
 		}
-		public set cmdno(value:int):void
+		public function set setCmdno(value:int):void
 		{
 			this.cmdno = value;
 		}
 		
 		
-		public get username():String
+		public function get getusername():String
 		{
 			return this.username;
 		}
-		public set username(value:String):void
+		public function set setusername(value:String):void
 		{
 			this.username = value;
 		}
 		
-		public get password():String
+		public function get getpassword():String
 		{
 			return this.password;
 		}
-		public set password(value:String):void
+		public function set setpassword(value:String):void
 		{
 			this.password = value;
 		}
 		
 		
-		public get content():String
+		public function get getcontent():String
 		{
 			return this.content;
 		}
-		public set content(value:String):void
+		public function set setcontent(value:String):void
 		{
 			this.content = value;
 		}

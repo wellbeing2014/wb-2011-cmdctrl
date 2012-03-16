@@ -77,8 +77,8 @@ public class TCPClient {
 	public static  List<Cmdstat> broadcast() {
 		
 		List<Cmdstat> cmds= new ArrayList<Cmdstat>();
-	    //String state=returnstr;
-	    String state="0&无锡QLYG&1&AAA|1&无锡1QLYG&2&AAA|2&无锡2QLYG&3&AAA";
+	    String state=returnstr;
+	   // String state="0&无锡QLYG&1&AAA|1&无锡1QLYG&2&AAA|2&无锡2QLYG&3&AAA";
 	    String[] cmdlist=state.split("\\|");
 	    for(int i=0;i<cmdlist.length;i++)
 	    {
@@ -107,33 +107,14 @@ public class TCPClient {
 	 * @param ip
 	 * @return
 	 */
-	public String send(String str,String ip)
+	public String send(String str)
 	{
-		if (this.allowiplist.contains(ip))
-		{
-			sendthread.str = str;
-			return "操作成功";
-		}
-		else
-			return "操作失败，IP地址不受信任。";
+		
+		sendthread.str = str;
+		return "操作成功";
 	}
 	
-	/**
-	 * 管理员界面操作命令，不需要验证IP
-	 * @param str
-	 * @param ip
-	 * @return
-	 */
-	public String Adminsend(String str)
-	{
-		if (this.allowiplist.contains(ip))
-		{
-			sendthread.str = str;
-			return "操作成功";
-		}
-		else
-			return "操作失败，IP地址不受信任。";
-	}
+	
 	
 	public String receive()
 	{

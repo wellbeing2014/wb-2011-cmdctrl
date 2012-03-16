@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  preinitialize="pinit()" creationComplete="init()">
+	
+	
 	<mx:Script>
 		<![CDATA[
 		import com.flex.Cmdstat;
@@ -14,67 +16,68 @@
 		import mx.managers.BrowserManager;
 		import mx.managers.IBrowserManager;
 		import mx.managers.PopUpManager;
-		
+		import mx.events.ItemClickEvent; 
 		
 		
 		//----------------------------------------------------------------
 		
-			[Bindable]
-			private var cmdlist:ArrayCollection = new ArrayCollection() ;
-			private var cmdlist1:ArrayCollection = new ArrayCollection() ;
-			private var timer1:Timer = new Timer(60000);//刷新整个数据源的频率
-			private var isrefresh:Boolean=false;
-			private var isstop:Boolean = false;
-			private var path:String = ExternalInterface.call("getHerf");
-			[Bindable]
-			public var tiaozhuanNO:ArrayCollection = new ArrayCollection();
-			private var ctrl_type:String = "";
+		[Bindable]
+		private var cmdlist:ArrayCollection = new ArrayCollection() ;
+		private var cmdlist1:ArrayCollection = new ArrayCollection() ;
+		private var timer1:Timer = new Timer(60000);//刷新整个数据源的频率
+		private var isrefresh:Boolean=false;
+		private var isstop:Boolean = false;
+		private var path:String = ExternalInterface.call("getHerf");
+		[Bindable]
+		public var tiaozhuanNO:ArrayCollection = new ArrayCollection();
+		private var _MODEL:String = "";
+		
+		
+		private function init():void
+		{
+			_MODEL =this.parameters.model;
+			//Alert.show(ctrl_type);
+			timer1.addEventListener(TimerEvent.TIMER, onTimer1);
+			timer1.start();
 			
+		}
+		private function pinit():void
+		{
+			var consumer:Consumer = new Consumer(); 
+			consumer.destination = "tick-data-feed"; 
+			consumer.subtopic = "List<Cmdstat>"; 
+			consumer.channelSet = new ChannelSet(["my-streaming-amf"]);
+			//添加message的监听，当后台有消息发送时，调用messageHandler 
+			consumer.addEventListener(MessageEvent.MESSAGE, messageHandler); 
+			consumer.subscribe(); 
+		}
+		
+   		private function onTimer1(event:TimerEvent):void{
+     		isrefresh = true;
+   		}
+		private function statlabf(item:Object, c:DataGridColumn):String
+		{
+			var i:int = item.stat as int;
 			
-			private function init():void
-			{
-				ctrl_type =this.parameters.model;
-				//Alert.show(ctrl_type);
-				timer1.addEventListener(TimerEvent.TIMER, onTimer1);
-				timer1.start();
-			}
-			private function pinit():void
-			{
-				var consumer:Consumer = new Consumer(); 
-				consumer.destination = "tick-data-feed"; 
-				consumer.subtopic = "List<Cmdstat>"; 
-				consumer.channelSet = new ChannelSet(["my-streaming-amf"]);
-				//添加message的监听，当后台有消息发送时，调用messageHandler 
-				consumer.addEventListener(MessageEvent.MESSAGE, messageHandler); 
-				consumer.subscribe(); 
-			}
-			
-   			private function onTimer1(event:TimerEvent):void{
-         		isrefresh = true;
-   			}
-			private function statlabf(item:Object, c:DataGridColumn):String
-			{
-				var i:int = item.stat as int;
-				
-				var rtn:String = "";
-         		switch(i)
-         		{
-         			case 0 : rtn= "正在启动";
-         			break;
-         			case 1 : rtn= "已启动";
-         			if(tiaozhuanNO.contains(item.no))
-					{
-						runweb(item.netaddr);
-						tiaozhuanNO.removeItemAt(tiaozhuanNO.getItemIndex(item.no));
-					}
-         			break;
-         			case 2 : rtn= "正在停止";
-         			break;
-         			case 3 : rtn= "已停止";
-         			break;
-         		}
-         		return rtn;
-   			}
+			var rtn:String = "";
+     		switch(i)
+     		{
+     			case 0 : rtn= "正在启动";
+     			break;
+     			case 1 : rtn= "已启动";
+     			if(tiaozhuanNO.contains(item.no))
+				{
+					runweb(item.netaddr);
+					tiaozhuanNO.removeItemAt(tiaozhuanNO.getItemIndex(item.no));
+				}
+     			break;
+     			case 2 : rtn= "正在停止";
+     			break;
+     			case 3 : rtn= "已停止";
+     			break;
+     		}
+     		return rtn;
+   		}
    			
    		//跳转网页
    		public function runweb(netaddr:String):void
@@ -138,14 +141,68 @@
 	
 		public function doROFunc_docmd(str:String):void
 		{
-			
-			var pwd:EnterPwd = EnterPwd(PopUpManager.createPopUp(this,EnterPwd,true));
-			
-        	PopUpManager.centerPopUp(pwd);
+			Alert.show(_MODEL);
+			if(_MODEL == "ADMIN")
+			{
+				var pwd:EnterPwd = EnterPwd(PopUpManager.createPopUp(this,EnterPwd,true));
+				pwd.mainObj = this;
+				pwd.callbackFunction = operate;
+	        	PopUpManager.centerPopUp(pwd);
+   			}
+   			else
+   			if(_MODEL == "USER")
+   			{
+   				var userpwd:EnterUserPwd = EnterUserPwd(PopUpManager.createPopUp(this,EnterUserPwd,true));
+   				
+   				userpwd.userinfo.setCmdno = str.split("&")[0] as int;
+   				
+	        	PopUpManager.centerPopUp(userpwd);
+   			}
 		//	ro.docmd(str);
 		}
+		
+		private function operate(str:String):void
+		{
+			if(_MODEL == "USER")
+			{
+				ro.docmdUser(str);
+			}
+			else if(_MODEL == "ADMIN")
+			{
+				ro.docmdAdmin(str);
+			}
+			else
+				ro.docmd(str);
+		}
+		
+		private function changeModel(event:ItemClickEvent):void
+		{
+			if(event.label=="IP限制模式")
+			{
+				_MODEL = "IP";
+			}
+			else if(event.label=="管理员模式")
+			{
+				_MODEL = "ADMIN";
+			}
+			else if(event.label=="自定义模式")
+			{
+				_MODEL = "USER";
+			}
+		}
+		
+		
 		]]>
 </mx:Script>
+	<mx:Array id="menulist4">
+		<mx:Object name="IP限制模式" moduleurl =""></mx:Object>
+		<mx:Object name="管理员模式" moduleurl =""></mx:Object>
+		<mx:Object name="自定义模式" moduleurl =""></mx:Object>
+	</mx:Array>	
+	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle">
+	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar"  toggleOnClick="true" itemClick="changeModel(event)">
+	</mx:ToggleButtonBar>
+	</mx:HBox>
 	<mx:Panel layout="absolute" left="10" right="10" bottom="10" top="30" title="中科服务管理系统WEB入口">
 		<mx:DataGrid left="0" right="0" bottom="0" top="0" dataProvider="{cmdlist}">
 			<mx:columns>
@@ -187,6 +244,7 @@
 					         				stattip= "已停止";
 					         				path = "image/redCircle.png"
 					         				break;
+					         			
 					         		}
 								  }
 
@@ -251,7 +309,6 @@
 				  <mx:Button click="outerDocument.openLog(data.name)" label="查看日志" >
 				  </mx:Button>
                   </mx:HBox>
-                   
                   </mx:Component>
                  </mx:itemRenderer>
 
@@ -261,10 +318,9 @@
 	</mx:Panel>
 	<mx:RemoteObject id="ro" destination="hw">  
 		<mx:method name="docmd" result="resultdocmd(event)"/>  
-		<mx:method name="sayHello" result="resultdocmd(event)"/>  
+		<mx:method name="docmdAdmin" result="resultdocmd(event)"/> 
+		<mx:method name="docmdUser" result="resultdocmd(event)"/> 
+		
     </mx:RemoteObject>  
-	  
-	
-	<mx:Button x="10" y="0" label="Button" click="ro.docmd('aaa')"/>
 
 </mx:Application>
