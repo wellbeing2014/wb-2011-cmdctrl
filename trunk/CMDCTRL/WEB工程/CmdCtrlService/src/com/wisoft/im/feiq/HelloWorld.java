@@ -52,7 +52,9 @@ public class HelloWorld  {
 	
 	public  String docmdUser(String str,CmdUser user,boolean isdelete) {
 		int cmdno = Integer.parseInt(str.split("&")[0]);
+		System.out.println("____"+str);
 		CmdUser cu = getcmdUser(cmdno);
+		System.out.println();
 		if(user!=null)
 		{
 			if(cu!=null)
