@@ -26,10 +26,17 @@ public class HelloWorld  {
 		List<String> iplist = this.tcpclient.getAllowiplist();
 		if (iplist.contains(getIp()))
 		{
-			return this.tcpclient.send(str);
+			int cmdno = Integer.parseInt(str.split("&")[0]);
+			CmdUser cu = getcmdUser(cmdno);
+			if(cu!=null)
+			{
+				return "操作失败，该服务被"+cu.getUsername()+"锁定，" +
+						"\n请转到自定义模式下输入密码或联系"+cu.getUsername();
+			}
+			else return this.tcpclient.send(str);
 		}
 		else
-			return "操作失败，IP地址不受信任。";
+			return "操作失败，您的IP地址不受信任。\n如果您是管理员，请尝试管理员模式。";
 		
 	}
 	
@@ -52,30 +59,36 @@ public class HelloWorld  {
 	
 	public  String docmdUser(String str,CmdUser user,boolean isdelete) {
 		int cmdno = Integer.parseInt(str.split("&")[0]);
-		System.out.println("____"+str);
 		CmdUser cu = getcmdUser(cmdno);
-		System.out.println();
+		//System.out.println();
 		if(user!=null)
 		{
-			if(cu!=null)
+			List<String> iplist = this.tcpclient.getAllowiplist();
+			if (iplist.contains(getIp()))
 			{
-				if(user.getPassword().equals(cu.getPassword()))
+				if(cu!=null)
 				{
-					if(isdelete)
+					if(user.getPassword().equals(cu.getPassword()))
 					{
-						this.tcpclient.map.remove(cmdno);
+						if(isdelete)
+						{
+							this.tcpclient.map.remove(cmdno);
+						}
+						return this.tcpclient.send(str);
 					}
-					return this.docmd(str);
+					else
+						return "操作失败，用户密码不正确，请联系用户";
 				}
 				else
-					return "操作失败，用户密码不正确，请联系用户";
+				{
+					this.tcpclient.map.remove(cmdno);
+					this.tcpclient.map.put(cmdno, user);
+					return this.tcpclient.send(str);
+				}
+			
 			}
 			else
-			{
-				this.tcpclient.map.remove(cmdno);
-				this.tcpclient.map.put(cmdno, user);
-				return this.docmd(str);
-			}
+				return "操作失败，您的IP地址不受信任。\n如果您是管理员，请尝试管理员模式。";
 			
 		}
 		else
