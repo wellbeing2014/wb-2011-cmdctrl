@@ -1,30 +1,79 @@
 package com.wisoft.im.feiq;
+import java.util.List;
+
 import org.springframework.web.context.ContextLoader;  
 import org.springframework.web.context.WebApplicationContext;  
 
+/**
+ * @author 朱新培
+ *
+ */
 public class HelloWorld  {   
 	 
 	public HelloWorld()
 	{
-		System.out.println("_________________________________");
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
 		this.tcpclient = (TCPClient)wac.getBean("TCPClient");
 	}
 	private TCPClient tcpclient;
 	
-	
+	/**
+	 *  通过受信任IP直接发送操作命令
+	 * @param str
+	 * @return
+	 */
 	public  String docmd(String str) {
-		return this.tcpclient.send(str,getIp());
-	}
-	public  String docmdAdmin(String str) {
-		//System.out.println(getIp());
+		List<String> iplist = this.tcpclient.getAllowiplist();
+		if (iplist.contains(getIp()))
+		{
+			return this.tcpclient.send(str);
+		}
+		else
+			return "操作失败，IP地址不受信任。";
 		
-		return this.tcpclient.Adminsend(str);
 	}
 	
-    public String sayHello(String s) {   
-        System.out.println("hello,");   
-        return getIp()+"   "+s ;   
+	/**
+	 * 通过管理员密码发送操作命令
+	 * @param str
+	 * @param password
+	 * @return
+	 */
+	public  String docmdAdmin(String str,String password) {
+		
+		String adminpwd = this.tcpclient.getAdminPassWord();
+		if(adminpwd.equals(str))
+		{
+			return this.tcpclient.send(str);
+		}
+		else
+			return "操作失败，管理员密码不正确。";
+	}
+	
+	public  String docmdUser(String str,String password) {
+		int cmdno = Integer.parseInt(str.split("&")[0]);
+		CmdUser cu = getcmdUser(cmdno);
+		if(cu!=null)
+		{
+			if(password.equals(cu.getPassword()))
+			{
+				return this.tcpclient.send(str);
+			}
+			else
+				return "操作失败，用户密码不正确，请联系用户";
+		}
+		else
+			return "你不允许该操作。";
+		
+	}
+	
+	/**
+	 * 获取各服务用户锁定状态
+	 * @param cmdno
+	 * @return
+	 */
+    public CmdUser getcmdUser(int cmdno) {   
+    	return this.tcpclient.map.get(cmdno);
     }   
     
     public String getIp(){

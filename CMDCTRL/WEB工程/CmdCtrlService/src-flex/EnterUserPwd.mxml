@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="370" height="284" title="本服务被锁定，请输入密码" horizontalAlign="center" verticalAlign="middle">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="370" height="284" 
+	title="本服务未锁定，请设置信息" creationComplete="init" horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			import com.flex.CmdUser;
+			import mx.managers.PopUpManager;
+			[Bindable]public var userinfo:CmdUser = new CmdUser();
+			[Bindable]public var mainObj:Object;
+			[Bindable]public var callbackFunction:Function;
+			
+			private function init():void
+			{
+				this.ro.getcmdUser(userinfo.getCmdno);
+			}
+			
+			private function window_close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function doyes():void
+			{
+				userinfo.setusername=this.username.text;
+				userinfo.setpassword=this.password.text;
+				userinfo.setcontent=this.content.text;
+				//userinfo.setCmdno();
+				callbackFunction.call(mainObj,this.userinfo);
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function resultgetIp(event:ResultEvent)
+			{
+				this.IP.text=event.result as String;
+			}
+			
+			private function resultgetCmdUser(event:ResultEvent)
+			{
+				var user:CmdUser = event.result as CmdUser;
+				if(user!=null)
+				{
+					this.title = "本服务被锁定，请输入密码";
+					this.username.text = user.getusername;
+					//this.IP.text=event.result as String;
+					this.content.text = user.getusername;
+				}
+			}
+			
+		]]>
+	</mx:Script>
 	<mx:VBox left="0" bottom="0" right="0" top="0" horizontalAlign="center" verticalAlign="middle">
 		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
 			<mx:Label text="用户信息" width="67"/>
@@ -7,20 +56,24 @@
 		</mx:HBox>
 		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
 			<mx:Label text="用户密码" width="67"/>
-			<mx:TextInput id="username0"/>
+			<mx:TextInput id="password"/>
 		</mx:HBox>
 		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
-			<mx:Label text="用户IP" width="67"/>
-			<mx:TextInput id="username1"/>
+			<mx:Label text="用户IP" width="67"  />
+			<mx:TextInput id="IP" editable="false"/>
 		</mx:HBox>
 		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center" height="108">
 			<mx:Label text="自定义内容" width="67"/>
-			<mx:TextArea height="84" width="164"/>
+			<mx:TextArea id="content" height="84" width="164"/>
 		</mx:HBox>
 		<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-			<mx:Button label="确定"/>
-			<mx:Button label="取消"/>
+			<mx:Button label="确定" click="doyes"/>
+			<mx:Button label="取消" click="window_close"/>
 		</mx:HBox>
 	</mx:VBox>
+	<mx:RemoteObject id="ro" destination="hw">  
+		<mx:method name="getIp" result="resultgetIp(event)"/>
+		<mx:method name="getcmdUser" result="resultgetCmdUser(event)"/>
+    </mx:RemoteObject>  
 	
 </mx:Panel>
