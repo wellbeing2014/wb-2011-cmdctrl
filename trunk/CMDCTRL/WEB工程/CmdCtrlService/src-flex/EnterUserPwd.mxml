@@ -17,7 +17,8 @@
 			
 			private function init():void
 			{
-				//Alert.show("111111");
+				var i:Array = opratestr.split("&");
+				userinfo.cmdno = Number(i[0]) ;;
 				this.ro.getIp();
 				this.ro.getcmdUser(userinfo.cmdno);
 			}

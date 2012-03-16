@@ -173,6 +173,7 @@
 		
 		private function changeModel(event:ItemClickEvent):void
 		{
+			isrefresh = true;
 			if(event.label=="IP限制模式")
 			{
 				_MODEL = "IP";
