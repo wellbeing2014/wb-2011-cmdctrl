@@ -8,9 +8,9 @@ import org.springframework.web.context.WebApplicationContext;
  * @author ÷Ï–¬≈‡
  *
  */
-public class HelloWorld  {   
+public class CmdCtrlService  {   
 	 
-	public HelloWorld()
+	public CmdCtrlService()
 	{
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
 		this.tcpclient = (TCPClient)wac.getBean("TCPClient");

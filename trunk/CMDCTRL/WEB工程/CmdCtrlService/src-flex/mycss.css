@@ -6,6 +6,14 @@ DataGrid {
    headerStyleName: "mydataGridHeaderStyle";
 	verticalScrollBarStyleName: dataGridVerticalScrollBar;
 }
+Alert
+{
+	fontFamily: Verdana;
+	fontSize: 12;
+	color: #9B0000;
+	titleStyleName: alertTitle;
+	controlBarStyleName: alertControlBar;
+}
 
 .mydataGridHeaderStyle {
    fontFamily: Verdana;
@@ -53,6 +61,7 @@ ToggleButtonBar
 Button
 {
 	fontSize: 12;
+	fontWeight: normal;
 }
 .toggleButtonBarButton
 {
@@ -64,6 +73,16 @@ Button
 {
 	fontFamily: Arial;
 	fontSize: 16;
+}
+.alertTitle
+{
+	fontFamily: Arial;
+	fontSize: 16;
+	color: #000000;
+	fontWeight: bold;
+}
+.alertControlBar
+{
 }  
 
 

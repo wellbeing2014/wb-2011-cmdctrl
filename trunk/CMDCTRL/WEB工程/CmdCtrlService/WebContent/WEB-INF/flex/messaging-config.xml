@@ -14,7 +14,7 @@
 	<default-channels>
 		<channel ref="my-polling-amf" />
 	</default-channels>
-	<destination id="tick-data-feed">
+	<destination id="CmdCtrlService">
 		<properties>
 			<server>
 				<allow-subtopics>true</allow-subtopics>

@@ -11,14 +11,10 @@
 		<channel ref="my-amf" />
 	</default-channels>
 		
-	<destination id="helloWorld"> 
+	
+	<destination id="cmdctrlservice"> 
 	    <properties> 
-	        <source>com.wisoft.im.feiq.ImessageForFeiQWS</source> 
-	    </properties> 
-	</destination>
-	<destination id="hw"> 
-	    <properties> 
-	        <source>com.wisoft.im.feiq.HelloWorld</source> 
+	        <source>com.wisoft.im.feiq.CmdCtrlService</source> 
 	    </properties> 
 	</destination>
 </service>

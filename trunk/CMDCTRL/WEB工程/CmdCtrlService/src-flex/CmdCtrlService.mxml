@@ -44,7 +44,7 @@
 		private function pinit():void
 		{
 			var consumer:Consumer = new Consumer(); 
-			consumer.destination = "tick-data-feed"; 
+			consumer.destination = "CmdCtrlService"; 
 			consumer.subtopic = "List<Cmdstat>"; 
 			consumer.channelSet = new ChannelSet(["my-streaming-amf"]);
 			//添加message的监听，当后台有消息发送时，调用messageHandler 
@@ -126,7 +126,7 @@
 		{
       		if(!isstop)
       		{
-				Alert.show("服务访问失败！");
+				Alert.show("服务访问失败！","错误");
 				isstop = true;
       		}
 		}
@@ -135,7 +135,7 @@
 		private function resultdocmd(event:ResultEvent):void
 		{
 			var a:String = event.result as String;
-			Alert.show(a);
+			Alert.show(a,"提示");
 		}
 	
 		public function doROFunc_docmd(str:String):void
@@ -197,7 +197,7 @@
 		<mx:Object name="自定义模式" toolTip ="如果您想取得某个服务的控制权，可以在此模式下操作，但首先您的IP是受信任的"></mx:Object>
 	</mx:Array>	
 	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle" backgroundColor="#0E7DFA" cornerRadius="50" height="33">
-	<mx:Label text="中科内部测试服务管理系统" fontStyle="italic" fontSize="20" color="#390107" fontWeight="bold" fontFamily="Times New Roman"/>
+	<mx:Label text="中科内部测试服务管理系统" fontStyle="italic" fontSize="20" color="#FFFFFF" fontWeight="bold" fontFamily="Times New Roman"/>
 	<mx:Spacer width="100%"/>
 	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar" toggleOnClick="false" itemClick="changeModel(event)">
 	</mx:ToggleButtonBar>
@@ -264,16 +264,17 @@
 						import mx.controls.Alert;
 						import mx.events.CloseEvent;
 						
-						private var isqd:Boolean = true;
-						private var istz:Boolean = true;
+						//private var isqd:Boolean = true;
+						//private var istz:Boolean = true;
 						private var data1:Object = new Object();
 						
 						private function qidong(data:Object):void
 			         	{
-			         		isqd = false;
-			         		istz = true;
-			         		Alert.yesLabel="确定"; 
-       						Alert.noLabel="取消"; 
+			         		//isqd = false;
+			         		//istz = true;
+			         		tz.enabled=false;
+			         		Alert.yesLabel="是"; 
+       						Alert.noLabel="否"; 
         					Alert.show("启动完后系统将自动引导进入"+data.name+"系统,请确定后请不要关闭本页，取消则不进入","启动完后自动进入系统?",3,null,tiaozhuan); 
         					data1=data;
 			          	}
@@ -289,20 +290,21 @@
 			          	
 			          	private function tingzhi(data:Object):void
 			         	{
-			         		isqd = true;
-			         		istz = false;
+			         		//isqd = true;
+			         		//istz = false;
 			         		tz.enabled=false;
 			         		var send:String= data.no+"&"+data.name+"&"+"2";
 			          		Application.application.doROFunc_docmd(send);
 			          	}
 			          	
 			          	
-			          	
+			          	//&amp;&amp;(isqd)
+			          	//&amp;&amp;(istz)
 						]]>
 					</mx:Script>
-                  <mx:Button id="qd" click="qidong(data)" label="启动" enabled="{(data.stat==3)&amp;&amp;(isqd)}" >
+                  <mx:Button id="qd" click="qidong(data)" label="启动" enabled="{(data.stat==3)}" >
 				  </mx:Button>
-				  <mx:Button id="tz" click="tingzhi(data)" label="停止" enabled="{(data.stat==1)&amp;&amp;(istz)}">
+				  <mx:Button id="tz" click="tingzhi(data)" label="停止" enabled="{(data.stat==1)}">
 				  </mx:Button>
 				  <mx:Button click="outerDocument.runweb(data.netaddr)" label="进入系统" >
 				  </mx:Button>
@@ -316,7 +318,7 @@
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:Canvas>
-	<mx:RemoteObject id="ro" destination="hw">  
+	<mx:RemoteObject id="ro" destination="cmdctrlservice">  
 		<mx:method name="docmd" result="resultdocmd(event)"/>  
 		<mx:method name="docmdAdmin" result="resultdocmd(event)"/> 
 		<mx:method name="docmdUser" result="resultdocmd(event)"/> 

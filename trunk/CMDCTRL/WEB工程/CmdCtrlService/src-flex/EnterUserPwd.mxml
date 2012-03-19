@@ -37,7 +37,7 @@
 				//userinfo.setCmdno();
 				if(this.userinfo.username.length == 0)
 				{
-					Alert.show("用户信息不能为空！");
+					Alert.show("用户信息不能为空！","提示");
 					return;
 				}
 				callbackFunction.call(mainObj,opratestr,this.userinfo,this.deleteRock.selected);
