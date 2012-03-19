@@ -18,9 +18,7 @@
 		import mx.managers.PopUpManager;
 		import mx.events.ItemClickEvent; 
 		import com.flex.CmdUser;
-		
 		//----------------------------------------------------------------
-		
 		[Bindable]
 		private var cmdlist:ArrayCollection = new ArrayCollection() ;
 		private var cmdlist1:ArrayCollection = new ArrayCollection() ;
@@ -42,7 +40,6 @@
 			//Alert.show(ctrl_type);
 			timer1.addEventListener(TimerEvent.TIMER, onTimer1);
 			timer1.start();
-			
 		}
 		private function pinit():void
 		{
