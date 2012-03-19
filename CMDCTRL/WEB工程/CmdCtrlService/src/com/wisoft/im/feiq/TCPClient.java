@@ -77,7 +77,9 @@ public class TCPClient {
 	public static  List<Cmdstat> broadcast() {
 		
 		List<Cmdstat> cmds= new ArrayList<Cmdstat>();
-	    String state=returnstr;
+	    String state="0&0&0&0";
+	    if(returnstr!=null)
+	    	state= returnstr;
 	    //String state="0&ÎÞÎýQLYG&1&AAA|1&ÎÞÎý1QLYG&2&AAA|2&ÎÞÎý2QLYG&3&AAA";
 	    String[] cmdlist=state.split("\\|");
 	    for(int i=0;i<cmdlist.length;i++)
@@ -230,7 +232,7 @@ class FeedThread extends Thread {
 			//System.out.println("1231231231231231"+i);
 			List<Cmdstat> cmdlist=TCPClient.broadcast();
 			AsyncMessage msg = new AsyncMessage();
-			msg.setDestination("tick-data-feed");
+			msg.setDestination("CmdCtrlService");
 			msg.setHeader("DSSubtopic", "List<Cmdstat>");
 			msg.setClientId(clientID);
 			msg.setMessageId(UUIDUtils.createUUID());
