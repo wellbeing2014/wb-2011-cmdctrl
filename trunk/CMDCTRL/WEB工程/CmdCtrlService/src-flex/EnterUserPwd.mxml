@@ -98,7 +98,7 @@
 			<mx:Button label="取消" click="window_close()"/>
 		</mx:HBox>
 	</mx:VBox>
-	<mx:RemoteObject id="ro" destination="hw">  
+	<mx:RemoteObject id="ro" destination="cmdctrlservice">  
 		<mx:method name="getIp" result="resultgetIp(event)"/>
 		<mx:method name="getcmdUser" result="resultgetCmdUser(event)"/>
     </mx:RemoteObject>  
