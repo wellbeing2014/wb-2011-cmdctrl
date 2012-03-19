@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  preinitialize="pinit()" creationComplete="init()">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  preinitialize="pinit()" creationComplete="init()" borderColor="#A3CEED">
 	
-	
+	<mx:Style source="mycss.css"/>
 	<mx:Script>
 		<![CDATA[
 		import com.flex.Cmdstat;
@@ -27,14 +27,17 @@
 		private var timer1:Timer = new Timer(60000);//刷新整个数据源的频率
 		private var isrefresh:Boolean=false;
 		private var isstop:Boolean = false;
-		private var path:String = ExternalInterface.call("getHerf");
+		//private var path:String = ExternalInterface.call("getHerf");
+		private var path:String ="";
 		[Bindable]
 		public var tiaozhuanNO:ArrayCollection = new ArrayCollection();
 		private var _MODEL:String = "";
 		
-		
 		private function init():void
 		{
+			var arr:Array = Application.application.url.split('/');
+			//Alert.show(arr[0]+"//"+arr[2]+"/"+arr[3]);//http:+//+IP:duankou+/服务名/
+			path = arr[0]+"//"+arr[2]+"/"+arr[3];
 			_MODEL =this.parameters.model;
 			//Alert.show(ctrl_type);
 			timer1.addEventListener(TimerEvent.TIMER, onTimer1);
@@ -93,7 +96,7 @@
    			//var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
    		 	//navigateToURL(request,'_blank'); //  新窗口 
    			var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
-			log.logname = path+"logfile/"+name+".log";
+			log.logname = path+"/logfile/"+name+".log";
 			log.title = name+"日志详细";
 			//log.logname = name+".log";
         	PopUpManager.centerPopUp(log);
@@ -192,16 +195,18 @@
 		]]>
 </mx:Script>
 	<mx:Array id="menulist4">
-		<mx:Object name="IP限制模式" moduleurl =""></mx:Object>
-		<mx:Object name="管理员模式" moduleurl =""></mx:Object>
-		<mx:Object name="自定义模式" moduleurl =""></mx:Object>
+		<mx:Object name="IP限制模式" toolTip ="只有在服务器上被设置为信任的IP才能操作"></mx:Object>
+		<mx:Object name="管理员模式" toolTip ="如果您知道管理员密码可以在此模式下操作，并不受IP限制"></mx:Object>
+		<mx:Object name="自定义模式" toolTip ="如果您想取得某个服务的控制权，可以在此模式下操作，但首先您的IP是受信任的"></mx:Object>
 	</mx:Array>	
-	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle">
+	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle" backgroundColor="#0E7DFA" cornerRadius="50" height="33">
+	<mx:Label text="中科内部测试服务管理系统" fontStyle="italic" fontSize="20" color="#390107" fontWeight="bold" fontFamily="Times New Roman"/>
+	<mx:Spacer width="100%"/>
 	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar" toggleOnClick="false" itemClick="changeModel(event)">
 	</mx:ToggleButtonBar>
 	</mx:HBox>
-	<mx:Panel layout="absolute" left="10" right="10" bottom="10" top="30" title="中科服务管理系统WEB入口">
-		<mx:DataGrid left="0" right="0" bottom="0" top="0" dataProvider="{cmdlist}">
+	<mx:Canvas  left="2" right="2" bottom="10" top="30">
+		<mx:DataGrid left="0" right="0" top="0" dataProvider="{cmdlist}" bottom="0">
 			<mx:columns>
 				<mx:DataGridColumn headerText="序号" dataField="no" width="50"/>
 				<mx:DataGridColumn headerText="服务名称" dataField="name"/>
@@ -277,10 +282,11 @@
 			          	}
 			          	private function tiaozhuan(event:CloseEvent):void
 			         	{
-			         		if (event.detail==Alert.YES)
+			         		
                     		outerDocument.tiaozhuanNO.addItem(data1.no);
                 			var send:String= data1.no+"&"+data1.name+"&"+"1";
 			          		Application.application.doROFunc_docmd(send);
+		          		
 			          	}
 			          	
 			          	
@@ -312,7 +318,7 @@
 				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>
-	</mx:Panel>
+	</mx:Canvas>
 	<mx:RemoteObject id="ro" destination="hw">  
 		<mx:method name="docmd" result="resultdocmd(event)"/>  
 		<mx:method name="docmdAdmin" result="resultdocmd(event)"/> 
