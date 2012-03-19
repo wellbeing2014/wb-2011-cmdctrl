@@ -10,12 +10,9 @@ DataGrid {
 .mydataGridHeaderStyle {
    fontFamily: Verdana;
    fontSize: 14;
+	fontWeight: bold;
 }
-Panel
-{
-	fontFamily: "微软雅黑";
-	fontSize: 16;
-}
+
 .dataGridVerticalScrollBar
 {
 }
@@ -26,5 +23,47 @@ TextArea
 	leading: 2;
 	color: #064A59;
 }
+
+ToolTip  
+{  
+    fontSize:16;  
+    color:#FF6699;  
+}
+TitleWindow
+{
+	statusStyleName: titleWindowStatus;
+	backgroundAlpha: 1.0;
+	borderAlpha: 1.0;
+	borderColor: #B0CFF8;
+	titleStyleName: titleWindowTitle;
+}
+Label
+{
+	fontSize: 12;
+}
+TextInput
+{
+	fontSize: 12;
+}
+ToggleButtonBar
+{
+	buttonStyleName: toggleButtonBarButton;
+	fontSize: 12;
+}
+Button
+{
+	fontSize: 12;
+}
+.toggleButtonBarButton
+{
+}
+.titleWindowStatus
+{
+}
+.titleWindowTitle
+{
+	fontFamily: Arial;
+	fontSize: 16;
+}  
 
 

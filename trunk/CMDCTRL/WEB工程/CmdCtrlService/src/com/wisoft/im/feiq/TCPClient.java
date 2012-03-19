@@ -77,8 +77,8 @@ public class TCPClient {
 	public static  List<Cmdstat> broadcast() {
 		
 		List<Cmdstat> cmds= new ArrayList<Cmdstat>();
-	    //String state=returnstr;
-	    String state="0&无锡QLYG&1&AAA|1&无锡1QLYG&2&AAA|2&无锡2QLYG&3&AAA";
+	    String state=returnstr;
+	    //String state="0&无锡QLYG&1&AAA|1&无锡1QLYG&2&AAA|2&无锡2QLYG&3&AAA";
 	    String[] cmdlist=state.split("\\|");
 	    for(int i=0;i<cmdlist.length;i++)
 	    {
@@ -110,8 +110,8 @@ public class TCPClient {
 	public String send(String str)
 	{
 		
-		//sendthread.str = str;
-		return str+"操作成功";
+		sendthread.str = str;
+		return "操作成功";
 	}
 	
 	
