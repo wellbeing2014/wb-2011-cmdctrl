@@ -23,13 +23,12 @@ public class TCPClient {
 	private String ip;
 	//用户信息列表
 	public static Map<Integer,CmdUser> map = new HashMap<Integer,CmdUser>(); 
-
-	
 	
 	private List<String> allowiplist ;
 	public List<String> getAllowiplist() {
 		return allowiplist;
 	}
+	
 	public void setAllowiplist(List<String> allowiplist) {
 		this.allowiplist = allowiplist;
 	}
@@ -48,7 +47,6 @@ public class TCPClient {
 	public static boolean stoped= false;
 	public TCPClient()
 	{
-		
 	}
 	public TCPClient(String ip)
 	{
@@ -75,7 +73,6 @@ public class TCPClient {
 	 * @return
 	 */
 	public static  List<Cmdstat> broadcast() {
-		
 		List<Cmdstat> cmds= new ArrayList<Cmdstat>();
 	    String state="0&0&0&0";
 	    if(returnstr!=null)
@@ -116,8 +113,6 @@ public class TCPClient {
 		return "操作成功";
 	}
 	
-	
-	
 	public String receive()
 	{
 		return this.returnstr;
@@ -138,7 +133,6 @@ class SendThread extends Thread {
     }
     public SendThread()
     {
-    	
     }
     public void run() {
         while(!Thread.interrupted())
