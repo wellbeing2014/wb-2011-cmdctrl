@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	xmlns:wisoft="com.wisoft.components.grid.ui.*"
+    creationComplete="init()">
+	
+	<mx:XMLList id="myXMLList">  
+	    <item name="menu11" moduleurl ="ItemsBrowse.swf">  
+	        <item  name ="事项浏览11" moduleurl ="ItemsBrowse.swf" />  
+	        <item  name ="事项浏览12" moduleurl ="ItemsBrowse.swf" />  
+	    </item>  
+	    <item  name ="事项浏览1" moduleurl ="ItemsBrowse.swf" >  
+	        <item name ="区划事项浏览11" moduleurl ="ItemsBrowsezone.swf"/>  
+	        <item name ="区划事项浏览22" moduleurl ="ItemsBrowsezone.swf" />  
+	    </item>  
+    </mx:XMLList>
+   
+    <mx:Script>
+    	<![CDATA[
+    		import mx.collections.ArrayCollection;
+    		import mx.events.MenuEvent;
+    		import mx.rpc.events.ResultEvent;
+    	
+    		/*** 解决Manager类Bug,在使用Module时此段代码必须要加，要不然在Module反复载入时会出错****/
+			import mx.managers.DragManager;
+			import mx.managers.PopUpManager;
+			import mx.managers.HistoryManager;
+			private var dragManager:DragManager;
+			private var popupManager:PopUpManager;
+			private var historyManager:HistoryManager;
+			
+			/****结束 解决Manager类Bug************/
+			import mx.events.ItemClickEvent;
+			import com.wisoft.interfaces.ILoadUserInfo;
+			import com.wisoft.interfaces.ILoadSevicesURL;
+			import com.wisoft.vo.Department;
+			import com.wisoft.vo.Person;
+			import com.wisoft.vo.UserInfo;
+			import com.wisoft.framework.oms.OmsSelectPerson2;
+			import com.wisoft.util.CommonFunctions;
+			import mx.events.ModuleEvent;
+			import com.wisoft.events.WindowCloseEvent;
+			import com.wisoft.vo.SysConst; 
+			import com.wisoft.framework.oms.CommonSelectDep;	
+			
+			private var moduleurl:String="";
+			private var _ZONECODE:String='020000';
+			private var _SERVICEURL:String='http://192.10.110.206:7001/wisoftintegrateframe/services';
+			private var _USERINFO:UserInfo = new UserInfo();
+			
+			private var departmentWithParent:Object;
+			
+			private function init():void{
+				this.dgofpro.initData(this.personlist);
+			}
+			
+    		private function showModule(event:mx.events.MenuEvent):void{
+				if(event.item)
+				{
+					moduleurl=event.item.@moduleurl;
+					if(moduleurl!="")
+					{
+						moduleldr.url="com\\wisoft\\test\\TestModule.swf";
+					}
+					else
+					{
+						moduleldr.url="";
+					}
+				}
+			}
+			
+			private function readyModule( event:ModuleEvent ) : void
+			{ 
+			      var ml:ModuleLoader = event.target as ModuleLoader;
+			      var ichild:ILoadSevicesURL = ml.child as ILoadSevicesURL;
+			      var ichild2:ILoadUserInfo = ml.child as ILoadUserInfo;
+			      if( ichild != null ) {
+			               ichild._servicesurl =_SERVICEURL;
+			      }
+			      if(ichild2!=null)
+			      {
+				      	ichild2._userinfo = _USERINFO;
+			      }
+			}
+			
+			//---------------------------------------------------
+			private function selectPersonByZoneid():void
+			{
+				var selectPage:OmsSelectPerson2=OmsSelectPerson2(PopUpManager.createPopUp(this, OmsSelectPerson2, true));
+				selectPage.servicesurl=_SERVICEURL;
+				selectPage.deptype=-1;
+				selectPage.iscanuse=-1;
+				selectPage.ismultiselect=true;
+				selectPage.zonecode=this._ZONECODE;
+
+				//selectPage.selpersons=new ArrayCollection([_USERINFO.person.id]);
+				selectPage.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectWindowClose);
+				CommonFunctions.centerTitleWindow(selectPage);
+			}
+
+			/*选人之后，保存*/
+			private function selectWindowClose(event:WindowCloseEvent):void
+			{
+				/*返回选中的人员IS集合*/
+				var resultList:ArrayCollection=event.ReturnValue as ArrayCollection;
+				if(resultList.length==1)
+				{
+					ws_oms.findOmsInfoByPersonid.send(resultList[0].id);
+				}
+				else 
+					CommonFunctions.showInfo("提示", "请选择一个人员进行登录");
+			}
+			
+			private function selectDepartmentWindowClosed(event:WindowCloseEvent):void {
+				if(event.IsConfirm) {
+					if(event.RelatedObject) {
+						SysConst.curUser.department = event.RelatedObject[0].department as Department;
+						SysConst.curUser.ou = event.RelatedObject[1] as Department;
+						SysConst.curUser.rolegrouplist = event.RelatedObject[2] as ArrayCollection;
+						departmentWithParent = event.RelatedObject[0];
+						trace("机构选择成功");
+
+						
+					}
+				}
+			}
+			
+			private function resultFindOmsInfoByPersonid(event:ResultEvent):void {
+				if(event.result) {
+					if(event.result.isSuccued) {
+						var userinfo:UserInfo = new UserInfo;
+						userinfo.authlist = event.result.authlist;
+						userinfo.department = Department.convert(event.result.department);
+						userinfo.deplist = event.result.deplist;
+						userinfo.isadmin = event.result.isadmin;
+						userinfo.isdepadmin = event.result.isdepadmin;
+						userinfo.ismultdep = event.result.ismultdep;
+						userinfo.iszoneadmin = event.result.iszoneadmin;
+						userinfo.ou = Department.convert(event.result.ou);
+						userinfo.person = Person.convert(event.result.person);
+						userinfo.rolegrouplist = event.result.rolegrouplist;
+						userinfo.teamlist = event.result.teamlist;
+						SysConst.curUser = userinfo;
+						
+						trace("用户信息加载成功");
+
+						if(event.result.ismultdep) {
+							trace("用户包含多机构，选择登录机构");
+							var selectdep:CommonSelectDep = CommonSelectDep(PopUpManager.createPopUp(this, CommonSelectDep, true));
+							if(event.result.deplist) {
+								selectdep.deplist = event.result.deplist;
+								selectdep.person = userinfo.person;
+							}
+							selectdep.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectDepartmentWindowClosed);
+							CommonFunctions.centerTitleWindow(selectdep);
+							return;
+						}
+
+					} else {
+						CommonFunctions.showError("错误", event.result.message);
+					}
+				}
+			}
+    	]]>
+    </mx:Script>  
+    <mx:ArrayCollection id="personlist">
+    	<mx:Object name="朱新培" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培" loginname="test" department="公安局" />
+    </mx:ArrayCollection>
+	<mx:VBox left="0" right="0" bottom="0" top="0">
+		<mx:HBox width="100%" height="70">
+			<mx:VBox width="100%" height="100%" verticalGap="0">
+				<mx:HBox width="100%" height="40" backgroundColor="#059BFB" horizontalAlign="left" verticalAlign="middle">
+					<mx:Label text="事项管理子平台" fontSize="27" fontWeight="bold" color="#FFFFFF" fontStyle="italic"/>
+				</mx:HBox>
+				<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
+					<mx:MenuBar id="menu" dataProvider="{myXMLList}" labelField="@name"  height="100%" change="showModule(event)"></mx:MenuBar>
+					<mx:Spacer width="100%"/>
+					<mx:PopUpButton id="proid" name="{dgofpro.selectedItem.name}" openAlways="true" width="160" textAlign="left" toolTip="{proid.label}">
+						<mx:popUp>
+							<mx:TitleWindow showCloseButton="true" close="proid.close();" width="300" height="200"> 								
+							<wisoft:CustomGrid id="dgofpro" height="100%" textAlign="left" width="100%"
+											   horizontalScrollPolicy="auto" borderStyle="none" doubleClickEnabled="true"
+									  >
+								<wisoft:isneedpage>false</wisoft:isneedpage>			
+								<wisoft:pagecount>8</wisoft:pagecount>
+								<wisoft:ismultisel>false</wisoft:ismultisel>
+								<wisoft:isshowexport>false</wisoft:isshowexport>
+								<wisoft:mygridcolumns>
+									<mx:DataGridColumn headerText="" dataField="ischeck" sortable="false" width="30">
+										<mx:itemRenderer>
+											<mx:Component>
+												<mx:HBox width="100%" horizontalAlign="center">
+													<mx:CheckBox selected="{data.ischeck}"></mx:CheckBox>
+												</mx:HBox>
+											</mx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									<mx:DataGridColumn headerText="姓名" dataField="name" width="10"/>
+									<mx:DataGridColumn headerText="登录名" dataField="loginname" width="10"/>
+									<mx:DataGridColumn headerText="部门" dataField="department" width="10"/>
+								</wisoft:mygridcolumns>
+							</wisoft:CustomGrid>
+							<mx:ApplicationControlBar width="100%" >
+								<mx:Spacer width="100%"/>
+								<mx:Button label="确定" click="proid.close()" ></mx:Button>
+							</mx:ApplicationControlBar>
+						</mx:TitleWindow>
+						</mx:popUp>
+					</mx:PopUpButton>
+				</mx:HBox>
+			</mx:VBox>
+		</mx:HBox>
+		<mx:ModuleLoader width="100%" height="100%" id="moduleldr" ready="readyModule(event)">
+		</mx:ModuleLoader>
+	</mx:VBox>
+	<mx:WebService id="ws_oms" wsdl="{_SERVICEURL}/OmsManager?wsdl" fault="CommonFunctions.faultmethod(event)">
+		<mx:operation name="findOmsInfoByPersonid" result="resultFindOmsInfoByPersonid(event)" />
+	</mx:WebService>
+</mx:Application>
