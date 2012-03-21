@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,5 +241,6 @@ class FeedThread extends Thread {
 			catch (InterruptedException e) {
 			}
 		}
+		System.out.println(Calendar.getInstance().toString()+"我操状态发送blazeds线程退出了");
 	}
 }
