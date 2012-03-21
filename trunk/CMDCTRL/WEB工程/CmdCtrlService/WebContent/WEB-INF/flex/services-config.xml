@@ -43,6 +43,8 @@
 				<user-agent-settings>
 					<user-agent match-on="MSIE" kickstart-bytes="2048"
 						max-streaming-connections-per-session="10" />
+					<user-agent match-on="Maxthon" kickstart-bytes="2048"
+						max-streaming-connections-per-session="10" />
 					<user-agent match-on="Firefox" kickstart-bytes="2048"
 						max-streaming-connections-per-session="10" />
 				</user-agent-settings>
