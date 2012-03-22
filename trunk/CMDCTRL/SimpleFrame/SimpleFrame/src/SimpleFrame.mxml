@@ -46,11 +46,19 @@
 			private var _ZONECODE:String='020000';
 			private var _SERVICEURL:String='http://192.10.110.206:7001/wisoftintegrateframe/services';
 			private var _USERINFO:UserInfo = new UserInfo();
+			[Bindable]private var _personname:String = "未指定";			
 			
+			private var shareData:SharedObject;
+			[Bindable]private var personlist1:ArrayCollection = new ArrayCollection();
 			private var departmentWithParent:Object;
 			
+			
 			private function init():void{
-				this.dgofpro.initData(this.personlist);
+				this.dgofpro.initData(this.personlist1);
+				shareData.SharedObject.getLocal("myperson");
+				shareData.data.userName=;
+                shareData.data.password=;
+                shareData.flush();
 			}
 			
     		private function showModule(event:mx.events.MenuEvent):void{
@@ -160,13 +168,19 @@
 					}
 				}
 			}
+			
+			private function sel_person_done():void
+			{
+				_personname = dgofpro.selectedItem.name;
+				proid.close();
+			}
     	]]>
     </mx:Script>  
     <mx:ArrayCollection id="personlist">
-    	<mx:Object name="朱新培" loginname="test" department="公安局" />
-    	<mx:Object name="朱新培" loginname="test" department="公安局" />
-    	<mx:Object name="朱新培" loginname="test" department="公安局" />
-    	<mx:Object name="朱新培" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培1" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培2" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培3" loginname="test" department="公安局" />
+    	<mx:Object name="朱新培4" loginname="test" department="公安局" />
     </mx:ArrayCollection>
 	<mx:VBox left="0" right="0" bottom="0" top="0">
 		<mx:HBox width="100%" height="70">
@@ -177,7 +191,7 @@
 				<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
 					<mx:MenuBar id="menu" dataProvider="{myXMLList}" labelField="@name"  height="100%" change="showModule(event)"></mx:MenuBar>
 					<mx:Spacer width="100%"/>
-					<mx:PopUpButton id="proid" name="{dgofpro.selectedItem.name}" openAlways="true" width="160" textAlign="left" toolTip="{proid.label}">
+					<mx:PopUpButton id="proid" label="{_personname}" openAlways="true" width="160" textAlign="left" toolTip="{proid.label}">
 						<mx:popUp>
 							<mx:TitleWindow showCloseButton="true" close="proid.close();" width="300" height="200"> 								
 							<wisoft:CustomGrid id="dgofpro" height="100%" textAlign="left" width="100%"
@@ -203,8 +217,9 @@
 								</wisoft:mygridcolumns>
 							</wisoft:CustomGrid>
 							<mx:ApplicationControlBar width="100%" >
+								<mx:Button label="选择" click="selectPersonByZoneid()" ></mx:Button>
 								<mx:Spacer width="100%"/>
-								<mx:Button label="确定" click="proid.close()" ></mx:Button>
+								<mx:Button label="确定" click="sel_person_done()" ></mx:Button>
 							</mx:ApplicationControlBar>
 						</mx:TitleWindow>
 						</mx:popUp>
