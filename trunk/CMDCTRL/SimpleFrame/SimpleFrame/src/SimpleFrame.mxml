@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	xmlns:wisoft="com.wisoft.components.grid.ui.*"
+	xmlns:col="common.*"
     creationComplete="init()">
 	
 	<mx:XMLList id="myXMLList">  
-	    <item name="menu11" moduleurl ="ItemsBrowse.swf">  
-	        <item  name ="事项浏览11" moduleurl ="ItemsBrowse.swf" />  
-	        <item  name ="事项浏览12" moduleurl ="ItemsBrowse.swf" />  
+	    <item name="事项维护" moduleurl ="">  
+	        <item  name ="报审事项" moduleurl ="com\\wisoft\\aims\\AuditManager.swf" />  
+	        <item  name ="事项维护" moduleurl ="com\\wisoft\\aims\\ItemManager.swf" />  
 	    </item>  
-	    <item  name ="事项浏览1" moduleurl ="ItemsBrowse.swf" >  
-	        <item name ="区划事项浏览11" moduleurl ="ItemsBrowsezone.swf"/>  
-	        <item name ="区划事项浏览22" moduleurl ="ItemsBrowsezone.swf" />  
+	    <item  name ="事项浏览1" moduleurl ="" >  
+	        <item name ="区划事项浏览11" moduleurl ="com\\wisoft\\aims\\ItemsBrowse.swf"/>  
+	        <item name ="区划事项浏览22" moduleurl ="com\\wisoft\\zdm\\LoadZd.swf" />  
 	    </item>  
     </mx:XMLList>
    
@@ -45,31 +45,29 @@
 			private var moduleurl:String="";
 			private var _ZONECODE:String='020000';
 			private var _SERVICEURL:String='http://192.10.110.206:7001/wisoftintegrateframe/services';
+			[Bindable]private var _personname:String = "未指定";
+			//当前人员信息
 			private var _USERINFO:UserInfo = new UserInfo();
-			[Bindable]private var _personname:String = "未指定";			
-			
-			private var shareData:SharedObject;
+			//常用人员信息列表
 			[Bindable]private var personlist1:ArrayCollection = new ArrayCollection();
+			private var shareData:SharedObject;
 			private var departmentWithParent:Object;
 			
-			
 			private function init():void{
-				for(var i:int=1;i<5;i++)
-				{
-					var a:UserInfo = new UserInfo();
-					var b:Person = new Person();
-					b.realname="zhuxinpei"+i;
-					a.person = b;
-					var c:Department = new Department();
-					c.depname = "部门"+i;
-					a.ou=c;
-					personlist1.addItem(a);
-				}
-				
-				this.dgofpro.initData(this.personlist1);
+				 StyleManager.loadStyleDeclarations("css/style01/style01.swf");
+				//读取本地存储数据
 				shareData=SharedObject.getLocal("myperson");
-				
-                shareData.flush();
+				_USERINFO = UserInfo.convert(shareData.data.curuser);
+				if(shareData.data.userlist!=null)
+					personlist1 =  shareData.data.userlist as ArrayCollection;
+				this.dgofpro.dataProvider=this.personlist1;
+				if(_USERINFO!=null&&_USERINFO.person!=null&&_USERINFO.ou!=null)
+				{
+					_personname=_USERINFO.ou.depname+"|"+_USERINFO.person.realname;
+				}
+				else
+				CommonFunctions.showAlert("提示","请设置指定登录人员");
+				moduleldr.url="com\\wisoft\\zdm\\LoadZd.swf"
 			}
 			
     		private function showModule(event:mx.events.MenuEvent):void{
@@ -78,7 +76,7 @@
 					moduleurl=event.item.@moduleurl;
 					if(moduleurl!="")
 					{
-						moduleldr.url="com\\wisoft\\test\\TestModule.swf";
+						moduleldr.url=moduleurl;
 					}
 					else
 					{
@@ -110,8 +108,15 @@
 				selectPage.iscanuse=-1;
 				selectPage.ismultiselect=true;
 				selectPage.zonecode=this._ZONECODE;
-
-				//selectPage.selpersons=new ArrayCollection([_USERINFO.person.id]);
+//				var personids:ArrayCollection = new ArrayCollection();
+//				for each(var a:UserInfo in personlist1)
+//				{
+//					if(!personids.contains(a.person.id))
+//					{
+//						personids.addItem(a.person.id);
+//					}
+//				}
+//				selectPage.selpersons=personids;
 				selectPage.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectWindowClose);
 				CommonFunctions.centerTitleWindow(selectPage);
 			}
@@ -121,25 +126,9 @@
 			{
 				/*返回选中的人员IS集合*/
 				var resultList:ArrayCollection=event.ReturnValue as ArrayCollection;
-				if(resultList.length==1)
+				for	each(var a:Object in resultList )
 				{
-					ws_oms.findOmsInfoByPersonid.send(resultList[0].id);
-				}
-				else 
-					CommonFunctions.showInfo("提示", "请选择一个人员进行登录");
-			}
-			
-			private function selectDepartmentWindowClosed(event:WindowCloseEvent):void {
-				if(event.IsConfirm) {
-					if(event.RelatedObject) {
-						SysConst.curUser.department = event.RelatedObject[0].department as Department;
-						SysConst.curUser.ou = event.RelatedObject[1] as Department;
-						SysConst.curUser.rolegrouplist = event.RelatedObject[2] as ArrayCollection;
-						departmentWithParent = event.RelatedObject[0];
-						trace("机构选择成功");
-
-						
-					}
+					ws_oms.findOmsInfoByPersonid.send(a.id);
 				}
 			}
 			
@@ -158,32 +147,68 @@
 						userinfo.person = Person.convert(event.result.person);
 						userinfo.rolegrouplist = event.result.rolegrouplist;
 						userinfo.teamlist = event.result.teamlist;
-						SysConst.curUser = userinfo;
 						
-						trace("用户信息加载成功");
-
-						if(event.result.ismultdep) {
-							trace("用户包含多机构，选择登录机构");
-							var selectdep:CommonSelectDep = CommonSelectDep(PopUpManager.createPopUp(this, CommonSelectDep, true));
-							if(event.result.deplist) {
-								selectdep.deplist = event.result.deplist;
-								selectdep.person = userinfo.person;
+						//只添加列表中没有的
+						if(personlist1.length>0)
+						{	
+							var ishave:Boolean=false;
+							for each(var a:UserInfo in personlist1 )
+							{
+								if(a.person.id == userinfo.person.id)
+								{
+									ishave=true;
+									break;
+								}
 							}
-							selectdep.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectDepartmentWindowClosed);
-							CommonFunctions.centerTitleWindow(selectdep);
-							return;
+							if(!ishave)
+							{
+								personlist1.addItem(userinfo);
+							}
 						}
-
-					} else {
-						CommonFunctions.showError("错误", event.result.message);
+						else
+							personlist1.addItem(userinfo);
+						shareData.data.userlist = personlist1;
+						shareData.flush();
 					}
+				} else {
+					CommonFunctions.showError("错误", event.result.message);
 				}
 			}
 			
 			private function sel_person_done():void
 			{
-				_personname = dgofpro.selectedItem.name;
+				_USERINFO=dgofpro.selectedItem as UserInfo;
+				
+						
+				trace("用户信息加载成功");
+
+				if(_USERINFO.ismultdep) {
+					trace("用户包含多机构，选择登录机构");
+					var selectdep:CommonSelectDep = CommonSelectDep(PopUpManager.createPopUp(this, CommonSelectDep, true));
+					if(_USERINFO.deplist) {
+						selectdep.deplist = _USERINFO.deplist;
+						selectdep.person = _USERINFO.person;
+					}
+					selectdep.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectDepartmentWindowClosed);
+					CommonFunctions.centerTitleWindow(selectdep);
+				}
+				//存储本地数据
+				shareData.data.curuser =_USERINFO;
+				shareData.flush();
+				SysConst.curUser = _USERINFO;
+				_personname = _USERINFO.ou.depname+"|"+_USERINFO.person.realname;
 				proid.close();
+			}
+			private function selectDepartmentWindowClosed(event:WindowCloseEvent):void {
+				if(event.IsConfirm) {
+					if(event.RelatedObject) {
+						_USERINFO.department = event.RelatedObject[0].department as Department;
+						_USERINFO.ou = event.RelatedObject[1] as Department;
+						_USERINFO.rolegrouplist = event.RelatedObject[2] as ArrayCollection;
+						departmentWithParent = event.RelatedObject[0];
+						trace("机构选择成功");
+					}
+				}
 			}
     	]]>
     </mx:Script>  
@@ -199,34 +224,23 @@
 					<mx:Spacer width="100%"/>
 					<mx:PopUpButton id="proid" label="{_personname}" openAlways="true" width="160" textAlign="left" toolTip="{proid.label}">
 						<mx:popUp>
-							<mx:TitleWindow showCloseButton="true" close="proid.close();" width="300" height="200"> 								
-							<wisoft:CustomGrid id="dgofpro" height="100%" textAlign="left" width="100%"
-											   horizontalScrollPolicy="auto" borderStyle="none" doubleClickEnabled="true"
-									  >
-								<wisoft:isneedpage>false</wisoft:isneedpage>			
-								<wisoft:pagecount>8</wisoft:pagecount>
-								<wisoft:ismultisel>false</wisoft:ismultisel>
-								<wisoft:isshowexport>false</wisoft:isshowexport>
-								<wisoft:mygridcolumns>
-									<!--<mx:DataGridColumn headerText=""  sortable="false" width="30">
-										<mx:itemRenderer>
-											<mx:Component>
-												<mx:HBox width="100%" horizontalAlign="center">
-													<mx:CheckBox></mx:CheckBox>
-												</mx:HBox>
-											</mx:Component>
-										</mx:itemRenderer>
-									</mx:DataGridColumn>-->
-									<mx:DataGridColumn headerText="姓名" dataField="{data.person.realname}" width="10"/>
-									<mx:DataGridColumn headerText="部门" dataField="{data.ou.depname}" width="10"/>
-								</wisoft:mygridcolumns>
-							</wisoft:CustomGrid>
+							<mx:Canvas  width="160" height="200"> 
+							<mx:VBox>
+							<mx:DataGrid id="dgofpro" height="100%" textAlign="left" width="100%"
+											   horizontalScrollPolicy="auto" borderStyle="none"   >
+							<mx:columns> 
+								<col:ObjectNestedColumn headerText="部门" dataField="ou.depname" width="80" />
+								<col:ObjectNestedColumn headerText="姓名"  dataField="person.realname" width="80"  >
+								</col:ObjectNestedColumn>
+							</mx:columns> 
+							</mx:DataGrid>
 							<mx:ApplicationControlBar width="100%" >
-								<mx:Button label="选择" click="selectPersonByZoneid()" ></mx:Button>
+								<mx:Button label="添加" click="selectPersonByZoneid()" ></mx:Button>
 								<mx:Spacer width="100%"/>
 								<mx:Button label="确定" click="sel_person_done()" ></mx:Button>
 							</mx:ApplicationControlBar>
-						</mx:TitleWindow>
+							</mx:VBox>	
+						</mx:Canvas>
 						</mx:popUp>
 					</mx:PopUpButton>
 				</mx:HBox>
