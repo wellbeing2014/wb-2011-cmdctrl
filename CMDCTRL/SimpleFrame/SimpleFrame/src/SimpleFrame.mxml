@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	xmlns:col="common.*"
+	xmlns:col="common.*" preinitialize="pinit()"
     creationComplete="init()">
 	
 	<mx:XMLList id="myXMLList">  
 	    <item name="事项维护" moduleurl ="">  
-	        <item  name ="报审事项" moduleurl ="com\\wisoft\\aims\\AuditManager.swf" />  
-	        <item  name ="事项维护" moduleurl ="com\\wisoft\\aims\\ItemManager.swf" />  
+	        <item  name ="报审事项" moduleurl ="aims\\AuditManager.swf" />  
+	        <item  name ="事项维护" moduleurl ="aims\\ItemManager.swf" />  
 	    </item>  
-	    <item  name ="事项浏览1" moduleurl ="" >  
-	        <item name ="区划事项浏览11" moduleurl ="com\\wisoft\\aims\\ItemsBrowse.swf"/>  
-	        <item name ="区划事项浏览22" moduleurl ="com\\wisoft\\zdm\\LoadZd.swf" />  
+	    <item  name ="许可平台" moduleurl ="" >  
+	        <item name ="办件办理" moduleurl ="maea\\bjbl.swf"/>  
+	        <item name ="办件查询" moduleurl ="maea\\bjcx.swf" />  
+	    </item>  
+	    
+	    <item  name ="后台框架" moduleurl ="" >  
+	        <item name ="任务调度管理" moduleurl ="jm/JobManageIndex.swf"/>  
+	        <item name ="组织机构管理" moduleurl ="oms/OmsIndex_wx.swf" />  
 	    </item>  
     </mx:XMLList>
    
@@ -53,8 +58,13 @@
 			private var shareData:SharedObject;
 			private var departmentWithParent:Object;
 			
+			
+			private function pinit():void{
+				StyleManager.loadStyleDeclarations('css/style01/style01.swf');
+				//设置安全沙箱
+				Security.allowDomain("*");
+			}
 			private function init():void{
-				 StyleManager.loadStyleDeclarations("css/style01/style01.swf");
 				//读取本地存储数据
 				shareData=SharedObject.getLocal("myperson");
 				_USERINFO = UserInfo.convert(shareData.data.curuser);
@@ -67,7 +77,7 @@
 				}
 				else
 				CommonFunctions.showAlert("提示","请设置指定登录人员");
-				moduleldr.url="com\\wisoft\\zdm\\LoadZd.swf"
+				moduleldr.url="zdm\\LoadZd.swf";
 			}
 			
     		private function showModule(event:mx.events.MenuEvent):void{
@@ -108,15 +118,6 @@
 				selectPage.iscanuse=-1;
 				selectPage.ismultiselect=true;
 				selectPage.zonecode=this._ZONECODE;
-//				var personids:ArrayCollection = new ArrayCollection();
-//				for each(var a:UserInfo in personlist1)
-//				{
-//					if(!personids.contains(a.person.id))
-//					{
-//						personids.addItem(a.person.id);
-//					}
-//				}
-//				selectPage.selpersons=personids;
 				selectPage.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectWindowClose);
 				CommonFunctions.centerTitleWindow(selectPage);
 			}
@@ -137,7 +138,8 @@
 					if(event.result.isSuccued) {
 						var userinfo:UserInfo = new UserInfo;
 						userinfo.authlist = event.result.authlist;
-						userinfo.department = Department.convert(event.result.department);
+						var dt:Department = Department.convert(event.result.department);
+						userinfo.department = dt;
 						userinfo.deplist = event.result.deplist;
 						userinfo.isadmin = event.result.isadmin;
 						userinfo.isdepadmin = event.result.isdepadmin;
@@ -152,7 +154,7 @@
 						if(personlist1.length>0)
 						{	
 							var ishave:Boolean=false;
-							for each(var a:UserInfo in personlist1 )
+							for each(var a:Object in personlist1 )
 							{
 								if(a.person.id == userinfo.person.id)
 								{
@@ -175,11 +177,31 @@
 				}
 			}
 			
+			private function unsel_person_done():void
+			{
+				var userinfo:UserInfo=UserInfo.convert(dgofpro.selectedItem) ;
+				for (var a:int=0 ; a<personlist1.length;a++ )
+				{
+					if(personlist1[a].person.id == userinfo.person.id)
+					{
+						personlist1.removeItemAt(a);
+						break;
+					}
+				}
+				shareData.data.userlist = personlist1;
+				shareData.flush();
+			}
+			
 			private function sel_person_done():void
 			{
 				_USERINFO=dgofpro.selectedItem as UserInfo;
 				
-						
+				if(_USERINFO==null)
+				{
+					CommonFunctions.showAlert("提示","没有人员被选中！");
+					return;
+				}
+				moduleldr.url="com\\wisoft\\zdm\\LoadZd.swf";
 				trace("用户信息加载成功");
 
 				if(_USERINFO.ismultdep) {
@@ -217,10 +239,10 @@
 		<mx:HBox width="100%" height="70">
 			<mx:VBox width="100%" height="100%" verticalGap="0">
 				<mx:HBox width="100%" height="40" backgroundColor="#059BFB" horizontalAlign="left" verticalAlign="middle">
-					<mx:Label text="事项管理子平台" fontSize="27" fontWeight="bold" color="#FFFFFF" fontStyle="italic"/>
+					<mx:Label text="Wisoft自动化测试平台 for RiaTest" fontSize="27" fontWeight="bold" color="#FFFFFF" fontStyle="italic"/>
 				</mx:HBox>
 				<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
-					<mx:MenuBar id="menu" dataProvider="{myXMLList}" labelField="@name"  height="100%" change="showModule(event)"></mx:MenuBar>
+					<mx:MenuBar id="menu" dataProvider="{myXMLList}" labelField="@name"  height="100%" change="showModule(event)" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #0018FF]"></mx:MenuBar>
 					<mx:Spacer width="100%"/>
 					<mx:PopUpButton id="proid" label="{_personname}" openAlways="true" width="160" textAlign="left" toolTip="{proid.label}">
 						<mx:popUp>
@@ -235,9 +257,10 @@
 							</mx:columns> 
 							</mx:DataGrid>
 							<mx:ApplicationControlBar width="100%" >
-								<mx:Button label="添加" click="selectPersonByZoneid()" ></mx:Button>
+								<mx:Button width="40" label="添加" click="selectPersonByZoneid()" ></mx:Button>
+								<mx:Button width="40" label="删除" click="unsel_person_done()" ></mx:Button>
 								<mx:Spacer width="100%"/>
-								<mx:Button label="确定" click="sel_person_done()" ></mx:Button>
+								<mx:Button width="40" label="确定" click="sel_person_done()" ></mx:Button>
 							</mx:ApplicationControlBar>
 							</mx:VBox>	
 						</mx:Canvas>
