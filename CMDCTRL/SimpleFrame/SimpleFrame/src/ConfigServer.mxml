@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="506" height="336"
-	creationComplete="srv.send()" title="服务列表" showCloseButton="true" close="PopUpManager.removePopUp(this)">
+	creationComplete="init()" title="服务列表" showCloseButton="true" close="PopUpManager.removePopUp(this)">
 	<mx:Script >
         <![CDATA[
             import mx.collections.XMLListCollection;
@@ -9,15 +9,20 @@
             import mx.managers.PopUpManager;
             [Bindable]
             private var users:XML;
-
-          private  function resultUsers(event:ResultEvent):void{//处理结果
+			
+			private function init():void
+			{
+				srv.send();
+			}
+          private  function resultUsers(event:ResultEvent):void{
+          //处理结果
           users = XML(event.result);
           
           }
         ]]>
     </mx:Script>
     
-    <mx:HTTPService url="user.xml" useProxy="false" id="srv" resultFormat="xml" result="resultUsers(event)"><!--处理结果函数-->
+    <mx:HTTPService url="users.xml" useProxy="false" id="srv" resultFormat="xml" result="resultUsers(event)"><!--处理结果函数-->
         
     </mx:HTTPService>
     <mx:HBox width="100%" height="100%">
@@ -26,21 +31,42 @@
         	<mx:Label text="服务信息" width="310" height="30"  textAlign="center" fontSize="16" fontWeight="normal"/>
             <mx:Grid width="100%" height="100%" horizontalGap="0" verticalGap="0">
             	<mx:GridRow width="100%" height="20" >
-		            <mx:GridItem width="15%" verticalAlign="middle" horizontalAlign="center">
+		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
+		                <mx:Label text="服务名称"/>
+		            </mx:GridItem>
+		            <mx:GridItem  width="25%" >
+		                <mx:TextInput borderStyle="none" width="100%"/>
+		            </mx:GridItem>
+		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
 		                <mx:Label text="行政区划代码"/>
 		            </mx:GridItem>
-		            <mx:GridItem colSpan="2" width="85%" >
+		            <mx:GridItem  width="25%" >
 		                <mx:TextInput borderStyle="none" width="100%"/>
 		            </mx:GridItem>
 		         </mx:GridRow>
 		         <mx:GridRow width="100%" height="20" >
-		            <mx:GridItem width="15%" verticalAlign="middle" horizontalAlign="center">
-		                <mx:Label text="销售单位"/>
+		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
+		                <mx:Label text="服务地址"/>
 		            </mx:GridItem>
-		            <mx:GridItem colSpan="3" width="85%" >
+		            <mx:GridItem colSpan="3"  width="75%" >
 		                <mx:TextInput borderStyle="none" width="100%"/>
 		            </mx:GridItem>
 		         </mx:GridRow>
+		         <mx:GridRow width="100%" height="20" >
+		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
+		                <mx:Label text="命令字符串"/>
+		            </mx:GridItem>
+		            <mx:GridItem  width="25%" >
+		                <mx:TextInput borderStyle="none" width="100%"/>
+		            </mx:GridItem>
+		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
+		                <mx:Label text="服务状态"/>
+		            </mx:GridItem>
+		            <mx:GridItem  width="25%"  verticalAlign="middle">
+		                <mx:Label text="已停止"/>
+		            </mx:GridItem>
+		         </mx:GridRow>
+		       
      		</mx:Grid>
         </mx:VBox>
     </mx:HBox>
