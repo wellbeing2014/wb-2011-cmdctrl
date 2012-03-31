@@ -58,7 +58,6 @@
 			private var shareData:SharedObject;
 			private var departmentWithParent:Object;
 			
-			
 			private function pinit():void{
 				StyleManager.loadStyleDeclarations('css/style01/style01.swf');
 				//设置安全沙箱
