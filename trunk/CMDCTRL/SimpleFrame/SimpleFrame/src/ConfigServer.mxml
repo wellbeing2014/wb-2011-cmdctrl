@@ -1,75 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="506" height="336"
-	creationComplete="init()" title="服务列表" showCloseButton="true" close="PopUpManager.removePopUp(this)">
-	<mx:Script >
-        <![CDATA[
-            import mx.collections.XMLListCollection;
-            import mx.collections.ArrayCollection;
-            import mx.rpc.events.ResultEvent;
-            import mx.managers.PopUpManager;
-            [Bindable]
-            private var users:XML;
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="800" height="500" xmlns:temp="com.wisoftTemplate.*"
+	 title="测试服务管理">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
 			
-			private function init():void
+			private function dosave():void
 			{
-				srv.send();
+				subBtn.enabled=true;
 			}
-          private  function resultUsers(event:ResultEvent):void{
-          //处理结果
-          users = XML(event.result);
-          
-          }
-        ]]>
-    </mx:Script>
-    
-    <mx:HTTPService url="users.xml" useProxy="false" id="srv" resultFormat="xml" result="resultUsers(event)"><!--处理结果函数-->
-        
-    </mx:HTTPService>
-    <mx:HBox width="100%" height="100%">
-        <mx:List id="serverlist" height="100%"></mx:List>
-        <mx:VBox width="100%" height="100%">
-        	<mx:Label text="服务信息" width="310" height="30"  textAlign="center" fontSize="16" fontWeight="normal"/>
-            <mx:Grid width="100%" height="100%" horizontalGap="0" verticalGap="0">
-            	<mx:GridRow width="100%" height="20" >
-		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
-		                <mx:Label text="服务名称"/>
-		            </mx:GridItem>
-		            <mx:GridItem  width="25%" >
-		                <mx:TextInput borderStyle="none" width="100%"/>
-		            </mx:GridItem>
-		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
-		                <mx:Label text="行政区划代码"/>
-		            </mx:GridItem>
-		            <mx:GridItem  width="25%" >
-		                <mx:TextInput borderStyle="none" width="100%"/>
-		            </mx:GridItem>
-		         </mx:GridRow>
-		         <mx:GridRow width="100%" height="20" >
-		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
-		                <mx:Label text="服务地址"/>
-		            </mx:GridItem>
-		            <mx:GridItem colSpan="3"  width="75%" >
-		                <mx:TextInput borderStyle="none" width="100%"/>
-		            </mx:GridItem>
-		         </mx:GridRow>
-		         <mx:GridRow width="100%" height="20" >
-		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
-		                <mx:Label text="命令字符串"/>
-		            </mx:GridItem>
-		            <mx:GridItem  width="25%" >
-		                <mx:TextInput borderStyle="none" width="100%"/>
-		            </mx:GridItem>
-		            <mx:GridItem width="25%" verticalAlign="middle" horizontalAlign="center">
-		                <mx:Label text="服务状态"/>
-		            </mx:GridItem>
-		            <mx:GridItem  width="25%"  verticalAlign="middle">
-		                <mx:Label text="已停止"/>
-		            </mx:GridItem>
-		         </mx:GridRow>
-		       
-     		</mx:Grid>
-        </mx:VBox>
-    </mx:HBox>
-    
-        
+
+		]]>
+	</mx:Script>
+	<mx:Array id="menulist3">
+		<mx:Object name="流程A" moduleurl =""></mx:Object>
+		<mx:Object name="流程B" moduleurl =""></mx:Object>
+		<mx:Object name="流程CCC" moduleurl =""></mx:Object>
+		<mx:Object name="流程DDD" moduleurl =""></mx:Object>
+		<mx:Object name="流程EEEE" moduleurl =""></mx:Object>
+		<mx:Object name="流程FFFFF" moduleurl =""></mx:Object>
+		<mx:Object name="流程GGGGGG" moduleurl =""></mx:Object>
+		<mx:Object name="流程HHHHHHH" moduleurl =""></mx:Object>
+	</mx:Array>
+
+	<mx:VBox width="100%" height="100%">
+		<mx:Canvas width="100%" height="100%">
+			<mx:HBox width="100%" height="100%">
+				<mx:VBox width="180" height="100%">
+					<mx:Panel width="100%" height="100%" layout="absolute" styleName="Panel2" title="服务列表" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+						<mx:VBox width="100%" height="100%" styleName="contentBox2" borderThickness="0">
+							<mx:ToggleButtonBar dataProvider="{menulist3}" labelField="name" direction="vertical" styleName="MenuButtonBarVertical" width="100%" height="100%" enabled="false">
+							</mx:ToggleButtonBar>
+						</mx:VBox>
+					</mx:Panel>
+				</mx:VBox>
+				<mx:TabNavigator width="100%" height="100%"  styleName="TabNavigator">
+					<mx:Canvas label="服务详细信息" width="100%" height="100%" styleName="contentHBox">
+						<mx:VBox left="10" top="10" right="10" bottom="10" horizontalAlign="center">
+							<mx:Grid width="100%">
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="服务名称"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+										<mx:Label text="规划局"/>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="区划代码"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle"  colSpan="3">
+										<mx:TextInput width="100%" enabled="false"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" verticalAlign="middle" horizontalAlign="right">
+										<mx:Label text="服务地址"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle" colSpan="5">
+										<mx:TextInput width="100%" enabled="false"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="100%" height="100%" colSpan="6">
+										<mx:HRule width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="申请者类型"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+										<mx:ComboBox>
+											<mx:String>单位</mx:String>
+											<mx:String>个人</mx:String>
+										</mx:ComboBox>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="申请者名称"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle" colSpan="3">
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="单位代码"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="地址/住址"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle" colSpan="3">
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="联系人"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="电话"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle"  colSpan="3">
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="证件名称"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle" >
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="证件号码"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle"  colSpan="3">
+										<mx:TextInput width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="申请事由简述"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" colSpan="5">
+										<mx:TextArea width="100%" height="56"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="100%" height="100%" colSpan="6">
+										<mx:HRule width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="受理人"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+										<mx:TextInput width="150" enabled="false"/>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%" verticalAlign="middle" horizontalAlign="right">
+										<mx:Label text="办结人"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle"  colSpan="3">
+										<mx:TextInput width="100%" enabled="false"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="100%" height="100%" colSpan="6">
+										<mx:HRule width="100%"/>
+									</mx:GridItem>
+								</mx:GridRow>
+								<mx:GridRow width="100%" height="100%">
+									<mx:GridItem width="70%" height="100%" horizontalAlign="right" verticalAlign="middle">
+										<mx:Label text="办件状态"/>
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+										<mx:Text text="等待受理"/>
+									</mx:GridItem>
+									<mx:GridItem width="70%" height="100%">
+									</mx:GridItem>
+									<mx:GridItem width="100%" height="100%" verticalAlign="middle"  colSpan="3">
+										<mx:Text text="等待受理"/>
+									</mx:GridItem>
+								</mx:GridRow>
+							</mx:Grid>
+						</mx:VBox>
+					</mx:Canvas>
+				</mx:TabNavigator>
+			</mx:HBox>
+
+		</mx:Canvas>
+	</mx:VBox>
+	<mx:ControlBar width="100%">
+		<mx:Button label="办理记录" id="hisBtn">
+			<mx:icon>@Embed(source='/css/icon/tool/ReviewCompareMenu.png')</mx:icon>
+		</mx:Button>
+		<mx:Spacer width="100%"/>
+		<mx:Button label="退回" width="70" id="thBtn">
+			<mx:icon>@Embed(source='/css/icon/tool/ReviewRejectChange.png')</mx:icon>
+		</mx:Button>
+		<mx:Button label="保存" width="70" click="dosave()">
+			<mx:icon>@Embed(source='/css/icon/tool/SaveAndClose.png')</mx:icon>
+		</mx:Button>
+		<mx:Button label="保存并关闭" click="PopUpManager.removePopUp(this)"/>
+		<mx:Button label="提交" width="70" id="subBtn">
+			<mx:icon>@Embed(source='/css/icon/tool/WebControlSubmit.png')</mx:icon>
+		</mx:Button>
+		<mx:Button label="关闭" width="70" click="PopUpManager.removePopUp(this)">
+			<mx:icon>@Embed(source='/css/icon/tool/WindowClose.png')</mx:icon>
+		</mx:Button>
+	</mx:ControlBar>
 </mx:TitleWindow>
+
