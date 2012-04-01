@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:flexlib="flexlib.containers.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalGap="1"
+	resize="resizeHandler(event)" xmlns:local="*" xmlns:controls="flexlib.controls.*" xmlns:components="components.*">
+	<mx:Script>
+		<![CDATA[
+			import components.WisoftScrollableArrowMenu;
+			import components.WisoftMenuItemRenderer;
+			import flexlib.controls.ScrollableArrowMenu;
+			import mx.events.ResizeEvent;
+			import com.wisoft.util.CommonFunctions;
+			import com.wisoft.events.SysEvent;
+			import mx.events.MenuEvent;
+			import mx.collections.ArrayCollection;
+			import mx.core.ScrollPolicy;
+			
+			[Event(name=APPLICATION_CLICKED, type="com.wisoft.events.SysEvent")]
+			public static const APPLICATION_CLICKED:String = "applicationClicked";
+			[Bindable]
+			private var menulist:ArrayCollection = new ArrayCollection();//完整菜单数据
+			
+			private var submenulist:ArrayCollection = new ArrayCollection();//菜单栏显示菜单数据
+			[Bindable]
+			private var pagecount:int = 10;//菜单栏显示菜单个数
+			
+			public function set Menulist(value:ArrayCollection):void {
+				menulist = value;
+				initMenuBar();
+			}
+			
+			//初始化菜单栏
+			private function initMenuBar():void {
+				if (menulist != null && menulist.length > 0) {
+					submenulist = new ArrayCollection();
+					for (var i:int=0; i<menulist.length && i<pagecount; i++) {
+						submenulist.addItem(menulist.getItemAt(i));
+					}
+					smenubar.dataProvider = submenulist;
+					smenubar.selectedIndex = 0;
+				}
+			}
+			
+			//窗口大小改变
+			private function resizeHandler(event:ResizeEvent):void {
+				var num:int = this.width/102;
+				if (num > 0) {
+					pagecount = num;
+					initMenuBar();
+				}
+			}
+			
+			//显示所有菜单
+			private function showAllMenu():void {
+				smenubar.selectedIndex = 0;
+            	var menu:WisoftScrollableArrowMenu = WisoftScrollableArrowMenu.createMenu(null, menulist, false);
+                menu.labelField="name";
+                menu.addEventListener(MenuEvent.ITEM_CLICK,menuClickHandler);
+                menu.verticalScrollPolicy = ScrollPolicy.OFF;
+                menu.arrowScrollPolicy = ScrollPolicy.AUTO;
+                //menu.width = 120;
+                var pt:Point = new Point(0, 22);
+                pt = showbtn.localToGlobal(pt);
+                menu.show(pt.x, pt.y);
+            }
+            
+            //点击菜单项
+            private function menuClickHandler(event:MenuEvent):void {
+				var selectedItem:Object = event.item;
+				//if(selectedItem != null && selectedItem.itemType == "app") {
+				if(selectedItem != null && selectedItem.hasOwnProperty("accessaddress")) {
+					var e:SysEvent = new SysEvent(APPLICATION_CLICKED);
+					e.relatedObject = selectedItem;
+					dispatchEvent(e);
+				}
+			}
+			
+			//点击菜单栏
+            private function mClickHandler(event:MouseEvent):void {
+             	if (event.target.hasOwnProperty("data")) {
+					var selectedItem:Object = event.target.data;
+					if (selectedItem.hasOwnProperty("accessaddress")) {
+						var e:SysEvent = new SysEvent(APPLICATION_CLICKED);
+						e.relatedObject = selectedItem;
+						dispatchEvent(e);
+					}
+             	}
+			}
+
+		]]>
+	</mx:Script>
+
+	<components:WisoftScrollableMenuBar id="smenubar" styleName="headMenuBar" maxHeight="396" height="100%" labelField="name" itemClick="menuClickHandler(event)" click="mClickHandler(event)"
+	    verticalScrollPolicy="{ScrollPolicy.OFF}" arrowScrollPolicy="{ScrollPolicy.AUTO}" menuBarItemRenderer="components.WisoftMenuBarItem"/>
+	<mx:Button id="showbtn" visible="{menulist.length>pagecount?true:false}" styleName="shortcutbarButton" toolTip="全部" click="showAllMenu()" height="28" width="16" icon="@Embed(source='css/icon/tool/SlideToRight.png')"/>
+</mx:HBox>

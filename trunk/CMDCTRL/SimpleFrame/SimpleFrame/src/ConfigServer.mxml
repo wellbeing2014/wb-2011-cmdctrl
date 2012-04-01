@@ -4,12 +4,27 @@
 	<mx:Script>
 		<![CDATA[
 			import mx.managers.PopUpManager;
+			public var curservice:Object;
+			public var parentfunc:Function;
+			private var shareData:SharedObject;
 			
 			private function dosave():void
 			{
 				subBtn.enabled=true;
 			}
-
+			private function changeService():void
+			{
+				curservice = this.dg.selectedItem;
+				parentfunc.call(this.parent,curservice);
+				PopUpManager.removePopUp(this);
+			}
+			private function setDefault():void
+			{
+				shareData=SharedObject.getLocal("myperson");
+				shareData.data.defaultService = curservice;
+				shareData.flush();
+			}
+			
 		]]>
 	</mx:Script>
 	<mx:Array id="menulist3">
@@ -21,9 +36,11 @@
 	</mx:Array>
 
 	<mx:VBox width="100%" height="100%">
-		<mx:DataGrid width="100%" height="100%" dataProvider="{menulist3}">
+		<mx:DataGrid id="dg" width="100%" height="100%" dataProvider="{menulist3}">
 			<mx:columns>
-				<mx:DataGridColumn headerText=" " width="10" />
+				<mx:DataGridColumn headerText=" " width="10">
+					
+				</mx:DataGridColumn>
 				<mx:DataGridColumn headerText="服务名称" width="80" dataField="name"/>
 				<mx:DataGridColumn headerText="行政区划" width="50" dataField="zone"/>
 				<mx:DataGridColumn headerText="服务地址" width="200" dataField="address"/>
@@ -33,11 +50,11 @@
 		
 	</mx:VBox>
 	<mx:ControlBar width="100%">
-		<mx:Button label="设为默认" id="hisBtn">
+		<mx:Button label="设为默认" id="hisBtn" click="setDefault()">
 			<mx:icon>@Embed(source='/css/icon/tool/ReviewCompareMenu.png')</mx:icon>
 		</mx:Button>
 		<mx:Spacer width="100%"/>
-		<mx:Button label="切换" width="70" id="subBtn" click="change">
+		<mx:Button label="切换" width="70" id="subBtn" click="changeService()">
 			<mx:icon>@Embed(source='/css/icon/tool/WebControlSubmit.png')</mx:icon>
 		</mx:Button>
 		<mx:Button label="关闭" width="70" click="PopUpManager.removePopUp(this)">

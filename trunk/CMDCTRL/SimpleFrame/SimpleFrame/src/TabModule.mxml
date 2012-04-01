@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas label="{tabLabel}" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalScrollPolicy="off">
+	<mx:Script>
+		<![CDATA[
+			import com.wisoft.interfaces.ILoadAppInfo;
+			import mx.events.ModuleEvent;
+			import com.wisoft.vo.UserInfo;
+			import com.wisoft.interfaces.ILoadUserInfo;
+			import com.wisoft.interfaces.ILoadSevicesURL;
+			
+			[Bindable] public var tabLabel:String ="";
+			public var menuItem:Object;
+			public var serviceUrl:String="../services";
+			public var userinfo:UserInfo;
+			public var appcode:String;
+			[Bindable] public var moduleUrl:String ="";
+			
+			private function readyModule( event:ModuleEvent ) : void
+			{ 
+			      var ml:ModuleLoader = event.target as ModuleLoader;
+			      var ichild:ILoadSevicesURL = ml.child as ILoadSevicesURL;
+			      var ichild2:ILoadUserInfo = ml.child as ILoadUserInfo;
+			      var ichild3:ILoadAppInfo = ml.child as ILoadAppInfo;
+			      
+			      if( ichild != null ) {
+			            ichild._servicesurl =serviceUrl;
+			      }
+			      if(ichild2!=null)
+			      {
+				      	ichild2._userinfo = userinfo;
+			      }
+			      if(ichild3!=null)
+			      {
+				      	ichild3._appcode = appcode;
+			      }
+			}
+			
+
+		]]>
+	</mx:Script>
+	<mx:ModuleLoader  id="ml" width="100%" height="100%"  url="{moduleUrl}" ready="readyModule(event)" horizontalScrollPolicy="off">
+	</mx:ModuleLoader>	
+</mx:Canvas>
