@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="250" height="100%" xmlns:ui="com.wisoft.components.tree.ui.*" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.SubscriptionInfo;
+			import com.wisoft.util.SysEventDispatcher;
+			import com.wisoft.events.SysEvent;
+			import mx.events.ListEvent;
+			import mx.controls.listClasses.ListBase;
+			import com.wisoft.vo.SysConst;
+			import com.wisoft.util.CommonFunctions;
+			import mx.core.UIComponent;
+			import mx.core.DragSource;
+			import mx.managers.DragManager;
+			import mx.events.DragEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			
+			public var appList:ArrayCollection;
+			public var appGroupList:ArrayCollection;
+			
+			[Event(name=APPLICATION_CLICKED, type="com.wisoft.events.SysEvent")]
+			[Event(name=QUICKMENU_ADDED, type="com.wisoft.events.SysEvent")]
+			[Event(name=QUICKMENU_REMOVED, type="com.wisoft.events.SysEvent")]
+			[Event(name=QUICKMENU_CLICKED, type="com.wisoft.events.SysEvent")]
+			
+			public static const APPLICATION_CLICKED:String = "applicationClicked";
+			public static const QUICKMENU_ADDED:String = "quickMenuAdded";
+			public static const QUICKMENU_REMOVED:String = "quickMenuRemoved";
+			public static const QUICKMENU_CLICKED:String = "quickMenuClicked";
+			
+			[Bindable]
+			public var quickMenuList:ArrayCollection;
+			
+			private var rootObject:Object;
+			
+			public var defaultMinicon:String = "icons/mindefault.png";
+			public var defaultMaxicon:String = "icons/maxdefault.png";
+			
+			private function init():void {
+				initTree();
+				callLater(expandTree);
+			}
+			
+			/**
+			 * 初始化树
+			 */
+			private function initTree():void {
+				var arr:ArrayCollection = new ArrayCollection();
+				for each(var group:Object in appGroupList){
+					var children:ArrayCollection = new ArrayCollection();
+					for each(var subGroup:Object in appGroupList){
+						if(subGroup.parentid == group.id){
+							subGroup.itemType = "group";
+							children.addItem(subGroup);
+						}
+					}
+					for each(var app:Object in appList){
+						if(app.groupid == group.id){
+									
+							app.itemType = "app";
+							children.addItem(app);
+						}
+					}
+					group.children = children;
+					if(group.parentid == "root"){
+						group.itemType = "group";
+						arr.addItem(group);
+					}
+				}
+				rootObject = {children:arr};
+				tree.dataProvider = rootObject;
+				
+				var closeAllMenuItem: ContextMenuItem = new ContextMenuItem("关闭所有节点");
+				closeAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, closeAllMenuItemHandle);
+				var openAllMenuItem: ContextMenuItem = new ContextMenuItem("打开所有节点");
+				openAllMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, openAllMenuItemHandle);
+				
+				var contextMenu:ContextMenu = new ContextMenu(); 
+				contextMenu.hideBuiltInItems();  
+				
+				contextMenu.customItems.push(closeAllMenuItem); 
+				contextMenu.customItems.push(openAllMenuItem); 
+				
+				tree.contextMenu = contextMenu;
+			}
+			
+			private function closeAllMenuItemHandle(event:ContextMenuEvent):void {
+            	for each(var obj:Object in tree.dataProvider) {
+            		tree.expandChildrenOf(obj,false);
+            	}
+            }
+            
+            private function openAllMenuItemHandle(event:ContextMenuEvent):void {
+            	for each(var obj:Object in tree.dataProvider) {
+            		tree.expandChildrenOf(obj,true);
+            	}
+            }
+			
+			/**
+			 * 展开树
+			 */ 
+			private function expandTree():void {
+            	var sharedObject:SharedObject = SharedObject.getLocal("menuConfig", "/");
+            	var extendmenu:String = "";
+				if(SysConst.getZdItem("extendmenu"))
+					extendmenu=SysConst.getZdItem("extendmenu").value as String;
+				if(sharedObject.data.defaultOpen != null){
+					if(sharedObject.data.defaultOpen){
+						tree.expandChildrenOf(rootObject, true);
+					}
+				}else{
+					if(extendmenu == "true"){
+						tree.expandChildrenOf(rootObject, true);
+					}
+				}
+			}
+			
+			private function initList():void {
+				for each(var quickMenu:Object in quickMenuList){
+					if(quickMenu.minicon == null || quickMenu.minicon == ""){
+						quickMenu.minicon = defaultMinicon;
+					}
+					if(quickMenu.maxicon == null || quickMenu.maxicon == ""){
+						quickMenu.maxicon = defaultMaxicon;
+					}
+				}
+			}
+			
+			/**
+			 * 鼠标点击树节点时，根据节点的类型判断是否可以拖动
+			 */
+			private function treeMouseDown(event:MouseEvent):void {
+				if(tree.selectedItem != null && tree.selectedItem.itemType == "group"){
+					tree.dragEnabled = false;
+				}
+			}
+			
+			private function treeMouseUp(event:MouseEvent):void {
+				tree.dragEnabled = true;
+			}
+			
+			/**
+			 * 取消默认的拖放行为，不然树节点会被拖没的~~
+			 */ 
+			private function treeDragComplete(event:DragEvent):void {
+                event.preventDefault();
+            } 
+			
+			/**
+			 * 当树节点拖进list时，允许放下节点
+			 */ 
+			private function listDragEnter(event:DragEvent):void {
+                if(event.dragInitiator is Tree) {
+                    var ds:DragSource = event.dragSource;
+                    if(!ds.hasFormat("treeItems")) {
+                    	return;
+                    }
+                }
+           		DragManager.acceptDragDrop(UIComponent(event.currentTarget)); 
+			}
+			
+			/**
+			 * 放下节点后，根据树节点中的属性创建相应的快捷菜单对象，添加到列表中
+			 */
+			private function listDragDrop(event:DragEvent):void {
+                var ds:DragSource = event.dragSource;
+                var dropTarget:List = List(event.currentTarget);
+                if(ds.hasFormat("treeItems")){
+					// 当拖动菜单到快捷方式时候，判断快捷菜单列表，若已经有8个，则返回，不允许添加
+	            	if(quickMenuList.length > 7 ) {
+	            		CommonFunctions.showInfo("设置提示","快捷菜单最多8个");
+						return;	
+	            	}
+                	// 从tree拖到list时，添加快捷菜单
+                	var arr:Array = ds.dataForFormat("treeItems") as Array;
+                	for each(var app:Object in arr) {
+                		if(isExistedQuickMenu(app.id)) {
+                			continue;
+                		}
+                		var quickMenu:Object = createQuickMenu(app);
+                		quickMenuList.addItem(quickMenu);
+                		var e:SysEvent = new SysEvent(QUICKMENU_ADDED);
+                		e.relatedObject = quickMenu;
+                		dispatchEvent(e);
+                	}
+                }
+			}
+			
+			/**
+			 * 将快捷菜单拖出list时，删除菜单
+			 */
+			private function listDragExit(event:DragEvent):void {
+                var dropTarget:ListBase=ListBase(event.currentTarget);   
+                if(event.dragInitiator is List) {
+					var ds:DragSource = event.dragSource;
+	                if(ds.hasFormat("items")) {
+						var arr:Array = ds.dataForFormat("items") as Array;
+						for each(var selectitem:Object in arr) {
+							quickMenuList.removeItemAt(quickMenuList.getItemIndex(selectitem));
+	                		var e:SysEvent = new SysEvent(QUICKMENU_REMOVED);
+	                		e.relatedObject = selectitem;
+	                		dispatchEvent(e);
+		                }
+	                }
+                }
+				dropTarget.hideDropFeedback(event);
+			}
+			
+			private function isExistedQuickMenu(applicationid:String):Boolean {
+				for each(var quickMenu:Object in quickMenuList) {
+					if(quickMenu.applicationid == applicationid) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			private function createQuickMenu(app:Object):Object {
+				var quickMenu:Object = new Object();
+				quickMenu.mc = app.name;
+				quickMenu.type = app.type;
+				quickMenu.personid = SysConst.curUser.person.id;
+				quickMenu.appcode = app.appcode;
+				quickMenu.applicationid = app.id;
+				quickMenu.applicationurl = app.accessaddress;
+				quickMenu.minicon = app.minicon != "" && app.minicon != null ? app.minicon : defaultMinicon;
+				quickMenu.maxicon = app.maxicon != "" && app.maxicon != null ? app.maxicon : defaultMaxicon;
+				return quickMenu;
+			}
+			
+			private function treeItemClick(event:ListEvent):void {
+				var selectedItem:Object = tree.selectedItem;
+	
+					var access:String=selectedItem.accessaddress;
+					if(access!=null && access.indexOf("CommonServlet")!=-1) 
+					{	
+						access=access+"&account="+SysConst.curUser.person.loginname;
+						var req:URLRequest = new URLRequest(access);
+						navigateToURL(req, "_blank");
+						
+						return;
+					}
+					
+				
+				if(selectedItem != null){
+					tree.expandItem(selectedItem, !tree.isItemOpen(selectedItem), true);
+				}
+				if(selectedItem != null && selectedItem.itemType == "app") {
+					var e:SysEvent = new SysEvent(APPLICATION_CLICKED);
+					e.relatedObject = selectedItem;
+					dispatchEvent(e);
+				}
+			}
+			
+			private function listItemClick(event:ListEvent):void {
+				var selectedItem:Object = list.selectedItem;
+				
+var access:String=selectedItem.applicationurl;
+if(access.indexOf("CommonServlet")!=-1)
+{
+	access=access+"&account="+SysConst.curUser.person.loginname;
+	var req:URLRequest = new URLRequest(access);
+	navigateToURL(req, "_blank");
+						
+	return;
+}		
+				
+				if(selectedItem != null) {
+					var e:SysEvent = new SysEvent(QUICKMENU_CLICKED);
+					e.relatedObject = selectedItem;
+					dispatchEvent(e);
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:VDividedBox width="100%" height="100%" paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
+		<mx:Tree id="tree" width="100%" height="60%" labelField="name" showRoot="false" 
+			dragEnabled="true" mouseUp="treeMouseUp(event)" itemClick="treeItemClick(event)"
+			mouseDown="treeMouseDown(event)" dragComplete="treeDragComplete(event)"/>
+		<mx:List id="list" width="100%" height="40%" dataProvider="{quickMenuList}" 
+			dragEnabled="true" itemClick="listItemClick(event)"
+			dragEnter="listDragEnter(event)" dragDrop="listDragDrop(event)" dragExit="listDragExit(event)"/>
+	</mx:VDividedBox>
+	<mx:HBox width="100%" height="22" verticalAlign="top" horizontalAlign="right">
+		<mx:Button textAlign="center" label="帮助" click="SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_HELP))"/>
+		<mx:Button textAlign="center" label="锁定" click="SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_LOCK))"/>
+		<mx:Button textAlign="center" label="注销" click="SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_LOGOUT))"/>
+	</mx:HBox>
+</mx:VBox>

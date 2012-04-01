@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	xmlns:col="common.*" preinitialize="pinit()"
+	xmlns:col="common.*" xmlns:local="*" xmlns:ns1="flexlib.containers.*" preinitialize="pinit()"
     creationComplete="init()">
 	
 	<mx:XMLList id="myXMLList">  
@@ -45,8 +45,12 @@
 			import mx.events.ModuleEvent;
 			import com.wisoft.events.WindowCloseEvent;
 			import com.wisoft.vo.SysConst; 
-			import com.wisoft.framework.oms.CommonSelectDep;	
+			import com.wisoft.framework.oms.CommonSelectDep;
+			import com.wisoft.events.SysEvent;	
+			import com.wisoft.util.WebServiceHelper;
+			import com.wisoft.framework.oms.CommonSelectSecretary;
 			
+			private var personid:String="";
 			private var moduleurl:String="";
 			private var _ZONECODE:String='020000';
 			private var _SERVICEURL:String='http://192.10.110.206:7001/wisoftintegrateframe/services';
@@ -58,6 +62,10 @@
 			private var shareData:SharedObject;
 			private var departmentWithParent:Object;
 			
+			//---------------------------------------
+			[Bindable] private var startMenuBarList:ArrayCollection; //菜单栏
+			[Bindable] private var appList:ArrayCollection;
+			
 			private function pinit():void{
 				StyleManager.loadStyleDeclarations('css/style01/style01.swf');
 				//设置安全沙箱
@@ -67,15 +75,19 @@
 				//读取本地存储数据
 				shareData=SharedObject.getLocal("myperson");
 				_USERINFO = UserInfo.convert(shareData.data.curuser);
+			
 				if(shareData.data.userlist!=null)
 					personlist1 =  shareData.data.userlist as ArrayCollection;
 				this.dgofpro.dataProvider=this.personlist1;
 				if(_USERINFO!=null&&_USERINFO.person!=null&&_USERINFO.ou!=null)
 				{
 					_personname=_USERINFO.ou.depname+"|"+_USERINFO.person.realname;
+					personid=_USERINFO.person.id;
+					 SysConst.curUser = _USERINFO;
+					sel_personsyle();
 				}
 				else
-				CommonFunctions.showAlert("提示","请设置指定登录人员");
+					CommonFunctions.showAlert("提示","请设置指定登录人员");
 				moduleldr.url="zdm\\LoadZd.swf";
 			}
 			
@@ -106,6 +118,7 @@
 			      {
 				      	ichild2._userinfo = _USERINFO;
 			      }
+			    
 			}
 			
 			//---------------------------------------------------
@@ -194,15 +207,26 @@
 			private function sel_person_done():void
 			{
 				_USERINFO=dgofpro.selectedItem as UserInfo;
-				
+				personid=_USERINFO.person.id;
 				if(_USERINFO==null)
 				{
 					CommonFunctions.showAlert("提示","没有人员被选中！");
 					return;
 				}
-				moduleldr.url="com\\wisoft\\zdm\\LoadZd.swf";
+				moduleldr.url="zdm\\LoadZd.swf";
 				trace("用户信息加载成功");
 
+				//存储本地数据
+				shareData.data.curuser =_USERINFO;
+				shareData.flush();
+				SysConst.curUser = _USERINFO;
+				_personname = _USERINFO.ou.depname+"|"+_USERINFO.person.realname;
+				proid.close();
+				sel_personsyle();
+			}
+			
+			private function sel_personsyle():void
+			{
 				if(_USERINFO.ismultdep) {
 					trace("用户包含多机构，选择登录机构");
 					var selectdep:CommonSelectDep = CommonSelectDep(PopUpManager.createPopUp(this, CommonSelectDep, true));
@@ -212,14 +236,25 @@
 					}
 					selectdep.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectDepartmentWindowClosed);
 					CommonFunctions.centerTitleWindow(selectdep);
+					return;
 				}
-				//存储本地数据
-				shareData.data.curuser =_USERINFO;
-				shareData.flush();
-				SysConst.curUser = _USERINFO;
-				_personname = _USERINFO.ou.depname+"|"+_USERINFO.person.realname;
-				proid.close();
+				
+				if(SysConst.curUser.person.id == personid) {
+					trace("以自己身份登录");
+					if(SysConst.curUser.isadmin) {
+						trace("为超级管理员，查找所有应用和应用分组");
+						ws_ams.findAmsInfoBySuperAdmin.send();
+					} else {
+						trace("为普通用户，根据personid和选择的机构id查找应用和应用分组");
+						ws_ams.findAmsInfoByPersonidAndOu.send(SysConst.curUser.person.id, SysConst.curUser.ou.depid);
+					}
+				} else {
+					trace("以领导身份登陆，查找领导分配的应用和应用分组");
+					ws_secretary.findAmsInfoByLeaderidAndSecretaryid(SysConst.curUser.person.id, personid);
+				}
 			}
+			
+			
 			private function selectDepartmentWindowClosed(event:WindowCloseEvent):void {
 				if(event.IsConfirm) {
 					if(event.RelatedObject) {
@@ -228,14 +263,170 @@
 						_USERINFO.rolegrouplist = event.RelatedObject[2] as ArrayCollection;
 						departmentWithParent = event.RelatedObject[0];
 						trace("机构选择成功");
+						if(SysConst.curUser.person.id == personid) {
+							trace("以自己身份登录");
+							if(SysConst.curUser.isadmin) {
+								trace("为超级管理员，查找所有应用和应用分组");
+								ws_ams.findAmsInfoBySuperAdmin.send();
+							} else {
+								trace("为普通用户，根据personid和选择的机构id查找应用和应用分组");
+								ws_ams.findAmsInfoByPersonidAndOu.send(SysConst.curUser.person.id, SysConst.curUser.ou.depid);
+							}
+						} else {
+							trace("以领导身份登陆，查找领导分配的应用和应用分组");
+							ws_secretary.findAmsInfoByLeaderidAndSecretaryid(SysConst.curUser.person.id, personid);
+						}
 					}
 				}
 			}
 			
 			private function ChangeServer():void
 			{ 
-				var server:ConfigServer = ConfigServer(PopUpManager.createPopUp(this,ConfigServer,true));
-				PopUpManager.centerPopUp(server);
+				var serverCfg:ConfigServer = ConfigServer(PopUpManager.createPopUp(this,ConfigServer,true));
+				serverCfg.parentfunc=callbackfunction;
+				PopUpManager.centerPopUp(serverCfg);
+			}
+			
+			private function callbackfunction(service:Object):void
+			{
+				this.linkbtn.label=service.name;				
+			}
+			
+			
+			/**
+			 * 初始化开始菜单
+
+			 */
+			 
+			 private function initStartMenu():void {
+			
+				appList = SysConst.curUser.applist;
+				var appGroupList1:ArrayCollection = SysConst.curUser.menulgroupist;
+				var arr:ArrayCollection = new ArrayCollection();
+				var appGroupList:ArrayCollection = new ArrayCollection();
+
+				
+				//获取所有菜单组下的所有菜单
+				for each(var group:Object in appGroupList){
+					var children:ArrayCollection = new ArrayCollection();
+					for each(var subGroup:Object in appGroupList){
+						if(subGroup.parentid == group.id){
+							subGroup.itemType = "group";
+							children.addItem(subGroup);
+						}
+					}
+					for each(var app:Object in appList){
+						if(app.groupid == group.id){
+							app.itemType = "app";
+							children.addItem(app);
+						}
+					}
+					
+					if (children.length > 0) {
+						group.children = children;
+					}
+					
+					if(group.parentid == "root"){
+						group.itemType = "group";
+						arr.addItem(group);
+					}
+				}
+				startMenuBarList = arr;
+				startMenuBar.addEventListener(StartMenu2.APPLICATION_CLICKED, applicationClickedHandler);
+			}
+			
+			private function applicationClickedHandler(event:SysEvent):void {
+				loadMenu(event.relatedObject);
+			}
+			
+			
+			
+			/**
+			 * 添加Tab页
+
+			 */
+			public function loadMenu(menuitem:Object):void {
+				var tb:TabModule = new TabModule();
+				tb.serviceUrl = _SERVICEURL;
+				tb.userinfo = SysConst.curUser;
+				tb.moduleUrl = menuitem.accessaddress;
+				tb.tabLabel = menuitem.name;
+				tb.appcode = menuitem.appcode;
+				tb.id = menuitem.id; //将标签页ID 设置为UID
+				//判断用户是否设置页面多开，若唯一，则给与提示
+				if(menuitem.isunique && menuitem.isunique == 1) {
+					var children:Array = workzone.getChildren();
+					var flag:Boolean = true;
+					for(var i:Number = 0; i < children.length; i++) {
+						var obj:Object = children[i];
+						if(obj.id && obj.id == tb.id) {
+							//查找到该应用已经打开则弹出提示对话框
+							flag = false;
+							workzone.selectedIndex = i;
+						}
+					}
+					if(true == flag) {
+						workzone.addChild(tb);
+						flash.utils.setTimeout(function():void {
+								workzone.selectedIndex = workzone.getChildIndex(tb);
+							}, 100, null);
+					} else {
+						return;
+					}
+				} else {
+					workzone.addChild(tb);
+					flash.utils.setTimeout(function():void {
+							workzone.selectedIndex = workzone.getChildIndex(tb);
+						}, 100, null);
+				}
+			}
+			
+			
+			private function resultFindAmsInfo(event:ResultEvent):void {
+				if(event.result) {
+					if(event.result.isSuccued) {
+						trace("更换登录界面为加载界面");
+						//showProgressBar();
+						
+						trace("应用和应用分组加载成功");
+						SysConst.curUser.applist = event.result.applist;
+						SysConst.curUser.menulgroupist = event.result.menulgroupist;
+						
+						initStartMenu();
+					} else {
+						CommonFunctions.showError("错误", event.result.message);
+					}
+				}
+			}
+			
+			private function resultFindLeadersBySecretaryid(event:ResultEvent):void {
+				if(event.result) {
+					if(event.result.isSuccued) {
+						var leaders:ArrayCollection = WebServiceHelper.convert2List2(event.result.omsPerson);
+						if(leaders.length == 0) {
+							trace("不是任何人的秘书");
+							ws_oms.findOmsInfoByPersonid.send(personid);
+						} else {
+							trace("包含领导信息，选择登录身份")
+							var selectSecretary:CommonSelectSecretary = CommonSelectSecretary(PopUpManager.createPopUp(this, CommonSelectSecretary, true));
+							selectSecretary.personid = personid;
+							selectSecretary.leaderlist = leaders;
+							selectSecretary.addEventListener(WindowCloseEvent.WINDOW_CLOSE, selectSecretaryWindowClosed);
+							CommonFunctions.centerTitleWindow(selectSecretary);
+						}
+					} else {
+						CommonFunctions.showError("错误", event.result.message);
+					}
+				}
+			}
+			
+			private function selectSecretaryWindowClosed(event:WindowCloseEvent):void {
+				if(event.IsConfirm) {
+					if(event.RelatedObject) {
+						trace("身份选择成功，以personid为" + event.RelatedObject + "的用户的身份登录系统");
+						ws_oms.findOmsInfoByPersonid.send(event.RelatedObject);
+					}
+				}
 			}
     	]]>
     </mx:Script>  
@@ -246,10 +437,10 @@
 				<mx:HBox width="100%" height="40" backgroundColor="#059BFB" horizontalAlign="left" verticalAlign="middle">
 					<mx:Label text="Wisoft自动化测试平台 for RiaTest" fontSize="27" fontWeight="bold" color="#FFFFFF" fontStyle="italic"/>
 					<mx:Spacer width="100%"/>
-					<mx:LinkButton label="服务" click="ChangeServer()"/>
+					<mx:LinkButton id="linkbtn" label="服务" click="ChangeServer()"/>
 				</mx:HBox>
 				<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
-					<mx:MenuBar id="menu" dataProvider="{myXMLList}" labelField="@name"  height="100%" change="showModule(event)" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #0018FF]"></mx:MenuBar>
+					<local:StartMenuBar id="startMenuBar" width="100%" height="28" Menulist="{startMenuBarList}" />
 					<mx:Spacer width="100%"/>
 					<mx:PopUpButton id="proid" label="{_personname}" openAlways="true" width="160" textAlign="left" toolTip="{proid.label}">
 						<mx:popUp>
@@ -276,10 +467,23 @@
 				</mx:HBox>
 			</mx:VBox>
 		</mx:HBox>
-		<mx:ModuleLoader width="100%" height="100%" id="moduleldr" ready="readyModule(event)">
+		<ns1:SuperTabNavigator id="workzone" width="100%" height="100%" paddingLeft="0">
+			
+		</ns1:SuperTabNavigator>
+		<mx:ModuleLoader visible="false"  id="moduleldr" ready="readyModule(event)">
 		</mx:ModuleLoader>
 	</mx:VBox>
 	<mx:WebService id="ws_oms" wsdl="{_SERVICEURL}/OmsManager?wsdl" fault="CommonFunctions.faultmethod(event)">
 		<mx:operation name="findOmsInfoByPersonid" result="resultFindOmsInfoByPersonid(event)" />
 	</mx:WebService>
+	<mx:WebService id="ws_ams" wsdl="{_SERVICEURL}/ApplicationManager?wsdl" fault="CommonFunctions.faultmethod(event)">
+		<mx:operation name="findAmsInfoBySuperAdmin" result="resultFindAmsInfo(event)" />
+		<mx:operation name="findAmsInfoByPersonid" result="resultFindAmsInfo(event)" />
+		<mx:operation name="findAmsInfoByPersonidAndOu" result="resultFindAmsInfo(event)" />
+	</mx:WebService>
+	<mx:WebService id="ws_secretary" wsdl="{_SERVICEURL}/SecretaryManager?wsdl">
+		<mx:operation name="findAmsInfoByLeaderidAndSecretaryid" result="resultFindAmsInfo(event)" />
+		<mx:operation name="findLeadersBySecretaryid" result="resultFindLeadersBySecretaryid(event)" />
+	</mx:WebService>
+	
 </mx:Application>

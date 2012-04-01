@@ -16,6 +16,7 @@
       <libraryPathEntry autoExtract="true" kind="3" linkType="3" path="libs/omscommon.swc" rslUrl="omscommon.swf" useDefaultLinkType="false"/>
       <libraryPathEntry autoExtract="true" kind="3" linkType="3" path="libs/WisoftWorkFlow.swc" rslUrl="WisoftWorkFlow.swf" useDefaultLinkType="false"/>
       <libraryPathEntry autoExtract="true" kind="3" linkType="3" path="libs/InnerFlow.swc" rslUrl="InnerFlow.swf" useDefaultLinkType="true"/>
+      <libraryPathEntry kind="3" linkType="1" path="libs/flexlib2.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
