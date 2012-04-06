@@ -53,7 +53,7 @@
 			private var personid:String="";
 			private var moduleurl:String="";
 			private var _ZONECODE:String='020000';
-			private var _SERVICEURL:String='http://192.10.110.206:7001/wisoftintegrateframe/services';
+			private var _SERVICEURL:String='http://58.214.246.41:3189/Ne/services';
 			[Bindable]private var _personname:String = "未指定";
 			//当前人员信息
 			private var _USERINFO:UserInfo = new UserInfo();
@@ -75,7 +75,7 @@
 				//读取本地存储数据
 				shareData=SharedObject.getLocal("myperson");
 				_USERINFO = UserInfo.convert(shareData.data.curuser);
-			
+				SysConst.curUser = new UserInfo();
 				if(shareData.data.userlist!=null)
 					personlist1 =  shareData.data.userlist as ArrayCollection;
 				this.dgofpro.dataProvider=this.personlist1;
@@ -307,9 +307,9 @@
 
 				
 				//获取所有菜单组下的所有菜单
-				for each(var group:Object in appGroupList){
+				for each(var group:Object in appGroupList1){
 					var children:ArrayCollection = new ArrayCollection();
-					for each(var subGroup:Object in appGroupList){
+					for each(var subGroup:Object in appGroupList1){
 						if(subGroup.parentid == group.id){
 							subGroup.itemType = "group";
 							children.addItem(subGroup);
