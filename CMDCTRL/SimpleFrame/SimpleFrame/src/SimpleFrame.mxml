@@ -52,8 +52,8 @@
 			
 			private var personid:String="";
 			private var moduleurl:String="";
-			private var _ZONECODE:String='020000';
-			private var _SERVICEURL:String='http://58.214.246.41:3189/Ne/services';
+			private var _ZONECODE:String="65310100";
+			private var _SERVICEURL:String="http://58.214.246.41:8021/NewFrame/services";
 			[Bindable]private var _personname:String = "未指定";
 			//当前人员信息
 			private var _USERINFO:UserInfo = new UserInfo();
