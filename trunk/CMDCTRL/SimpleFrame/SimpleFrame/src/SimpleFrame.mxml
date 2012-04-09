@@ -2,22 +2,6 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	xmlns:col="common.*" xmlns:local="*" xmlns:ns1="flexlib.containers.*" preinitialize="pinit()"
     creationComplete="init()">
-	
-	<mx:XMLList id="myXMLList">  
-	    <item name="事项维护" moduleurl ="">  
-	        <item  name ="报审事项" moduleurl ="aims\\AuditManager.swf" />  
-	        <item  name ="事项维护" moduleurl ="aims\\ItemManager.swf" />  
-	    </item>  
-	    <item  name ="许可平台" moduleurl ="" >  
-	        <item name ="办件办理" moduleurl ="maea\\bjbl.swf"/>  
-	        <item name ="办件查询" moduleurl ="maea\\bjcx.swf" />  
-	    </item>  
-	    
-	    <item  name ="后台框架" moduleurl ="" >  
-	        <item name ="任务调度管理" moduleurl ="jm/JobManageIndex.swf"/>  
-	        <item name ="组织机构管理" moduleurl ="oms/OmsIndex_wx.swf" />  
-	    </item>  
-    </mx:XMLList>
    
     <mx:Script>
     	<![CDATA[
@@ -59,6 +43,13 @@
 			private var _USERINFO:UserInfo = new UserInfo();
 			//常用人员信息列表
 			[Bindable]private var personlist1:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]private var ServerList:ArrayCollection = new ArrayCollection();
+			
+			/**对象名：ServerList
+			 * 包含对象:
+			 * 1、serverList 每个server属性   name\address\zone\orderno\isdef  users
+			 ****/
 			private var shareData:SharedObject;
 			private var departmentWithParent:Object;
 			
@@ -72,8 +63,11 @@
 				Security.allowDomain("*");
 			}
 			private function init():void{
-				//读取本地存储数据
-				shareData=SharedObject.getLocal("myperson");
+				//读取本地存储的服务列表
+				shareData=SharedObject.getLocal("ServerList");
+				ServerList=shareData.data.serverList as ArrayCollection;
+				
+				
 				_USERINFO = UserInfo.convert(shareData.data.curuser);
 				SysConst.curUser = new UserInfo();
 				if(shareData.data.userlist!=null)
@@ -207,12 +201,13 @@
 			private function sel_person_done():void
 			{
 				_USERINFO=dgofpro.selectedItem as UserInfo;
-				personid=_USERINFO.person.id;
+				
 				if(_USERINFO==null)
 				{
 					CommonFunctions.showAlert("提示","没有人员被选中！");
 					return;
 				}
+				personid=_USERINFO.person.id;
 				moduleldr.url="zdm\\LoadZd.swf";
 				trace("用户信息加载成功");
 
@@ -449,8 +444,8 @@
 							<mx:DataGrid id="dgofpro" height="100%" textAlign="left" width="100%"
 											   horizontalScrollPolicy="auto" borderStyle="none"   >
 							<mx:columns> 
-								<col:ObjectNestedColumn headerText="部门" dataField="ou.depname" width="80" />
-								<col:ObjectNestedColumn headerText="姓名"  dataField="person.realname" width="80"  >
+								<col:ObjectNestedColumn headerText="部门" dataField="ou.depname" width="80" sortable="false" />
+								<col:ObjectNestedColumn headerText="姓名"  dataField="person.realname" width="80" sortable="false"  >
 								</col:ObjectNestedColumn>
 							</mx:columns> 
 							</mx:DataGrid>

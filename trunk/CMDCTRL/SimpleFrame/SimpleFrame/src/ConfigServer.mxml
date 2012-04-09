@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="800" height="500" xmlns:temp="com.wisoftTemplate.*"
-	 title="测试服务管理" >
+	 title="测试服务管理" creationComplete="init()" >
 	<mx:Script>
 		<![CDATA[
 			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;  
+    		import mx.rpc.http.HTTPService;  
+    		
 			public var curservice:Object;
 			public var parentfunc:Function;
 			private var shareData:SharedObject;
@@ -24,7 +27,32 @@
 				shareData.data.defaultService = curservice;
 				shareData.flush();
 			}
-			
+			 private function init():void  
+            {  
+            	
+            	 var service:HTTPService = new HTTPService();  
+			     service.url = "ServerConfig.xml";  
+			     service.addEventListener(ResultEvent.RESULT, resultHandler);  
+			     service.send();  
+//                //创建URLRequest类,用于接收XML信息;  
+//                var url:URLRequest=new URLRequest("ServerConfig.xml");  
+//                //创建URLLoader类,用于加载XML信息;   
+//                var loader:URLLoader=new URLLoader();  
+//                //加载完成时运行处理xml函数    
+//                loader.addEventListener(Event.COMPLETE, dealXml);  
+//                loader.load(url);  
+            }  
+            private function resultHandler(event:ResultEvent):void{  
+		     
+		     	this.dg.dataProvider = event.result.root.server;  
+		    }  
+            private function dealXml(event:Event):void  
+            {  
+                var loader:URLLoader=event.target as URLLoader;  
+                var myXmlList:XMLList=new XMLList(loader.data);  
+                this.dg.dataProvider=myXmlList.server;  
+                //this.testComb.labelField="id";  
+            }  
 		]]>
 	</mx:Script>
 	<mx:Array id="menulist3">
@@ -36,7 +64,7 @@
 	</mx:Array>
 
 	<mx:VBox width="100%" height="100%">
-		<mx:DataGrid id="dg" width="100%" height="100%" dataProvider="{menulist3}">
+		<mx:DataGrid id="dg" width="100%" height="100%" >
 			<mx:columns>
 				<mx:DataGridColumn headerText=" " width="10">
 					
