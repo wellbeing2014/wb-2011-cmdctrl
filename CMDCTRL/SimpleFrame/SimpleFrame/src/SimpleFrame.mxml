@@ -33,6 +33,8 @@
 			import com.wisoft.events.SysEvent;	
 			import com.wisoft.util.WebServiceHelper;
 			import com.wisoft.framework.oms.CommonSelectSecretary;
+			import mx.events.CollectionEvent;
+			import mx.modules.ModuleLoader;
 			
 			private var personid:String="";
 			private var moduleurl:String="";
@@ -42,13 +44,13 @@
 			//当前人员信息
 			private var _USERINFO:UserInfo = new UserInfo();
 			//常用人员信息列表
-			[Bindable]private var personlist1:ArrayCollection = new ArrayCollection();
-			
-			[Bindable]private var ServerList:ArrayCollection = new ArrayCollection();
+			[Bindable]private var PersonList:ArrayCollection = new ArrayCollection();
+			//当前服务
+			[Bindable]private var ServerObject:Object = new Object();
 			
 			/**对象名：ServerList
 			 * 包含对象:
-			 * 1、serverList 每个server属性   name\address\zone\orderno\isdef  users
+			 * 1、serverList 每个server属性   name\address\zone\orderno  users
 			 ****/
 			private var shareData:SharedObject;
 			private var departmentWithParent:Object;
@@ -63,59 +65,95 @@
 				Security.allowDomain("*");
 			}
 			private function init():void{
-				//读取本地存储的服务列表
-				shareData=SharedObject.getLocal("ServerList");
-				ServerList=shareData.data.serverList as ArrayCollection;
-				
-				
-				_USERINFO = UserInfo.convert(shareData.data.curuser);
+				//首先给全局用户初始化
 				SysConst.curUser = new UserInfo();
-				if(shareData.data.userlist!=null)
-					personlist1 =  shareData.data.userlist as ArrayCollection;
-				this.dgofpro.dataProvider=this.personlist1;
-				if(_USERINFO!=null&&_USERINFO.person!=null&&_USERINFO.ou!=null)
+				//读取本地存储的服务
+				shareData=SharedObject.getLocal("ServerObject");
+				ServerObject=shareData.data.ServerObject as Object;
+				
+				//给本地数据进行初始化
+				if(ServerObject!=null)
 				{
-					_personname=_USERINFO.ou.depname+"|"+_USERINFO.person.realname;
-					personid=_USERINFO.person.id;
-					 SysConst.curUser = _USERINFO;
-					sel_personsyle();
+					this.linkbtn.label = ServerObject.name;//获取服务名称赋值给当前linkbtn;
+					PersonList = ServerObject.users;//获取人员列表；
 				}
 				else
-					CommonFunctions.showAlert("提示","请设置指定登录人员");
-				moduleldr.url="zdm\\LoadZd.swf";
+					CommonFunctions.showAlert("提示","请设置服务及登录人员！");
+				
+				if(PersonList!=null&&PersonList.length>0)
+				{
+					//默认取第一个人员为当前人员
+					_USERINFO = PersonList[0] as UserInfo;
+					//给人员设置PopupBtn的标签为机构+姓名
+					_personname=_USERINFO.ou.depname+"|"+_USERINFO.person.realname;
+					personid=_USERINFO.person.id;
+					SysConst.curUser = _USERINFO;
+					sel_personsyle();
+				}
+//				moduleldr.url="zdm\\LoadZd.swf";
 			}
 			
-    		private function showModule(event:mx.events.MenuEvent):void{
-				if(event.item)
-				{
-					moduleurl=event.item.@moduleurl;
-					if(moduleurl!="")
-					{
-						moduleldr.url=moduleurl;
-					}
-					else
-					{
-						moduleldr.url="";
+			private var systemServiceTempList:ArrayCollection;
+			private var serviceLoaderList:ArrayCollection;
+			/**
+			 * 创建用于顺序加载模块的列表
+			 * */
+			private function createSystemServiceTempList(systemServiceList:ArrayCollection):void {
+				systemServiceTempList = new ArrayCollection();
+				systemServiceTempList.addEventListener(CollectionEvent.COLLECTION_CHANGE, function(e1:CollectionEvent):void {
+						if(e1.location > 0) {
+							var prvObj:Object = systemServiceTempList.getItemAt(e1.location - 1);
+							var curObj:Object = systemServiceTempList.getItemAt(e1.location);
+							var prvLoader:ModuleLoader = prvObj.loader as ModuleLoader;
+							var curLoader:ModuleLoader = curObj.loader as ModuleLoader;
+							prvLoader.addEventListener(ModuleEvent.READY, function(e2:ModuleEvent):void {
+								// 当前一个module加载完后加载下一个
+									curLoader.loadModule(curObj.url as String);
+								});
+						}
+					});
+				serviceLoaderList = new ArrayCollection();
+				for each(var systemService:Object in systemServiceList) {
+					var obj:Object = createSystemServiceTempListItem(systemService.accessaddress);
+					vs.addChild(obj.loader);
+					serviceLoaderList.addItem(obj.loader);
+					systemServiceTempList.addItem(obj);
+				}
+			}
+			
+			/**
+			 * 创建用于顺序加载模块的列表对象
+			 * */
+			private function createSystemServiceTempListItem(url:String):Object {
+				var obj:Object = new Object();
+				var loader:ModuleLoader = new ModuleLoader();
+				obj.loader = loader;
+				obj.url = url;
+				return obj;
+			}
+			
+			private function getSystemServices():void {
+				ws_ams.findSysServ.send();
+			}
+
+			private function resultFindSysServ(event:ResultEvent):void {
+				if(event.result != null) {
+					if(event.result.isSuccued) {
+						var systemServiceList:ArrayCollection = WebServiceHelper.convert2List2(event.result.amsApplication);
+						vs.removeAllChildren();
+						if(systemServiceList.length > 0) {
+							createSystemServiceTempList(systemServiceList);
+							var firstObj:Object = systemServiceTempList.getItemAt(0);
+							(firstObj.loader as ModuleLoader).loadModule(firstObj.url);
+						} else {
+							init();
+						}
+					} else {
+						CommonFunctions.showInfo("提示", event.result.message);
 					}
 				}
 			}
 			
-			private function readyModule( event:ModuleEvent ) : void
-			{ 
-			      var ml:ModuleLoader = event.target as ModuleLoader;
-			      var ichild:ILoadSevicesURL = ml.child as ILoadSevicesURL;
-			      var ichild2:ILoadUserInfo = ml.child as ILoadUserInfo;
-			      if( ichild != null ) {
-			               ichild._servicesurl =_SERVICEURL;
-			      }
-			      if(ichild2!=null)
-			      {
-				      	ichild2._userinfo = _USERINFO;
-			      }
-			    
-			}
-			
-			//---------------------------------------------------
 			private function selectPersonByZoneid():void
 			{
 				var selectPage:OmsSelectPerson2=OmsSelectPerson2(PopUpManager.createPopUp(this, OmsSelectPerson2, true));
@@ -157,10 +195,10 @@
 						userinfo.teamlist = event.result.teamlist;
 						
 						//只添加列表中没有的
-						if(personlist1.length>0)
+						if(PersonList.length>0)
 						{	
 							var ishave:Boolean=false;
-							for each(var a:Object in personlist1 )
+							for each(var a:Object in PersonList )
 							{
 								if(a.person.id == userinfo.person.id)
 								{
@@ -170,12 +208,14 @@
 							}
 							if(!ishave)
 							{
-								personlist1.addItem(userinfo);
+								PersonList.addItem(userinfo);
 							}
 						}
 						else
-							personlist1.addItem(userinfo);
-						shareData.data.userlist = personlist1;
+							PersonList.addItem(userinfo);
+							
+						ServerObject.users = PersonList;
+						shareData.data.ServerObject = ServerObject;
 						shareData.flush();
 					}
 				} else {
@@ -186,15 +226,16 @@
 			private function unsel_person_done():void
 			{
 				var userinfo:UserInfo=UserInfo.convert(dgofpro.selectedItem) ;
-				for (var a:int=0 ; a<personlist1.length;a++ )
+				for (var a:int=0; a<PersonList.length;a++ )
 				{
-					if(personlist1[a].person.id == userinfo.person.id)
+					if(PersonList[a].person.id == userinfo.person.id)
 					{
-						personlist1.removeItemAt(a);
+						PersonList.removeItemAt(a);
 						break;
 					}
 				}
-				shareData.data.userlist = personlist1;
+				ServerObject.users = PersonList;
+				shareData.data.ServerObject = ServerObject;
 				shareData.flush();
 			}
 			
@@ -208,7 +249,9 @@
 					return;
 				}
 				personid=_USERINFO.person.id;
-				moduleldr.url="zdm\\LoadZd.swf";
+				
+				
+				//moduleldr.url="zdm\\LoadZd.swf";
 				trace("用户信息加载成功");
 
 				//存储本地数据
@@ -282,9 +325,22 @@
 				PopUpManager.centerPopUp(serverCfg);
 			}
 			
-			private function callbackfunction(service:Object):void
+			private function callbackfunction(server:Object):void
 			{
-				this.linkbtn.label=service.name;				
+				this.linkbtn.label=server.name;
+				if(this.ServerObject.name!=server.name)
+				{
+					this.ServerObject.name=server.name;
+					this.ServerObject.address=server.address;
+					this.ServerObject.zone=server.zone;
+					this.ServerObject.orderno=server.orderno;
+					this.ServerObject.users=null;	
+				}
+				else
+				{
+					
+				}
+						
 			}
 			
 			
@@ -432,7 +488,7 @@
 				<mx:HBox width="100%" height="40" backgroundColor="#059BFB" horizontalAlign="left" verticalAlign="middle">
 					<mx:Label text="Wisoft自动化测试平台 for RiaTest" fontSize="27" fontWeight="bold" color="#FFFFFF" fontStyle="italic"/>
 					<mx:Spacer width="100%"/>
-					<mx:LinkButton id="linkbtn" label="服务" click="ChangeServer()"/>
+					<mx:LinkButton id="linkbtn" label="未指定服务" click="ChangeServer()"/>
 				</mx:HBox>
 				<mx:HBox width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
 					<local:StartMenuBar id="startMenuBar" width="100%" height="28" Menulist="{startMenuBarList}" />
@@ -441,7 +497,7 @@
 						<mx:popUp>
 							<mx:Canvas  width="160" height="200"> 
 							<mx:VBox>
-							<mx:DataGrid id="dgofpro" height="100%" textAlign="left" width="100%"
+							<mx:DataGrid id="dgofpro" dataProvider="{PersonList}" height="100%" textAlign="left" width="100%"
 											   horizontalScrollPolicy="auto" borderStyle="none"   >
 							<mx:columns> 
 								<col:ObjectNestedColumn headerText="部门" dataField="ou.depname" width="80" sortable="false" />
@@ -465,8 +521,7 @@
 		<ns1:SuperTabNavigator id="workzone" width="100%" height="100%" paddingLeft="0">
 			
 		</ns1:SuperTabNavigator>
-		<mx:ModuleLoader visible="false"  id="moduleldr" ready="readyModule(event)">
-		</mx:ModuleLoader>
+		<mx:ViewStack id="vs" width="0" height="0" />
 	</mx:VBox>
 	<mx:WebService id="ws_oms" wsdl="{_SERVICEURL}/OmsManager?wsdl" fault="CommonFunctions.faultmethod(event)">
 		<mx:operation name="findOmsInfoByPersonid" result="resultFindOmsInfoByPersonid(event)" />
@@ -475,6 +530,7 @@
 		<mx:operation name="findAmsInfoBySuperAdmin" result="resultFindAmsInfo(event)" />
 		<mx:operation name="findAmsInfoByPersonid" result="resultFindAmsInfo(event)" />
 		<mx:operation name="findAmsInfoByPersonidAndOu" result="resultFindAmsInfo(event)" />
+		<mx:operation name="findSysServ" result="resultFindSysServ(event)" />
 	</mx:WebService>
 	<mx:WebService id="ws_secretary" wsdl="{_SERVICEURL}/SecretaryManager?wsdl">
 		<mx:operation name="findAmsInfoByLeaderidAndSecretaryid" result="resultFindAmsInfo(event)" />
