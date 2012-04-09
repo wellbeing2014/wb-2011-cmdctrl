@@ -250,8 +250,6 @@
 				}
 				personid=_USERINFO.person.id;
 				
-				
-				//moduleldr.url="zdm\\LoadZd.swf";
 				trace("用户信息加载成功");
 
 				//存储本地数据
@@ -328,19 +326,27 @@
 			private function callbackfunction(server:Object):void
 			{
 				this.linkbtn.label=server.name;
+				//判断是否是同一个服务
 				if(this.ServerObject.name!=server.name)
 				{
 					this.ServerObject.name=server.name;
 					this.ServerObject.address=server.address;
 					this.ServerObject.zone=server.zone;
 					this.ServerObject.orderno=server.orderno;
-					this.ServerObject.users=null;	
-				}
-				else
-				{
 					
+					//读取本地存储的服务列表,从中找出相应的人员列表
+					shareData=SharedObject.getLocal("ServerObjectList");
+					var ServerObjectList:ArrayCollection=shareData.data.ServerObjectList as ArrayCollection;
+					for each(var serobj:Object in ServerObjectList)
+					{
+						if(this.ServerObject.orderno==serobj.orderno)
+						{
+							this.ServerObject.users=serobj.users;
+							PersonList = serobj.users;
+							break;
+						}
+					}	
 				}
-						
 			}
 			
 			
