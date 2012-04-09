@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<server name="7001_服务" address="http://192.10.110.206:7001/wisofintegrateframe" zone="020000" orderno="0"/>
+	<server name="7002_服务" address="http://192.10.110.206:7002/wisofintegrateframe" zone="020000" orderno="1"/>
+	<server name="7003_服务" address="http://192.10.110.206:7003/wisofintegrateframe" zone="020000" orderno="2"/>
+	<server name="7004_服务" address="http://192.10.110.206:7004/wisofintegrateframe" zone="020000" orderno="3"/>
+	<server name="7005_服务" address="http://192.10.110.206:7005/wisofintegrateframe" zone="020000" orderno="4"/>
+	<server name="7006_服务" address="http://192.10.110.206:7006/wisofintegrateframe" zone="020000" orderno="5"/>
+</root>
