@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="800" height="500" xmlns:temp="com.wisoftTemplate.*"
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="648" height="376" xmlns:temp="com.wisoftTemplate.*"
 	 title="测试服务管理" creationComplete="init()" >
 	<mx:Script>
 		<![CDATA[
@@ -10,6 +10,7 @@
 			public var curservice:Object;
 			public var parentfunc:Function;
 			private var shareData:SharedObject;
+			[Bindable] var treedata:XMLList = new XMLList();
 			
 			private function dosave():void
 			{
@@ -29,54 +30,85 @@
 			}
 			 private function init():void  
             {  
-            	
             	 var service:HTTPService = new HTTPService();  
 			     service.url = "ServerConfig.xml";  
 			     service.addEventListener(ResultEvent.RESULT, resultHandler);  
 			     service.send();  
-//                //创建URLRequest类,用于接收XML信息;  
-//                var url:URLRequest=new URLRequest("ServerConfig.xml");  
-//                //创建URLLoader类,用于加载XML信息;   
-//                var loader:URLLoader=new URLLoader();  
-//                //加载完成时运行处理xml函数    
-//                loader.addEventListener(Event.COMPLETE, dealXml);  
-//                loader.load(url);  
             }  
             private function resultHandler(event:ResultEvent):void{  
 		     
-		     	this.dg.dataProvider = event.result.root.server;  
+		     	this.dg.dataProvider = event.result.root.server;
+		     	this.tree.dataProvider=event.result.root.server;  
 		    }  
-            private function dealXml(event:Event):void  
-            {  
-                var loader:URLLoader=event.target as URLLoader;  
-                var myXmlList:XMLList=new XMLList(loader.data);  
-                this.dg.dataProvider=myXmlList.server;  
-                //this.testComb.labelField="id";  
-            }  
+           
 		]]>
 	</mx:Script>
-	<mx:Array id="menulist3">
-		<mx:Object name="7001_服务" address ="http://192.10.110.206:7001/wisofintegrateframe" zone="020000" orderno="0" ></mx:Object>
-		<mx:Object name="7002_服务" address ="http://192.10.110.206:7002/wisofintegrateframe" zone="020001" orderno="1" ></mx:Object>
-		<mx:Object name="7003_服务" address ="http://192.10.110.206:7003/wisofintegrateframe" zone="020002" orderno="2" ></mx:Object>
-		<mx:Object name="7004_服务" address ="http://192.10.110.206:7004/wisofintegrateframe" zone="020003" orderno="3" ></mx:Object>
-		
+	<mx:Array id="menulist">
+		<mx:Object name ="新建" moduleurl =""><mx:icon>@Embed(source='/css/icon/tool/FileNew.png')</mx:icon></mx:Object>
+		<mx:Object name ="" toolTip="删除" moduleurl =""><mx:icon>@Embed(source='/css/icon/tool/SharingRequestDeny.png')</mx:icon></mx:Object>
 	</mx:Array>
-
-	<mx:VBox width="100%" height="100%">
-		<mx:DataGrid id="dg" width="100%" height="100%" >
+	<mx:HBox width="100%" height="100%" horizontalScrollPolicy="off" styleName="contentBox2" verticalGap="-1" verticalScrollPolicy="off">
+		<mx:Tree  width="180" height="100%" id="tree" labelField="name" 
+				showRoot="false" >
+		</mx:Tree>
+		<mx:VBox left="10" top="10" right="10" bottom="10" horizontalAlign="right">
+			<mx:Grid width="100%">
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">
+						<mx:Label text="服务名称"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+						<mx:Label text="规划局"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">
+						<mx:Label text="服务编码"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+						<mx:TextInput width="150" enabled="false"/>
+					</mx:GridItem>
+					
+				</mx:GridRow>
+				
+				
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">
+						<mx:Label text="区划代码"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+						<mx:TextInput width="150"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">
+						<mx:Label text="服务状态"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle" >
+						<mx:TextInput width="100%"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">
+						<mx:Label text="服务地址"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" colSpan="3">
+						<mx:TextInput width="100%"/>
+					</mx:GridItem>
+				</mx:GridRow>				
+			</mx:Grid>
+			<mx:HRule width="100%"/>
+			<mx:ButtonBar dataProvider="{menulist}" labelField="name" height="24" width="100%" />
+			<mx:DataGrid id="dg" width="100%" height="100%" >
 			<mx:columns>
 				<mx:DataGridColumn headerText=" " width="10">
 					
 				</mx:DataGridColumn>
-				<mx:DataGridColumn headerText="服务名称" width="80" dataField="name"/>
-				<mx:DataGridColumn headerText="行政区划" width="50" dataField="zone"/>
-				<mx:DataGridColumn headerText="服务地址" width="200" dataField="address"/>
-				<mx:DataGridColumn headerText="服务状态" width="50" dataField="orderno"/>
+				<mx:DataGridColumn headerText="用户姓名"  dataField="name"/>
+				<mx:DataGridColumn headerText="登录名"  dataField="zone"/>
+				<mx:DataGridColumn headerText="所在机构" dataField="address"/>
 			</mx:columns>
 		</mx:DataGrid>
+		</mx:VBox>
 		
-	</mx:VBox>
+		
+	</mx:HBox>
 	<mx:ControlBar width="100%">
 		<mx:Button label="设为默认" id="hisBtn" click="setDefault()">
 			<mx:icon>@Embed(source='/css/icon/tool/ReviewCompareMenu.png')</mx:icon>
