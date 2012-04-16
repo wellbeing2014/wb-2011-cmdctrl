@@ -1,0 +1,976 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute"
+	width="100%" height="100%" 
+	xmlns:ns1="flexlib.containers.*" xmlns:ns2="flexlib.controls.*" xmlns:ns3="*"
+	implements="com.wisoft.interfaces.ILoadSevicesURL, com.wisoft.interfaces.ILoginPage,com.wisoft.interfaces.ILoadPageType" 
+	creationComplete="initSuperTab(),initSystemTitle()" xmlns:filters="flash.filters.*"
+	xmlns:pod="com.wisoft.pod.*" xmlns:local="*" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	
+	<mx:Style source="css/style00/style00.css"></mx:Style>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CollectionEvent;
+			import mx.events.ModuleEvent;
+			import com.wisoft.util.ModuleLoaderManager;
+			import mx.modules.ModuleLoader;
+			import mx.events.StyleEvent;
+			import com.wisoft.util.SysEventDispatcher;
+			import com.wisoft.framework.oms.CommonSelectSecretary;
+			import mx.utils.ObjectUtil;
+			import flexlib.scheduling.Timeline;
+			import com.wisoft.framework.oms.CommonSelectDep;
+			import mx.events.CloseEvent;
+			import com.wisoft.util.IconRC;
+			import mx.rpc.http.mxml.HTTPService;
+			import mx.effects.Resize;
+			import com.wisoft.events.WindowCloseEvent;
+			import com.wisoft.vo.MenuTreeItem;
+			import com.esria.samples.dashboard.view.Pod;
+			import flexlib.controls.tabBarClasses.SuperTab;
+			import flash.utils.setTimeout;
+			import com.wisoft.events.SysEvent;
+			import com.wisoft.vo.SysConst;
+			import com.wisoft.util.MenuConvertHelp;
+			import com.wisoft.util.CommonFunctions;
+			import com.wisoft.util.WebServiceHelper;
+			import mx.rpc.events.ResultEvent;
+			import mx.events.ItemClickEvent;
+			import com.wisoft.vo.Department;
+			import com.wisoft.vo.Person;
+			import com.wisoft.vo.UserInfo;
+			import com.wisoft.util.PopUpManager;
+			import com.wisoft.util.IconUtility;
+			import mx.controls.Image;
+			import mx.collections.ArrayCollection;
+			import com.outsmart.dock.component.*;
+			import com.outsmart.dock.events.DockItemEvent;
+			
+			[Bindable] private var startMenuBarList:ArrayCollection; //菜单栏
+			[Bindable] private var appList:ArrayCollection;
+
+			[Bindable]
+			private var minmenuwidth:int = 32;
+
+			/** ILoadSevicesURL */
+			[Bindable]
+			private var servicesurl:String;
+
+			public function set _servicesurl(str:String):void {
+				servicesurl = str;
+			}
+
+			/** ILoginPage */
+			private var _defaultTitle:String;
+			private var _token:String;
+			private var _titleObject:Object;
+			private var _personid:String;
+			private var _departmentWithParent:Object;
+			private var _systemServiceModuleLoaderList:ArrayCollection;
+
+			private var _pagetype:String;
+
+			public function set _pageType(str:String):void {
+				_pagetype = str;
+			}
+
+			public function set defaultTitle(str:String):void {
+				_defaultTitle = str;
+			}
+
+			public function set token(str:String):void {
+				_token = str;
+			}
+
+			public function set titleObject(obj:Object):void {
+				_titleObject = obj;
+			}
+
+			public function set personid(str:String):void {
+				_personid = str;
+			}
+
+			public function set departmentWithParent(obj:Object):void {
+				_departmentWithParent = obj;
+			}
+
+			public function set systemServiceModuleLoaderList(arr:ArrayCollection):void {
+				_systemServiceModuleLoaderList = arr;
+			}
+			
+			private function initSuperTab():void {			
+				
+				var closeMeBuildMenuItem: ContextMenuItem = new ContextMenuItem("关闭");
+				closeMeBuildMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, closeMeBuildMenuItemHandle);
+				var closeOtherBuildMenuItem: ContextMenuItem = new ContextMenuItem("关闭其它");
+				closeOtherBuildMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, closeOtherBuildMenuItemHandle);
+				var closeAllBuildMenuItem: ContextMenuItem = new ContextMenuItem("关闭所有");
+				closeAllBuildMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, closeAllBuildMenuItemHandle);
+				
+				var contextMenu:ContextMenu = new ContextMenu(); 
+				contextMenu.hideBuiltInItems();  
+				
+				contextMenu.customItems.push(closeMeBuildMenuItem); 
+				contextMenu.customItems.push(closeOtherBuildMenuItem); 
+				contextMenu.customItems.push(closeAllBuildMenuItem); 
+				
+				workzone.contextMenu = contextMenu;
+			}
+			
+			private function closeMeBuildMenuItemHandle(event:ContextMenuEvent):void {
+				if (workzone.selectedChild.label != "首页") {
+					workzone.removeChildAt(workzone.selectedIndex);
+				}
+			}
+			
+			private function closeOtherBuildMenuItemHandle(event:ContextMenuEvent):void {
+				var childs:Array = workzone.getChildren();
+				var seleObj:Object = workzone.selectedChild;
+				
+				for (var i:int=0; i < childs.length; i++) {
+					if (seleObj != childs[i] && childs[i].label != "首页") {
+						workzone.removeChild(childs[i]);
+					}
+				}
+			}
+			
+			private function closeAllBuildMenuItemHandle(event:ContextMenuEvent):void {
+				var childs:Array = workzone.getChildren();
+				for (var i:int=0; i < childs.length; i++) {
+					if (childs[i].label != "首页") {
+						workzone.removeChild(childs[i]);
+					}
+				}
+			}
+			
+			
+			public function initStyle():void {
+				StyleManager.loadStyleDeclarations("css/style00/style00.swf").addEventListener(StyleEvent.COMPLETE, function(event:StyleEvent):void {
+						SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_STYLE_INITED));
+						getSystemServices();
+					});
+			}
+			
+			/*public function initStyle():void {
+
+				trace("获取个人设置的样式信息");
+				ws_style.findStyleByUser.addEventListener(ResultEvent.RESULT, function(event:ResultEvent):void {
+						if(event.result) {
+							if(event.result.isSuccued) {
+								var personStyle:Object = event.result.obj;
+								if(personStyle) {
+									var styleurl:String = personStyle.keyvalue;
+									trace("获取成功（styleurl = " + styleurl + "）");
+									try {
+										StyleManager.loadStyleDeclarations(styleurl).addEventListener(StyleEvent.COMPLETE, function(event:StyleEvent):void {
+												SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_STYLE_INITED));
+												getSystemServices();
+											});
+									} catch(e:Error) {
+										CommonFunctions.showError("失败", "样式加载失败");
+									}
+								} else {
+									trace("没有获取到样式信息");
+									getDefaultStyle();
+								}
+							} else {
+								CommonFunctions.showError("错误", event.result.message);
+							}
+						}
+					});
+				ws_style.findStyleByUser.send({personid: _personid});
+			}*/
+
+
+			private function getDefaultStyle():void {
+				trace("获取系统定义的默认样式");
+				ws_style.findDefaultStyleSystemSet.addEventListener(ResultEvent.RESULT, function(event:ResultEvent):void {
+						if(event.result != null) {
+							if(event.result.isSuccued) {
+								var personStyle:Object = event.result.obj;
+								if(personStyle) {
+									var styleurl:String = personStyle.keyvalue;
+									trace("获取成功（styleurl = " + styleurl + "）");
+									try {
+										StyleManager.loadStyleDeclarations(styleurl).addEventListener(StyleEvent.COMPLETE, function(event:StyleEvent):void {
+												SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_STYLE_INITED));
+												getSystemServices();
+											});
+									} catch(e:Error) {
+										CommonFunctions.showError("失败", "样式加载失败");
+									}
+								}
+							} else {
+								CommonFunctions.showInfo("提示", event.result.message);
+							}
+						}
+					});
+				ws_style.findDefaultStyleSystemSet.send();
+			}
+
+			/** index */
+			[Bindable]
+			private var curUser:UserInfo;
+			private var systemTitle:String;
+			[Bindable]
+			private var quickMenuList:ArrayCollection;
+			private var startMenu:StartMenu2;
+
+			//定义快捷菜单项
+
+			[Bindable]
+			private var quickmenuitemRenderer:ClassFactory = new ClassFactory(DockItem);
+			//定义快捷菜单文字项
+
+			[Bindable]
+			private var quickmenulabelRenderer:ClassFactory = new ClassFactory(DockLabel);
+
+			//private var userid:String="000000";
+
+			private function init():void {
+				curUser = SysConst.curUser;
+
+				memoryMsg.text = (flash.system.System.totalMemory / 1024 / 1024).toFixed(2) + "m";
+				workzone.setClosePolicyForTab(0, SuperTab.CLOSE_NEVER);
+				initUsermc();
+				initQuickMenuList();
+				loadPortlets();
+				checkUnreadedBox();
+				SysEventDispatcher.addEventListener("checkMessage", checkMessage);
+				SysEventDispatcher.addEventListener("showTask", showTask);
+				SysEventDispatcher.addEventListener("showTask2", showTask2);
+				SysEventDispatcher.addEventListener(SysEvent.SYSTEM_GC, gc);
+			}
+
+			private var systemServiceTempList:ArrayCollection;
+			private var serviceLoaderList:ArrayCollection;
+
+			private function getSystemServices():void {
+				ws_ams.findSysServ.send();
+			}
+
+			private function resultFindSysServ(event:ResultEvent):void {
+				if(event.result != null) {
+					if(event.result.isSuccued) {
+						var systemServiceList:ArrayCollection = WebServiceHelper.convert2List2(event.result.amsApplication);
+						vs.removeAllChildren();
+						if(systemServiceList.length > 0) {
+							createSystemServiceTempList(systemServiceList);
+							var firstObj:Object = systemServiceTempList.getItemAt(0);
+							(firstObj.loader as ModuleLoader).loadModule(firstObj.url);
+						} else {
+							init();
+						}
+					} else {
+						CommonFunctions.showInfo("提示", event.result.message);
+					}
+				}
+			}
+
+			/**
+			 * 创建用于顺序加载模块的列表
+			 * */
+			private function createSystemServiceTempList(systemServiceList:ArrayCollection):void {
+				systemServiceTempList = new ArrayCollection();
+				systemServiceTempList.addEventListener(CollectionEvent.COLLECTION_CHANGE, function(e1:CollectionEvent):void {
+						if(e1.location > 0) {
+							var prvObj:Object = systemServiceTempList.getItemAt(e1.location - 1);
+							var curObj:Object = systemServiceTempList.getItemAt(e1.location);
+							var prvLoader:ModuleLoader = prvObj.loader as ModuleLoader;
+							var curLoader:ModuleLoader = curObj.loader as ModuleLoader;
+							prvLoader.addEventListener(ModuleEvent.READY, function(e2:ModuleEvent):void {
+								// 当前一个module加载完后加载下一个
+									curLoader.loadModule(curObj.url as String);
+								});
+						}
+					});
+				serviceLoaderList = new ArrayCollection();
+				for each(var systemService:Object in systemServiceList) {
+					var obj:Object = createSystemServiceTempListItem(systemService.accessaddress);
+					vs.addChild(obj.loader);
+					serviceLoaderList.addItem(obj.loader);
+					systemServiceTempList.addItem(obj);
+				}
+
+				// 如果没有系统服务，直接启动定时器，否则等最后一个系统服务加载完后再启动
+				if(serviceLoaderList.length == 0) {
+					init();
+				} else {
+					var lastLoader:ModuleLoader = serviceLoaderList.getItemAt(serviceLoaderList.length - 1) as ModuleLoader;
+					lastLoader.addEventListener(ModuleEvent.READY, function(e2:ModuleEvent):void {
+							init();
+						});
+				}
+			}
+
+			/**
+			 * 创建用于顺序加载模块的列表对象
+			 * */
+			private function createSystemServiceTempListItem(url:String):Object {
+				var obj:Object = new Object();
+				var loader:ModuleLoader = new ModuleLoader();
+				obj.loader = loader;
+				obj.url = url;
+				return obj;
+			}
+
+			private function gc(event:SysEvent):void {
+				if(event.relatedObject != null) {
+					memoryMsg.text = event.relatedObject + "m";
+				}
+			}
+
+			/**
+			 * 更新未读消息提示信息
+			 */
+			private function checkMessage(event:SysEvent):void {
+				var reobj:Object = event.relatedObject;
+				if(reobj != null && reobj != 0) {
+					smsgbox.visible = true;
+					smsg.text = "您有" + reobj.toString() + "条消息未读！";
+				} else {
+					smsgbox.visible = false;
+				}
+			}
+
+			/**
+			 * 点击待办任务后跳转到办理界面
+			 */
+			private function showTask(event:SysEvent):void {
+				var reobj:Object = event.relatedObject;
+				if(reobj != null) {
+					for each(var menu:Object in curUser.applist) {
+						if(menu.accessaddress == reobj) {
+							loadMenu(menu);
+							return;
+						}
+					}
+				}
+			}
+			
+			/**
+			 * 点击待办任务后跳转到办理界面
+			 */
+			private function showTask2(event:SysEvent):void {			
+				var reobj:Object = event.relatedObject;
+				if(reobj != null) {
+					for each(var menu:Object in curUser.applist) {
+						if(menu.accessaddress == "maea/zdxmbl.swf") {
+							loadMenu(menu);
+							return;
+						}
+					}
+				}
+				
+			}
+
+			/**
+			 * 设置系统标题
+			 */
+			private function initSystemTitle():void {
+				//vsTitleBar.selectedIndex = _titleObject.showflag;
+				//systemTitle = (_titleObject.title == null || _titleObject.title == "") ? _defaultTitle : _titleObject.title;
+			}
+
+			/**
+			 * 初始化左下角的登陆用户名
+			 */
+			private function initUsermc():void {
+				if(_departmentWithParent != null) {
+					var depname:String = "";
+					var dep:Object = _departmentWithParent;
+					depname = dep.department.depname;
+					while(dep.parent != null) {
+						dep = dep.parent;
+						depname = dep.department.depname + " － " + depname;
+					}
+					usermc.text = depname + ":" + SysConst.curUser.person.realname;
+					return;
+				}
+				if(SysConst.curUser.department != null) {
+					usermc.text = SysConst.curUser.department.depname + ":" + SysConst.curUser.person.realname;
+					return;
+				}
+				usermc.text = SysConst.curUser.person.realname;
+			}
+
+			/**
+			 * 初始化快捷菜单
+
+			 */
+			private function initQuickMenuList():void {
+				ws_qmm.findAllQmmPersonSetByUser.send(curUser.person.id);
+			}
+
+			private function resultFindAllQmmPersonSetByUser(event:ResultEvent):void {
+				if(event.result != null) {
+					if(event.result.isSuccued) {
+						if(!isSecretary()) {
+							// 如果不是秘书就加载快捷菜单
+
+							quickMenuList = WebServiceHelper.convert2List2(event.result.objarray);
+							var errorQuickMenuIds:ArrayCollection = new ArrayCollection();
+							for(var i:int = 0; i < quickMenuList.length; ) {
+								if(!hasApp(quickMenuList[i].applicationid)) {
+									errorQuickMenuIds.addItem(quickMenuList[i].applicationid);
+									quickMenuList.removeItemAt(i);
+									continue;
+								}
+								i++;
+							}
+							if(null != errorQuickMenuIds && errorQuickMenuIds.length > 0) {
+								ws_qmm.deleteQmmPersonSetByIds.send(errorQuickMenuIds);
+							}
+						} else {
+							quickMenuList = new ArrayCollection();
+						}
+						initStartMenu();
+					} else {
+						CommonFunctions.showInfo("提示", event.result.message);
+					}
+				}
+			}
+
+			private function hasApp(id:String):Boolean {
+				for each(var app:Object in curUser.applist) {
+					if(app.id == id) {
+						return true;
+					}
+				}
+				return false;
+			}
+
+			/**
+			 * 初始化开始菜单
+
+			 */
+			 
+			 private function initStartMenu():void {
+				var obj:Object = new Object();
+				obj.personid = SysConst.curUser.person.id;
+				obj.groups = SysConst.curUser.menulgroupist;
+				obj.apps = SysConst.curUser.applist;
+				//obj.code = SysConst.selectCode;
+				//ws_sso_common.getPlatformInfos.send(obj);
+				
+				appList = SysConst.curUser.applist;
+				var appGroupList1:ArrayCollection = SysConst.curUser.menulgroupist;
+				var arr:ArrayCollection = new ArrayCollection();
+				var appGroupList:ArrayCollection = new ArrayCollection();
+
+mymenubar.addEventListener(QuickMenuBar.BUTTON_CLICKED, menuClickedHandler);
+
+				//当前子平台顶级菜单项
+				var mm:Object = new Object();
+				for each(var subGroup:Object in appGroupList1){
+						mm = subGroup;
+						break;
+				}
+				
+				
+				//获取顶级菜单下的菜单，并转换为菜单组----例如异常预警、督办回复、统计分析等
+				/*var herf :String = ExternalInterface.call("getHerf")
+				for each(var app:Object in appList){
+					if(app.groupid == mm.id){
+										
+						var obj:Object = ObjectUtil.copy(app);
+						obj.itemType = "app";
+						obj.parentid = "root";
+						appGroupList.addItem(obj);
+					}
+				}*/
+				
+				//获取顶级菜单下的菜单组----如人事管理、财务管理、资产管理等
+				for each(var subGroup:Object in appGroupList1){
+					//if(subGroup.parentid == mm.id){
+						var obj:Object = ObjectUtil.copy(subGroup);
+						obj.itemType = "group";
+						obj.parentid = "root";
+						appGroupList.addItem(obj);
+					//}
+				}
+			
+				
+				//异常规则库顶级菜单
+				var mm1:Object = new Object();
+				for each(var subGroup:Object in appGroupList1){
+					if(subGroup.code == "anm_ycgz"){
+						mm1 = subGroup;
+						break;
+					}
+				}
+				
+				//获取异常规则库顶级菜单下的菜单组
+				for each(var subGroup:Object in appGroupList1){
+					if(subGroup.parentid == mm1.id){
+						var obj:Object = ObjectUtil.copy(subGroup);
+						obj.itemType = "group";
+						obj.parentid = "root";
+						appGroupList.addItem(obj);
+					}
+				}
+				
+				//获取异常规则库顶级菜单下菜单，并转换为菜单组
+				for each(var app:Object in appList){
+					if(app.groupid == mm1.id){
+						var obj:Object = ObjectUtil.copy(app);
+						obj.itemType = "app";
+						obj.parentid = "root";
+						appGroupList.addItem(obj);
+					}
+				}
+				
+				//获取后台框架、个人设置和辅助功能菜单组
+				/*for each(var subGroup:Object in appGroupList1){
+					if(subGroup.code == "xtgl" || subGroup.code == "grsz" || subGroup.code == "fzgn"){
+						var obj:Object = ObjectUtil.copy(subGroup);
+						obj.itemType = "group";
+						obj.parentid = "root";
+						appGroupList.addItem(obj);
+					}
+				}*/
+				
+				//获取所有菜单组下的所有菜单
+				for each(var group:Object in appGroupList){
+					var children:ArrayCollection = new ArrayCollection();
+					for each(var subGroup:Object in appGroupList){
+						if(subGroup.parentid == group.id){
+							subGroup.itemType = "group";
+							children.addItem(subGroup);
+						}
+					}
+					for each(var app:Object in appList){
+						if(app.groupid == group.id){
+							app.itemType = "app";
+							children.addItem(app);
+						}
+					}
+					
+					if (children.length > 0) {
+						group.children = children;
+					}
+					
+					if(group.parentid == "root"){
+						group.itemType = "group";
+						arr.addItem(group);
+					}
+				}
+				
+				startMenuBarList = arr;
+				startMenuBar.addEventListener(StartMenu2.APPLICATION_CLICKED, applicationClickedHandler);
+			}
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			/*private function initStartMenu():void {
+				startMenu = new StartMenu2();
+				startMenu.appList = SysConst.curUser.applist;
+				startMenu.quickMenuList = quickMenuList;
+				startMenu.appGroupList = SysConst.curUser.menulgroupist;
+				startMenu.addEventListener(StartMenu2.APPLICATION_CLICKED, applicationClickedHandler);
+				if(!isSecretary()) {
+					startMenu.addEventListener(StartMenu2.QUICKMENU_ADDED, quickMenuAddedHandler);
+					startMenu.addEventListener(StartMenu2.QUICKMENU_REMOVED, quickMenuRemovedHandler);
+				}
+				startMenu.addEventListener(StartMenu2.QUICKMENU_CLICKED, menuClickedHandler);
+				menulistzone.addChild(startMenu);
+				//mymenubar.addEventListener(QuickMenuBar.BUTTON_CLICKED, menuClickedHandler);
+
+				var extendmenu:String = "";
+				if(SysConst.getZdItem("extendmenu"))
+					extendmenu = SysConst.getZdItem("extendmenu").value as String;
+				if(extendmenu == "true") {
+					menushowstate = false;
+					showAndHiddenMenu();
+				}
+				
+				var obj:Object = new Object();
+				obj.personid = SysConst.curUser.person.id;
+				obj.groups = SysConst.curUser.menulgroupist;
+				obj.apps = SysConst.curUser.applist;
+				obj.code = SysConst.selectCode;
+				//ws_sso_common.getPlatformInfos.send(obj);
+startMenuBarList=SysConst.curUser.menulgroupist;			
+				var appList:ArrayCollection = SysConst.curUser.applist;
+				var appGroupList1:ArrayCollection = SysConst.curUser.menulgroupist;
+				var arr:ArrayCollection = new ArrayCollection();
+				var appGroupList:ArrayCollection = new ArrayCollection();
+				
+				//当前子平台顶级菜单项----例如社会保险基金、住房公积金等
+				var mm:Object = new Object();
+				for each(var subGroup:Object in appGroupList1){
+						mm = subGroup;
+
+					}
+			}*/
+
+			/**
+			 * 添加快捷菜单
+			 */
+			private function quickMenuAddedHandler(event:SysEvent):void {
+				ws_qmm.saveQmmPersonSet.send(event.relatedObject);
+			}
+
+			/**
+			 * 删除快捷菜单
+			 */
+			private function quickMenuRemovedHandler(event:SysEvent):void {
+				var quickMenu:Object = event.relatedObject;
+				ws_qmm.deleteQmmPersonSetByApplicationidAndPersonid.send(quickMenu.applicationid, quickMenu.personid);
+			}
+
+			private function applicationClickedHandler(event:SysEvent):void {
+				loadMenu(event.relatedObject);
+			}
+
+			private function menuClickedHandler(event:SysEvent):void {
+				var menu:Object = findMenuByQuickMenu(event.relatedObject);
+				if(menu != null) {
+					loadMenu(menu);
+				}
+			}
+
+			private function findMenuByQuickMenu(quickMenu:Object):Object {
+				for each(var menu:Object in SysConst.curUser.applist) {
+					if(menu.id == quickMenu.applicationid) {
+						return menu;
+					}
+				}
+				return null;
+			}
+
+			/**
+			 * 添加Tab页
+
+			 */
+			public function loadMenu(menuitem:Object):void {
+				var tb:TabModule = new TabModule();
+				tb.serviceUrl = servicesurl;
+				tb.userinfo = SysConst.curUser;
+				tb.moduleUrl = menuitem.accessaddress;
+				tb.tabLabel = menuitem.name;
+				tb.appcode = menuitem.appcode;
+				tb.id = menuitem.id; //将标签页ID 设置为UID
+				//判断用户是否设置页面多开，若唯一，则给与提示
+				if(menuitem.isunique && menuitem.isunique == 1) {
+					var children:Array = workzone.getChildren();
+					var flag:Boolean = true;
+					for(var i:Number = 0; i < children.length; i++) {
+						var obj:Object = children[i];
+						if(obj.id && obj.id == tb.id) {
+							//查找到该应用已经打开则弹出提示对话框
+							flag = false;
+							workzone.selectedIndex = i;
+						}
+					}
+					if(true == flag) {
+						workzone.addChild(tb);
+						flash.utils.setTimeout(function():void {
+								workzone.selectedIndex = workzone.getChildIndex(tb);
+							}, 100, null);
+					} else {
+						return;
+					}
+				} else {
+					workzone.addChild(tb);
+					flash.utils.setTimeout(function():void {
+							workzone.selectedIndex = workzone.getChildIndex(tb);
+						}, 100, null);
+				}
+			}
+
+			/**
+			 * 显示版权信息
+			 */
+			private function showRight():void {
+				var rightWindow:RightTitleWindow = RightTitleWindow(PopUpManager.createPopUp(this, RightTitleWindow, true));
+				CommonFunctions.centerTitleWindow(rightWindow);
+			}
+
+			/**
+			 * 显示/隐藏主菜单
+			 * */
+			private var menushowstate:Boolean = false;
+
+			/*private function showAndHiddenMenu():void {
+				if(!menushowstate) {
+					menulistzone.width = 250;
+					menuzone.width = minmenuwidth;
+				} else {
+					menuzone.width = minmenuwidth;
+					menulistzone.width = 0;
+				}
+				menushowstate = !menushowstate;
+			}*/
+
+			/**
+			 * 加载门户
+			 */
+			private function loadPortlets():void {
+				ws_portal.findPodByPersonid.send(curUser.person.id);
+			}
+
+			private function resultFindPodByPersonid(event:ResultEvent):void {
+				if(event.result) {
+					if(event.result.isSuccued) {
+						var podlist:ArrayCollection = WebServiceHelper.convert2List2(event.result.podlist);
+						if(podlist.length > 0) {
+							addPodArea(event.result.podlist);
+						} else {
+							ws_portal.findDefaultPod.send();
+						}
+					} else {
+						CommonFunctions.showError("错误", event.result.message);
+					}
+				}
+			}
+
+			private function resultFindDefaultPod(event:ResultEvent):void {
+				if(event.result) {
+					if(event.result.isSuccued) {
+						var podlist:ArrayCollection = WebServiceHelper.convert2List2(event.result.podlist);
+						addPodArea(podlist);
+					} else {
+						CommonFunctions.showError("错误", event.result.message);
+					}
+				}
+			}
+
+			private function addPodArea(podlist:ArrayCollection):void {
+				var podArea:PodArea = new PodArea();
+				podArea.podlist = podlist;
+				podArea.servicesurl = servicesurl;
+				firstPage.addChild(podArea);
+			}
+
+			/**
+			 * 显示未读消息列表
+			 */
+			private function showUnreadedBox():void {
+				var moduleWindow:ModuleWindow = ModuleWindow(PopUpManager.createPopUp(this, ModuleWindow, true));
+				moduleWindow.servicesurl = servicesurl;
+				moduleWindow.title = "未读消息";
+				moduleWindow.addEventListener(WindowCloseEvent.WINDOW_CLOSE, unreadedBoxClose);
+				moduleWindow.moduleurl = "smsg/SmsgUnreadBox.swf"
+				CommonFunctions.centerTitleWindow(moduleWindow);
+			}
+
+			private function checkUnreadedBox():void {
+				ws_smsg.checkUnreadedMessages.send(curUser.person.id);
+			}
+
+			private function unreadedBoxClose(event:WindowCloseEvent):void {
+				checkUnreadedBox();
+			}
+
+			private function resultCheckUnreadedMessages(event:ResultEvent):void {
+				if(event.result) {
+					if(event.result.isSuccued) {
+						var reobj:Object = event.result.value;
+						if(reobj) {
+							smsgbox.visible = true;
+							smsg.text = "您有" + reobj.toString() + "条消息未读！";
+						} else {
+							smsgbox.visible = false;
+						}
+					} else {
+						CommonFunctions.showError("错误", event.result.message);
+					}
+				}
+			}
+
+			/**
+			 * 判断当前人员是否为秘书
+
+			 */
+			private function isSecretary():Boolean {
+				return _personid != curUser.person.id;
+			}
+			
+			
+			
+			
+			/**
+			 * 隐藏或显示头部
+			 */
+			private var idCloseHead:Boolean = false;
+			private function openOrCloseHead():void 
+			{
+				if (idCloseHead) {
+					vsTitleBar.height = 90;
+					showclosebtn.setStyle("icon",null);
+					showclosebtn.setStyle("icon",IconUtility.getClass(showclosebtn,"css/icon/tool/FillUp.png"));
+					showclosebtn.toolTip = "隐藏头部";
+					if (!isSecretary()) {
+						//quickmenubar.visible = true;
+						khhead.visible = true;
+					}
+				} else {
+					vsTitleBar.height = 0;
+					showclosebtn.setStyle("icon",null);
+					showclosebtn.setStyle("icon",IconUtility.getClass(showclosebtn,"css/icon/tool/FillMenu.png"));
+					showclosebtn.toolTip = "显示头部";
+					if (!isSecretary()) {
+						//quickmenubar.visible = false;
+						khhead.visible = false;
+					}
+				}
+				idCloseHead = !idCloseHead;
+			}
+			
+			
+			private function zhuxiao():void
+			{
+				var logoutUrl:String = flash.external.ExternalInterface.call("getHerf");
+				var req:URLRequest = new URLRequest(logoutUrl);
+				navigateToURL(req, "_self");
+			}
+			
+			
+		]]>
+	</mx:Script>
+	<mx:WebService id="ws_ams" wsdl="{servicesurl}/ApplicationManager?wsdl" fault="CommonFunctions.faultmethod(event)">
+		<mx:operation name="findSysServ" result="resultFindSysServ(event)" />
+	</mx:WebService>
+	<mx:WebService id="ws_smsg" wsdl="{servicesurl}/SmsgManager?wsdl" fault="CommonFunctions.faultmethod(event)" showBusyCursor="false">
+		<mx:operation name="checkUnreadedMessages" result="resultCheckUnreadedMessages(event)" />
+	</mx:WebService>
+	<mx:WebService id="ws_qmm" wsdl="{servicesurl}/QmmManager?wsdl" fault="CommonFunctions.faultmethod(event)" showBusyCursor="true">
+		<mx:operation name="findAllQmmPersonSetByUser" result="resultFindAllQmmPersonSetByUser(event)" />
+	</mx:WebService>
+	<mx:WebService id="ws_portal" wsdl="{servicesurl}/PortalManager?wsdl" fault="CommonFunctions.faultmethod(event)" showBusyCursor="true">
+		<mx:operation name="findPodByPersonid" result="resultFindPodByPersonid(event)" />
+		<mx:operation name="findDefaultPod" result="resultFindDefaultPod(event)" />
+	</mx:WebService>
+	<mx:WebService id="ws_style" wsdl="{servicesurl}/StyleManager?wsdl" fault="CommonFunctions.faultmethod(event)" showBusyCursor="true" />
+
+	<mx:VBox width="100%" height="100%" verticalGap="0">
+		
+		<!-- head zone start -->
+		<mx:Canvas x="0" y="0" width="100%" styleName="headzoneCav" verticalScrollPolicy="off" horizontalScrollPolicy="off"  minWidth="900">
+		<mx:VBox width="100%" height="100%" verticalGap="0">
+		
+		<mx:ViewStack id="vsTitleBar" width="100%" height="100" selectedIndex="0">
+				<mx:HBox width="100%" id="khhead" verticalAlign="middle" height="100" styleName="head" minWidth="1024" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+					<mx:Image source="css/style00/logo/logo&amp;title.png"/>
+					
+					<local:QuickMenuBar id="mymenubar" Menulist="{quickMenuList}" height="80" right="10" top="10">
+					</local:QuickMenuBar>
+			</mx:HBox>
+		</mx:ViewStack>
+			
+		
+		<mx:HBox width="100%" height="27" styleName="headBar"  verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:HBox width="80%" height="100%"  horizontalGap="1">
+		<mx:Button id="showclosebtn" styleName="toolbarButton" toolTip="隐藏/显示头部" click="openOrCloseHead()">
+			<mx:icon>@Embed(source='css/icon/tool/showTop.png')</mx:icon>
+		</mx:Button>
+		<mx:Canvas styleName="headBarDiv" height="21" width="10">
+		</mx:Canvas>
+		 <local:StartMenuBar id="startMenuBar" width="100%" height="28" Menulist="{startMenuBarList}" />
+		</mx:HBox>
+		</mx:HBox>
+			</mx:VBox>
+	</mx:Canvas>
+	<!-- head zone end -->
+		
+		<!-- main zone start -->
+		<mx:Canvas width="100%" height="100%" styleName="mainzoneCav">
+			<mx:VBox width="100%" height="100%" verticalGap="0">
+
+
+				<!-- center zone start -->
+				<mx:Canvas width="100%" height="100%" styleName="centerzoneCav">
+					<mx:HDividedBox width="100%" height="100%" paddingLeft="1" paddingRight="1" paddingTop="1" paddingBottom="1" horizontalGap="5">
+						<!-- menu zone start -->
+						<mx:Canvas width="{minmenuwidth}" height="100%" styleName="menuzoneCav" id="menuzone" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+							<mx:HBox horizontalGap="0" width="32" height="100%" y="0" x="0" paddingLeft="5" paddingRight="5">
+								<!-- menu Navigator start 菜单按钮区域-->
+								<mx:VBox width="22" height="100%" styleName="leftbar" horizontalAlign="center">
+								
+									<mx:Button height="22" styleName="toolbarButton" toolTip="寻求帮助" width="22" click="SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_HELP))">
+											<mx:icon>@Embed(source='css/icon/tool/help1.png')</mx:icon>
+										</mx:Button>
+										<mx:Button height="22" styleName="toolbarButton" toolTip="页面锁定" width="22" click="SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_LOCK))">
+											<mx:icon>@Embed(source='css/icon/tool/Private.png')</mx:icon>
+										</mx:Button>
+									<mx:Button styleName="toolbarButton" toolTip="退出系统" width="22" click="SysEventDispatcher.dispatchEvent(new SysEvent(SysEvent.SYSTEM_LOGOUT))">
+										<mx:icon>@Embed(source='css/icon/tool/exit.png')</mx:icon>
+									</mx:Button>
+									<mx:Spacer height="100%"></mx:Spacer>
+								</mx:VBox>
+								<!-- menu Navigator end -->
+								<!-- menu List start 菜单列表区域-->
+								<!-- menu List end -->
+							</mx:HBox>
+						</mx:Canvas>
+						<!-- menu zone end -->
+
+							<!-- work zone start -->
+							<mx:Canvas width="100%" height="100%" styleName="workzoneCav" horizontalScrollPolicy="off">
+								<!-- work tab start 应用tab页-->
+								<ns1:SuperTabNavigator id="workzone" width="100%" height="100%" paddingLeft="0">
+									<!--
+									<ns1:TabModule id="firstPage" width="100%" height="100%" icon="@Embed(source='../css/icon/system/home.png')">
+									</ns1:TabModule-->
+									<!--<mx:Canvas id="firstPage"  width="100%" height="100%"  icon="@Embed(source='../css/icon/system/home.png')" label="首页">
+										 </mx:Canvas>-->
+									<mx:Canvas  label="首页" width="100%" height="100%"  icon="@Embed(source='../css/icon/system/home.png')" horizontalScrollPolicy="off">
+										<mx:VBox
+											id="firstPage"
+											width="100%" height="100%" verticalGap="0" horizontalScrollPolicy="off"> 
+												<!--<local:PodArea width="100%" height="100%"  />-->
+											</mx:VBox>
+										
+									</mx:Canvas>
+								</ns1:SuperTabNavigator>
+								<!-- work tab end -->
+							</mx:Canvas>
+							<!-- work zone end -->
+	
+
+					</mx:HDividedBox>
+				</mx:Canvas>
+				<!-- center zone end -->
+
+				<!-- bottom zone start -->
+			<mx:Canvas width="100%" height="22">
+				<mx:HBox width="100%" height="22" styleName="bottomzoneCav" bottom="0" verticalAlign="middle">
+					<mx:Image source="images/assist.png" autoLoad="true" scaleContent="false" />
+					<mx:Label text="" id="usermc" styleName="statusMsg">
+					</mx:Label>
+					<mx:Canvas width="10" height="22" styleName="statusDiv">
+					</mx:Canvas>
+					<mx:HBox id="smsgbox" visible="false" verticalAlign="middle">
+						<mx:Image source="images/pad.gif" autoLoad="true" scaleContent="false" />
+						<mx:Label id="smsg" styleName="statusMsg" click="showUnreadedBox()" />
+					</mx:HBox>
+					<mx:Canvas width="10" height="22" styleName="statusDiv">
+					</mx:Canvas>
+					<mx:Spacer width="100%">
+					</mx:Spacer>
+					<mx:VRule height="18">
+					</mx:VRule>
+					<mx:Image source="images/memory.png" autoLoad="true" scaleContent="false" />
+					<mx:Label text="" styleName="statusMsg" id="memoryMsg">
+					</mx:Label>
+					<mx:VRule height="18">
+					</mx:VRule>
+					<mx:Label text="版权信息" styleName="statusMsg" id="RightMsg" click="showRight()">
+					</mx:Label>
+				</mx:HBox>
+			</mx:Canvas>
+			<!-- bottom zone end -->
+
+			</mx:VBox>
+			<mx:ViewStack id="vs" width="0" height="0" />
+		</mx:Canvas>
+		<!-- main zone end -->
+	</mx:VBox>
+</mx:Application>
