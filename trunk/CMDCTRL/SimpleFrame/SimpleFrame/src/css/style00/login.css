@@ -1,0 +1,137 @@
+﻿/* CSS file */
+
+Application
+{
+   backgroundGradientColors: #0080CB, #0080CB;
+
+   color: #000000;
+   font-size:12;
+	fontFamily:"宋体";
+   fontWeight:"normal";
+
+   backgroundGradientAlphas: 0.9, 1.0;
+   modalTransparencyColor: #001218;
+   modalTransparency: 0.7;
+   modalTransparencyBlur: 1;
+   modalTransparencyDuration: 50;
+
+	themeColor: #009DFF;
+}
+
+Button
+{
+   color: #333333;
+   textRollOverColor: #333333;
+   textSelectedColor: #333333;
+   borderColor: #999999;
+   themeColor: #009DFF;
+   fontSize: 12;
+   fontFamily:"宋体";
+   fontWeight:"normal";
+	paddingLeft: 8;
+	paddingRight: 8;
+	paddingTop: 0;
+	paddingBottom: 0;
+
+	disabledSkin: Embed(source="default/Button_disabledSkin.png",scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	downSkin: Embed(source="default/Button_downSkin.png",scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	overSkin: Embed(source="default/Button_overSkin.png",scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	upSkin: Embed(source="default/Button_upSkin.png",scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	selectedDisabledSkin: Embed(source="default/Button_disabledSkin.png", scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	selectedUpSkin: Embed(source="default/Button_downSkin.png", scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	selectedOverSkin: Embed(source="default/Button_overSkin.png", scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+	selectedDownSkin: Embed(source="default/Button_downSkin.png", scaleGridLeft="4", scaleGridTop="4", scaleGridRight="60", scaleGridBottom="18");
+}
+
+
+Alert{
+   backgroundAlpha: 1.0;
+   backgroundColor: #FFFFFF;
+   borderStyle: solid;
+   borderAlpha: 1.0;
+   color:#000000;
+   dropShadowEnabled: true;
+   shadowDistance: 0;
+   shadowDirection: center;
+   dropShadowColor: #333333;
+	headerHeight: 27;
+	statusStyleName: alertStatus;
+	controlBarStyleName: alertControlBar;
+	paddingLeft: 60;
+	paddingRight: 60;
+	borderThicknessTop: 10;
+	borderThicknessBottom: 20;
+	buttonStyleName: alertButton;
+	titleStyleName: alertTitle;
+	titleBackgroundSkin: Embed(source="custom/panelTitleBlue.png", scaleGridRight="180", scaleGridLeft="1", scaleGridTop="10", scaleGridBottom="17");
+	dropShadowEnabled: true;
+   	shadowDistance: 6;
+   	shadowDirection: right;
+   	dropShadowColor: #333333;
+	borderColor: #AFCEE3;
+	borderSides: "top left right bottom";
+	borderThickness: 1;
+	cornerRadius: 5;
+	themeColor: #009DFF;
+	fontSize: 12;
+	fontFamily:"宋体";
+   fontWeight:"normal";
+}
+
+.alertTitle
+{
+	color:#000000;
+	fontSize: 12;
+	fontFamily:"宋体";
+   fontWeight:"normal";
+}
+
+TextInput {
+   borderStyle: solid;
+   borderColor: #A8BAD2;
+   color: #333333;
+	cornerRadius: 0;
+	backgroundDisabledColor: #d8effe;
+	fontSize: 12;
+	fontFamily: Arial;
+	themeColor: #009DFF;
+	textAlign: left;
+	borderThickness: 0;
+	backgroundAlpha: 0.0;
+}
+
+
+.button
+{
+
+	upSkin: Embed(source="logo/login_button.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	overSkin: Embed(source="logo/login_button_h.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	downSkin: Embed(source="logo/login_button.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	disabledSkin: Embed(source="logo/login_button_h.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="64",scaleGridBottom="52");
+	selectedUpSkin: Embed(source="logo/login_button.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	selectedOverSkin: Embed(source="logo/login_button_h.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	selectedDownSkin: Embed(source="logo/login_button.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	selectedDisabledSkin: Embed(source="logo/login_button.png",scaleGridLeft="8",scaleGridTop="7",scaleGridRight="49",scaleGridBottom="52");
+	
+}
+
+.rightsInfo
+{
+	fontSize: 11;
+    fontFamily:"PMingLiu"; 
+   	fontWeight: normal;
+   	fontStyle: normal;
+   	color: #80A1C6;
+	fontThickness: 1000;
+	fontAntiAliasType: advanced;
+	fontGridFitType: subpixel;
+}
+
+Label
+{
+	fontSize: 12;
+	fontFamily:"宋体";
+   fontWeight:"normal";
+
+}
+
