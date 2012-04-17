@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PodContentBase xmlns="com.esria.samples.dashboard.view.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+
+	<mx:Metadata>
+		[Event(name="ready", type="mx.events.ModuleEvent")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import com.wisoft.events.SysEvent;
+			import com.wisoft.util.SysEventDispatcher;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+			import com.wisoft.interfaces.ILoadAppInfo;
+			import com.wisoft.interfaces.ILoadUserInfo;
+			import com.wisoft.interfaces.ILoadSevicesURL;
+			import mx.events.ModuleEvent;
+			import mx.modules.IModuleInfo;
+			import mx.modules.ModuleManager;
+			import mx.modules.Module;
+			import com.wisoft.vo.UserInfo;
+			import com.wisoft.vo.SysConst;
+			
+			[Bindable]
+			public var moduleUrl:String;			
+			public var servicesurl:String = "../services";			
+			public var curUser:UserInfo = SysConst.curUser;
+			
+			private function readyModule( event:ModuleEvent ) : void{ 
+				var ml:ModuleLoader = event.target as ModuleLoader;
+				var ichild:ILoadSevicesURL = ml.child as ILoadSevicesURL;
+				var ichild2:ILoadUserInfo = ml.child as ILoadUserInfo;			      
+				if( ichild != null ) {
+					ichild._servicesurl =servicesurl;
+				}
+				if(ichild2!=null){
+					ichild2._userinfo = curUser;
+				}
+				if(ml.child != null){
+					ml.child.addEventListener("DBTaskType", showTask);
+				}
+				dispatchEvent(event);
+			}
+			
+			private function progressEventHandler(e:ProgressEvent):void {
+				
+			}
+			
+			/**
+			 * 弹出办理界面
+			 * */
+			private function showTask(event:ResultEvent):void {
+				if(event.result == null){
+					return;
+				}
+				var url:String=null;
+				if(SysConst.getZdItem("dbrw_" + String(event.result).toLowerCase()))
+				{
+					url = SysConst.getZdItem("dbrw_" + String(event.result).toLowerCase()).value;
+				}
+				if(url == null){
+					return;
+				}
+				var sysEvent:SysEvent = new SysEvent("showTask");
+				sysEvent.relatedObject = url;
+				SysEventDispatcher.dispatchEvent(sysEvent);
+			}
+
+		]]>
+	</mx:Script>
+	<mx:ModuleLoader  id="ml" width="100%" height="100%"  url="{moduleUrl}" ready="readyModule(event)" progress="progressEventHandler(event)">
+	</mx:ModuleLoader>	
+</PodContentBase>

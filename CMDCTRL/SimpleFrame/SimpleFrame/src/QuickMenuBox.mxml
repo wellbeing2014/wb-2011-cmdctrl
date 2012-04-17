@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalGap="0" horizontalAlign="center" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import com.wisoft.events.SysEvent;
+			import com.wisoft.util.IconUtility;
+			
+			public static const MENU_CLICK:String = "menuClick";
+			
+			[Bindable]
+			private var _menuItem:Object;
+			private var glow:GlowFilter = new GlowFilter();
+			
+			[Bindable]
+			private var iconUrl:String = "icons/maxdefault.png";
+			
+			[Bindable]
+			private var lblText:String = "";
+			
+			public function set menuItem(obj:Object):void {
+				_menuItem = obj;
+				iconUrl = _menuItem.maxicon != null ? _menuItem.maxicon : iconUrl;
+    			lblText = _menuItem.mc;
+	    		if(lblText.length > 4) {
+	    			lblText = lblText.substring(0, 4) + "...";
+	    		}
+			}
+			
+			public function get menuItem():Object {
+				return _menuItem;
+			}
+			
+			private function init():void {
+				glow = new GlowFilter();
+		    	glow.color = 0x022147;
+		    	glow.strength = 2;
+			}
+			
+			private function btnClick():void {
+				var sysEvent:SysEvent = new SysEvent(MENU_CLICK);
+				sysEvent.relatedObject = _menuItem;
+				dispatchEvent(sysEvent);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Button id="btn" styleName="shortcutbarButton" width="48" height="48" toolTip="{_menuItem.mc}"
+		icon="{IconUtility.getClass(btn, iconUrl)}"
+		mouseOver="lbl.filters = [glow]" mouseOut="lbl.filters = null"
+		click="btnClick()" />
+	<mx:Label id="lbl" textAlign="center" styleName="shortcutbarButtonLabel" text="{lblText}" />
+</mx:VBox>

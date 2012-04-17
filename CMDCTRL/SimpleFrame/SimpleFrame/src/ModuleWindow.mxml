@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="640" height="480">
+	<mx:Script>
+		<![CDATA[
+			import com.wisoft.events.WindowCloseEvent;
+			import com.wisoft.util.PopUpManager;
+			import com.wisoft.vo.SysConst;
+			import com.wisoft.interfaces.ILoadUserInfo;
+			import com.wisoft.interfaces.ILoadSevicesURL;
+			import mx.modules.ModuleLoader;
+			import mx.events.ModuleEvent;
+			
+			[Bindable] public var servicesurl:String ="../services";
+			[Bindable] public var moduleurl:String = "";
+			
+			private function readyModule(event:ModuleEvent):void {
+				var loader:ModuleLoader = event.target as ModuleLoader;
+				var ichild:ILoadSevicesURL = loader.child as ILoadSevicesURL;
+				var ichild2:ILoadUserInfo = loader.child as ILoadUserInfo;
+				if( ichild != null ) {
+					ichild._servicesurl = "../services";
+				}if(ichild2 != null){
+					ichild2._userinfo = SysConst.curUser;
+				}
+			}
+			
+			private function close():void {
+				dispatchEvent(new WindowCloseEvent(WindowCloseEvent.WINDOW_CLOSE));
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:ModuleLoader url="{moduleurl}" width="100%" height="100%" ready="readyModule(event)"/>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="关闭" click="close()"/>
+	</mx:ControlBar>
+</mx:TitleWindow>
