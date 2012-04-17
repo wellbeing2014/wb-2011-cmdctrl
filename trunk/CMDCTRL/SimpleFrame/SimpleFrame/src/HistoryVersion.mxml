@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:wisoft="com.wisoft.components.grid.ui.*" 
+	 close="closeWindow()" width="800" height="500"
+	showCloseButton="true" creationComplete="init()" title="查看更新记录" paddingLeft="3" paddingRight="3" >
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import mx.rpc.events.ResultEvent;
+			import com.wisoft.vo.SysConst;
+			import com.wisoft.events.WindowCloseEvent;
+			import com.wisoft.util.PopUpManager;
+			import com.wisoft.util.CommonFunctions;
+			import mx.formatters.DateFormatter;
+			import mx.controls.Alert;
+			
+			
+			[Bindable]private var servicesurl:String = "../services/";
+			
+			private function closeWindow():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function init():void
+			{
+				ws_explorer.findModuleCode.send();
+			}
+			
+			private function resultFindModuleCode(event:ResultEvent):void
+			{
+				if(event.result.isSuccued)
+				{
+					var arr:ArrayCollection=event.result.stringarray as ArrayCollection;
+					arr.addItemAt("全部",0);
+					mkdm.dataProvider=arr;
+				}
+				else
+				{
+					CommonFunctions.showInfo("提示","无法获取服务,可能服务器已关闭!");
+				}
+			} 
+			
+			//private var datefrom:String;
+			//private var dateend:String;
+			private function doSearch():void
+			{
+				var modulecode:String=mkdm.selectedLabel;
+				var datefrom:String=fromdate.text;
+				var dateend:String=todate.text;
+				//var format:DateFormatter=new DateFormatter();
+				//format.formatString="YYYY/MM/DD";
+				if(modulecode=="全部")
+				{
+					modulecode="";
+				}
+				/* if(date1==null)
+				{
+					datefrom="";
+				}
+				else
+				{
+					datefrom=format.format(date1);
+				}
+				if(date2==null)
+				{
+					dateend="";
+				}
+				else
+				{
+					dateend=format.format(date2);
+				}		 */
+				ws_explorer.findVersionByCondition.send(modulecode,datefrom,dateend);
+			}
+			
+			
+			private function resultFindVersionByCondition(event:ResultEvent):void
+			{
+				if(event.result.isSuccued)
+				{
+					this.dg.initData(event.result.versioninfo);
+				}
+				else
+				{
+					CommonFunctions.showInfo("提示","无法获取服务,可能服务器已关闭!");
+				}
+			}
+			
+			
+			private function clear():void
+			{
+				mkdm.selectedIndex=0;
+				fromdate.selectedDate=null;
+				todate.selectedDate=null;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:ArrayCollection id="arr">
+			<mx:Object modulename="001" modulecode="普通列表" version="马秉钧" publish_date="2010-8-11 8:01:5" update_date="2010-8-11 8:01:5" remark="试行中" ></mx:Object>
+			<mx:Object modulename="001" modulecode="普通列表" version="马秉钧" publish_date="2010-8-11 8:01:5" update_date="2010-8-11 8:01:5" remark="试行中" ></mx:Object>
+	</mx:ArrayCollection>
+	
+	
+	<mx:WebService id="ws_explorer" wsdl="{servicesurl}/ExplorerManager?wsdl" fault="CommonFunctions.faultmethod(event)">
+		<mx:operation name="findModuleCode" result="resultFindModuleCode(event)" />
+		<mx:operation name="findVersionByCondition" result="resultFindVersionByCondition(event)" />
+	</mx:WebService>
+	
+	
+	<mx:VBox paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" width="100%" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+		<mx:ApplicationControlBar width="100%">
+			<mx:HBox width="100%" horizontalAlign="left">
+				<mx:Label text="模块代码"/>
+				<mx:ComboBox id="mkdm" labelField="name">				
+				</mx:ComboBox>
+				<mx:Label text="更新日期(从)"/>
+				<mx:DateField width="100" id="fromdate" formatString="YYYY-MM-DD"/>
+				<mx:Label text="    (至)"/>
+				<mx:DateField width="100" id="todate" formatString="YYYY-MM-DD"/>
+				
+				<mx:Button label="查询" click="doSearch()">
+					<mx:icon>@Embed(source='/css/icon/tool/Search16.png')</mx:icon>
+				</mx:Button>
+				<mx:Button label="清空" click="clear()">
+				</mx:Button>
+			</mx:HBox>
+		</mx:ApplicationControlBar>
+		<wisoft:CustomGrid id="dg" textAlign="center"  width="100%" height="100%" horizontalScrollPolicy="auto" 
+			borderStyle="none" isSortableColumns="true">
+			<wisoft:pagecount>15</wisoft:pagecount>
+			<wisoft:isneedpage>true</wisoft:isneedpage>
+			<wisoft:ismultisel>false</wisoft:ismultisel>
+			<wisoft:isshowexport>false</wisoft:isshowexport>
+			<wisoft:mygridcolumns>
+				<mx:DataGridColumn headerText="模块代码" dataField="modulecode"  width="80"/>
+				<mx:DataGridColumn headerText="模块名称" dataField="modulename" width="180" showDataTips="true"/>
+				<mx:DataGridColumn headerText="版本号" dataField="version" width="100"/>
+				<mx:DataGridColumn headerText="发布日期" dataField="publish_date" width="100"/>
+				<mx:DataGridColumn headerText="更新日期" dataField="update_date" width="160"/>
+				<mx:DataGridColumn headerText="备注说明" dataField="remark" showDataTips="true"/>
+			</wisoft:mygridcolumns>
+		</wisoft:CustomGrid>
+	</mx:VBox>
+	
+</mx:TitleWindow>
+

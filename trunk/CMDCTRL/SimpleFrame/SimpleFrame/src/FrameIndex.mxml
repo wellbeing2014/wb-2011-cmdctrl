@@ -99,6 +99,10 @@
 				_systemServiceModuleLoaderList = arr;
 			}
 			
+			private function doLogin():void{
+				
+			}
+			
 			private function initSuperTab():void {			
 				
 				var closeMeBuildMenuItem: ContextMenuItem = new ContextMenuItem("关闭");
@@ -921,7 +925,7 @@ startMenuBarList=SysConst.curUser.menulgroupist;
 									</ns1:TabModule-->
 									<!--<mx:Canvas id="firstPage"  width="100%" height="100%"  icon="@Embed(source='../css/icon/system/home.png')" label="首页">
 										 </mx:Canvas>-->
-									<mx:Canvas  label="首页" width="100%" height="100%"  icon="@Embed(source='../css/icon/system/home.png')" horizontalScrollPolicy="off">
+									<mx:Canvas  label="首页" width="100%" height="100%"  icon="@Embed(source='/css/icon/system/home.png')" horizontalScrollPolicy="off">
 										<mx:VBox
 											id="firstPage"
 											width="100%" height="100%" verticalGap="0" horizontalScrollPolicy="off"> 
@@ -943,7 +947,7 @@ startMenuBarList=SysConst.curUser.menulgroupist;
 			<mx:Canvas width="100%" height="22">
 				<mx:HBox width="100%" height="22" styleName="bottomzoneCav" bottom="0" verticalAlign="middle">
 					<mx:Image source="images/assist.png" autoLoad="true" scaleContent="false" />
-					<mx:Label text="" id="usermc" styleName="statusMsg">
+					<mx:Label text="" id="usermc" styleName="statusMsg" click="doLogin()">
 					</mx:Label>
 					<mx:Canvas width="10" height="22" styleName="statusDiv">
 					</mx:Canvas>

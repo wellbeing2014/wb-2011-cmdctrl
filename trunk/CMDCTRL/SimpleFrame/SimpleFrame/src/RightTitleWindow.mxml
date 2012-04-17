@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" showCloseButton="true" close="closeWin()"
+	 layout="vertical" width="516" height="354" title="版本信息"   creationComplete="init()" >
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			import com.wisoft.vo.SysConst;
+			import com.wisoft.events.WindowCloseEvent;
+			import com.wisoft.util.PopUpManager;
+			import com.wisoft.util.CommonFunctions;
+			import mx.controls.Alert;
+			
+			[Bindable] private var simplename:String = "";
+			[Bindable] private var corpname:String = "";
+			[Bindable] private var corpsite:String = "";
+			
+			[Bindable]
+			private var servicesurl:String = "../services/";
+			
+			private function init():void
+			{
+				/*simplename=SysConst.corpInfo.simplename;
+				corpname=SysConst.corpInfo.name;
+				corpsite=SysConst.corpInfo.site;
+				
+				var isadmin:String=SysConst.curUser.person.loginname;
+				if(isadmin=="superadmin")
+				{
+					ver.visible=true;
+				}
+				
+				ws_explorer.findVersionInfo.send();*/
+			}
+			
+			/*  private function resultFindVersionInfo(event:ResultEvent):void
+			{
+				if(event.result.isSuccued)
+				{
+					rp.dataProvider=event.result.versioninfo;
+				}
+				else
+				{
+					CommonFunctions.showInfo("提示","无法获取服务,可能服务器已关闭!");
+				}
+			}  */
+			
+			
+			private function closeWin():void {
+				dispatchEvent(new WindowCloseEvent(WindowCloseEvent.WINDOW_CLOSE));
+				PopUpManager.removePopUp(this);
+			}
+			
+			 private function seeHistory():void
+			{
+				var wnd:HistoryVersion = HistoryVersion(PopUpManager.createPopUp(this, HistoryVersion,true));
+				CommonFunctions.centerTitleWindow(wnd);
+			} 
+			
+		]]>
+	</mx:Script>
+		
+	
+<!--	<mx:Canvas width="100%" height="100%" >
+		<mx:VBox x="20" y="48" width="330" height="160" styleName="contentVBox" backgroundAlpha="1">
+			
+			<mx:Repeater id="rp">
+				<mx:Label text="{rp.currentItem.modulename}{rp.currentItem.version}"/>		
+			</mx:Repeater>
+			
+		</mx:VBox>
+		
+			<mx:Label text="{corpname}" x="20" y="216"/>	
+			<mx:Label text="{corpsite}" x="20" y="232"/>
+	</mx:Canvas>
+	<mx:ControlBar horizontalAlign="right" height="43">
+		<mx:Button label="版本记录" click="seeHistory()" id="ver" visible="false"/>
+		<mx:Button label="关闭" click="closeWin()" />
+	</mx:ControlBar>-->
+	
+	
+	
+	<mx:VBox width="464" height="254" horizontalAlign="center" verticalAlign="top" styleName="contentVBox">
+				<mx:HBox width="90%" horizontalAlign="center" verticalAlign="middle">
+			
+						<mx:Image source="css/style01/logo2/logo.png" scaleContent="true"/>
+						<mx:VBox width="100%" height="100%" verticalGap="0">
+							<mx:Label text="中科xxxx系统" styleName="labelBold" fontWeight="normal"/>
+							<mx:Label text="中科xxxx系统beta1" styleName="labelBold" fontWeight="normal"/>
+							<mx:Label text="中科惠软有限公司" styleName="labelBold" fontWeight="normal"/>
+						</mx:VBox>
+				
+				</mx:HBox>
+
+
+				<mx:HBox width="90%" horizontalAlign="right" verticalAlign="middle" height="137">
+					<mx:Image source="css/style01/logo2/wisoft-logo1.png"/>
+				</mx:HBox>
+				
+
+			</mx:VBox>
+	<mx:ControlBar width="100%" horizontalAlign="right">
+		<mx:Button  
+						label="关闭" click="closeWin()">
+			<mx:icon>@Embed(source='/css/icon/tool/SharingRequestDeny.png')</mx:icon>
+		</mx:Button>
+	</mx:ControlBar>
+	
+	
+	
+</mx:TitleWindow>
+

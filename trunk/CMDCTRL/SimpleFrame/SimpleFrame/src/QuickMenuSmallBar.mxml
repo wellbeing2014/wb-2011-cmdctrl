@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" horizontalAlign="right" horizontalGap="5" xmlns:local="*">
+	<mx:Script>
+		<![CDATA[
+			import components.WisoftScrollableArrowMenu;
+			import components.WisoftMenuItemRenderer;
+			import mx.events.MenuEvent;
+			import flexlib.controls.ScrollableArrowMenu;
+			import com.wisoft.util.WebServiceHelper;
+			import mx.rpc.events.ResultEvent;
+			import com.wisoft.util.CommonFunctions;
+			import com.wisoft.events.SysEvent;
+			import com.wisoft.util.IconUtility;
+			import mx.controls.Button;
+			import mx.containers.VBox;
+			import mx.collections.ArrayCollection;
+			import com.wisoft.vo.SysConst;
+			import mx.core.ScrollPolicy;
+			
+			[Event(name=BUTTON_CLICKED, type="com.wisoft.events.SysEvent")]
+			public static const BUTTON_CLICKED:String = "buttonClicked";
+			
+			[Event(name=APPLICATION_CLICKED, type="com.wisoft.events.SysEvent")]
+			public static const APPLICATION_CLICKED:String = "applicationClicked";
+			
+			[Bindable]
+			private var menulist:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var submenulist:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var servicesurl:String = "../services";
+			
+			private var selmenu:Object;
+			private var defaultminicon:String="icons/mindefault.png";
+			private var curpagenum:int = 0;//当前页码
+			private var pagecount:int = 6;//每页个数
+			
+			
+			
+			public function set _servicesurl(str:String):void {
+				servicesurl = str;
+			}
+			
+			public function set Menulist(value:ArrayCollection):void {
+				menulist=value;
+				changePage();
+			}
+			
+			private function changePage():void {
+				if (menulist != null && menulist.length > 0) {
+					submenulist = new ArrayCollection();
+					for (var i:int=0; i<menulist.length; i++) {
+						if (i >= curpagenum*pagecount && i < (curpagenum+1)*pagecount) {
+							submenulist.addItem(menulist.getItemAt(i));
+						} else if (i >= (curpagenum+1)*pagecount) {
+							break;
+						}
+					}
+					addMenu();
+				}
+			}
+			
+			private function addMenu():void {
+				if (submenulist != null && submenulist.length > 0) {
+					menubar.removeAllChildren();
+					for (var i:int=0; i<submenulist.length; i++) {
+						var myBtn:Button=new Button();
+						myBtn.setStyle("styleName","toolbarButton");
+						myBtn.toolTip=submenulist.getItemAt(i).mc;
+						myBtn.name=submenulist.getItemAt(i).applicationid;
+						
+						var iconSource:String = defaultminicon;
+						if(submenulist.getItemAt(i).minicon) {
+							iconSource=submenulist.getItemAt(i).minicon;
+						}
+						
+						myBtn.setStyle("icon", IconUtility.getClass(myBtn, iconSource,16,16));   
+						myBtn.addEventListener(MouseEvent.CLICK,buttonClickHandler);
+						menubar.addChild(myBtn);
+					}
+				}
+			}
+			
+			private function toLeftPage():void {
+				if (curpagenum >= 1) {
+					curpagenum = curpagenum - 1;
+				}
+				changePage();
+			}
+			
+			private function toRightPage():void {
+				if (menulist != null && menulist.length > (curpagenum+1)*pagecount) {
+					curpagenum = curpagenum + 1;
+				}
+				changePage();
+			}
+			
+			//点击快捷菜单按钮
+			private function buttonClickHandler(event:MouseEvent):void {
+		    	var selbtn:Button=event.target as Button;
+		    	
+		    	for each(var myselMenu:Object in submenulist) {
+		    		if(selbtn.name ==myselMenu.applicationid) {
+		    			selmenu=myselMenu;
+		    			break;
+		    		}
+		    	}
+		    	
+		    	if(selmenu) {
+		    		var e:SysEvent = new SysEvent(BUTTON_CLICKED);
+		    		e.relatedObject = selmenu;
+		    		dispatchEvent(e);
+		    	}
+			}
+			
+			//重新获取快捷菜单列表
+			public function refreshQuickMenuBar():void {
+				ws_qmm.findAllQmmPersonSetByUser.send(SysConst.curUser.person.id);
+			}
+			
+			private function resultFindAllQmmPersonSetByUser(event:ResultEvent):void {
+				if(event.result != null) {
+					if(event.result.isSuccued) {
+						var quickMenuList:ArrayCollection = WebServiceHelper.convert2List2(event.result.objarray);
+						var errorQuickMenuIds:ArrayCollection = new ArrayCollection();
+						for(var i:int = 0; i < quickMenuList.length; ) {
+							//quickMenuList.getItemAt(i).icon = quickMenuList.getItemAt(i).minicon;
+							if(!hasApp(quickMenuList[i].applicationid)) {
+								errorQuickMenuIds.addItem(quickMenuList[i].applicationid);
+								quickMenuList.removeItemAt(i);
+								continue;
+							}
+							i++;
+						}
+						if(null != errorQuickMenuIds && errorQuickMenuIds.length > 0) {
+							ws_qmm.deleteQmmPersonSetByIds.send(errorQuickMenuIds);
+						}
+						
+						this.Menulist = quickMenuList;
+					} else {
+						CommonFunctions.showInfo("提示", event.result.message);
+					}
+				}
+			}
+			
+			private function hasApp(id:String):Boolean {
+				for each(var app:Object in SysConst.curUser.applist) {
+					if(app.id == id) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			private function menuClickHandler(event:MenuEvent):void {
+				var selectedItem:Object = event.item;
+				if(selectedItem != null && selectedItem.itemType == "app") {
+					var e:SysEvent = new SysEvent(APPLICATION_CLICKED);
+					e.relatedObject = selectedItem;
+					dispatchEvent(e);
+				}
+			}
+			
+			private function showAllMenu():void {
+            	
+            	var menu:WisoftScrollableArrowMenu = WisoftScrollableArrowMenu.createMenu(null, menulist, false);
+                menu.labelField="mc";
+                menu.maxHeight = 400;
+                menu.addEventListener(MenuEvent.ITEM_CLICK,menuClickHandler);
+                menu.itemRenderer = new ClassFactory(WisoftMenuItemRenderer);
+                menu.verticalScrollPolicy = ScrollPolicy.OFF;
+                menu.arrowScrollPolicy = ScrollPolicy.AUTO;
+                
+                var pt:Point = new Point(-100, 20);
+                pt = showbtn.localToGlobal(pt);
+                
+                menu.show(pt.x, pt.y);
+                var menuwidth:Number = menu.width;
+                menu.hide();
+                pt = new Point(-menuwidth+16, 20);
+                pt = showbtn.localToGlobal(pt);
+                menu.show(pt.x, pt.y);
+            }
+		]]>
+	</mx:Script>
+	
+	<mx:WebService id="ws_qmm" wsdl="{servicesurl}/QmmManager?wsdl" fault="CommonFunctions.faultmethod(event)" showBusyCursor="true">
+		<mx:operation name="findAllQmmPersonSetByUser" result="resultFindAllQmmPersonSetByUser(event)" />
+	</mx:WebService>	
+	<!--
+	<mx:Button styleName="shortcutbarButton" toolTip="上一页" click="toLeftPage()" height="21" width="16" icon="@Embed(source='css/icon/tool/SlideToLeft.png')"/>
+	-->
+	<mx:HBox id="menubar" width="190" height="21" />
+	<!--
+	<mx:Button styleName="shortcutbarButton" toolTip="下一页" click="toRightPage()" height="21" width="16" icon="@Embed(source='css/icon/tool/SlideToRight.png')"/>
+	-->
+	<mx:Button id="showbtn" visible="{menulist.length>pagecount?true:false}" styleName="shortcutbarButton" toolTip="全部" click="showAllMenu()" height="21" width="16" icon="@Embed(source='css/icon/tool/SlideToRight.png')"/>
+	
+</mx:HBox>
