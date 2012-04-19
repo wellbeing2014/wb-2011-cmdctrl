@@ -35,16 +35,20 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
-
-
-
 	<servlet-mapping>
 		<servlet-name>MessageBrokerServlet</servlet-name>
 		<url-pattern>/messagebroker/*</url-pattern>
 	</servlet-mapping>
 	
-
+	<servlet>
+		<servlet-name>SendMsgServlet</servlet-name>
+		<servlet-class>com.wisoft.im.feiq.SendMsgServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SendMsgServlet</servlet-name>
+		<url-pattern>/SendMsgServlet/*</url-pattern>
+	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
