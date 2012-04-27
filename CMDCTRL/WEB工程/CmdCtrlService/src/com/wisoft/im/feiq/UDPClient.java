@@ -35,8 +35,4 @@ public class UDPClient {
 	    public void Init() {
 	        
 	    }
-
-	    public static void main(String args[]) {
-	        new UDPClient();
-	    }
 }
