@@ -4,6 +4,7 @@
 	<mx:Style source="mycss.css"/>
 	<mx:Script>
 		<![CDATA[
+			import mx.rpc.http.HTTPService;
 		import com.flex.Cmdstat;
 		import mx.controls.Alert;
 		import mx.messaging.ChannelSet;
@@ -25,17 +26,20 @@
 		private var timer1:Timer = new Timer(60000);//刷新整个数据源的频率
 		private var isrefresh:Boolean=false;
 		private var isstop:Boolean = false;
+			
 		//private var path:String = ExternalInterface.call("getHerf");
 		private var path:String ="";
 		[Bindable]
 		public var tiaozhuanNO:ArrayCollection = new ArrayCollection();
 		private var _MODEL:String = "";
-		
+		[Bindable] private var memnum:String ="服务器内存大小："
 		private function init():void
 		{
 			var arr:Array = Application.application.url.split('/');
 			//Alert.show(arr[0]+"//"+arr[2]+"/"+arr[3]);//http:+//+IP:duankou+/服务名/
 			path = arr[0]+"//"+arr[2]+"/"+arr[3];
+			servlet.url=path+"/SendMsgServlet";
+			
 			_MODEL =this.parameters.model;
 			//Alert.show(ctrl_type);
 			timer1.addEventListener(TimerEvent.TIMER, onTimer1);
@@ -103,7 +107,9 @@
       	//监听推送消息事件
 		private function messageHandler(event:MessageEvent):void 
 		{ 
-			cmdlist1 = event.message.body as ArrayCollection;
+			var reobject:Array = event.message.body as Array;
+			cmdlist1 = reobject[0] as ArrayCollection;
+			memnum = "服务器内存大小"+(reobject[1] as String)+"M";
 			if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
 			{
 				cmdlist = cmdlist1;
@@ -187,7 +193,12 @@
 				_MODEL = "USER";
 			}
 		}
-		
+		private function manualReFresh():void
+		{
+			servlet.request.cmd="start";
+			servlet.request.time= new Date().toLocaleTimeString();
+			servlet.send();
+		}
 		
 		]]>
 </mx:Script>
@@ -200,6 +211,8 @@
 	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle" backgroundColor="#0E7DFA" cornerRadius="50" height="33">
 	<mx:Label text="中科内部测试服务管理系统" fontStyle="italic" fontSize="20" color="#FFFFFF" fontWeight="bold" fontFamily="Times New Roman"/>
 	<mx:Spacer width="100%"/>
+	<mx:Label text="{memnum}" id="mem" width="157"/>
+	<mx:LinkButton label="手动刷新" click="manualReFresh()"/>
 	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar" toggleOnClick="false" itemClick="changeModel(event)">
 	</mx:ToggleButtonBar>
 	</mx:HBox>
@@ -325,5 +338,7 @@
 		<mx:method name="docmdAdmin" result="resultdocmd(event)"/> 
 		<mx:method name="docmdUser" result="resultdocmd(event)"/> 
 		
-    </mx:RemoteObject>
+  </mx:RemoteObject>
+  <mx:HTTPService id="servlet" method="GET">
+  </mx:HTTPService>
 </mx:Application>

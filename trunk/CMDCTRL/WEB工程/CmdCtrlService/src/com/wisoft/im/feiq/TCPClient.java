@@ -65,8 +65,8 @@ public class TCPClient {
 		recthread.start();
 		sendthread=new  SendThread("sendthread",s);
 		sendthread.start();
-		FeedThread ft = new FeedThread();
-		ft.start();
+//		FeedThread ft = new FeedThread();
+//		ft.start();
 	}
 	
 	/**
@@ -208,39 +208,3 @@ class RecThread extends Thread {
     }
 }
 
-/**
- * 为各WEB客户端进行推送各服务状态数据
- * @author 朱新培
- *
- */
-class FeedThread extends Thread {
-	public boolean running = true;
-	public void run() {
-		MessageBroker msgBroker = MessageBroker.getMessageBroker(null);
-		while(msgBroker==null)
-		{
-			msgBroker = MessageBroker.getMessageBroker(null);
-		}
-		String clientID = UUIDUtils.createUUID();
-		int i = 0;
-		while (running) {
-			//System.out.println("1231231231231231"+i);
-			List<Cmdstat> cmdlist=TCPClient.broadcast();
-			AsyncMessage msg = new AsyncMessage();
-			msg.setDestination("CmdCtrlService");
-			msg.setHeader("DSSubtopic", "List<Cmdstat>");
-			msg.setClientId(clientID);
-			msg.setMessageId(UUIDUtils.createUUID());
-			msg.setTimestamp(System.currentTimeMillis());
-			msg.setBody(cmdlist);
-			msgBroker.routeMessageToService(msg, null);
-			i++;
-			try {
-				Thread.sleep(2000);
-			} 
-			catch (InterruptedException e) {
-			}
-		}
-		System.out.println(Calendar.getInstance().toString()+"我操状态发送blazeds线程退出了");
-	}
-}

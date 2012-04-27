@@ -18,6 +18,7 @@
 	       { 
 	         	var service:HTTPService = new HTTPService();
 	    		service.url = encodeURI(logname);
+	    		service.request.time=new Date().toLocaleTimeString();
 	     		service.useProxy = false;
 	     		service.resultFormat="text";
 	     		service.addEventListener(ResultEvent.RESULT,onResultHandler);
