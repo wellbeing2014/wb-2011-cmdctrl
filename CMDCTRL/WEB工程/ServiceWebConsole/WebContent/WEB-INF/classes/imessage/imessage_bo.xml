@@ -23,10 +23,33 @@
 		<property name="allowiplist" >
 		<list>
 			<value>127.0.0.1</value>
-			<value>192.10.110.179</value>
-			<value></value>
+			<value>127.0.0.1</value>
+			<value>192.10.110.48</value>
+			<value>192.10.110.51</value>
+			<value>192.10.110.52</value>
+			<value>192.10.110.53</value>
+			<value>192.10.110.54</value>
+			<value>192.10.110.55</value>
+			<value>192.10.110.56</value>
+			<value>192.10.110.57</value>
+			<value>192.10.110.58</value>
+			<value>192.10.110.59</value>
+			<value>192.10.110.66</value>
+			<value>192.10.110.67</value>
+			<value>192.10.110.79</value>
+			<value>192.10.110.125</value>
+			<value>192.10.110.127</value>
+			<value>192.10.110.129</value>
+			<value>192.10.110.188</value>
+			<value>192.10.110.190</value>
+			<value>192.10.110.206</value>
+			<value>192.10.110.205</value>
+			<value>192.10.110.241</value>
+			
 		</list>
 		</property>
-		
+		<property name="adminPassWord">
+			<value>wisoft</value>
+		</property>
 	</bean>
 </beans>

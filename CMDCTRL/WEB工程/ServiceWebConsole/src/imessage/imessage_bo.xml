@@ -27,6 +27,8 @@
 			<value></value>
 		</list>
 		</property>
-		
+		<property name="adminPassWord">
+			<value>wisoft</value>
+		</property>
 	</bean>
 </beans>
