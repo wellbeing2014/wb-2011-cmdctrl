@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="370" height="284" 
+	title="本服务未锁定，请设置信息" 
+	creationComplete="init()" showCloseButton="true" close="window_close()" horizontalAlign="center" verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.utils.StringUtil; 
+			import mx.rpc.events.FaultEvent;
+
+			[Bindable]public var userinfo:Object = new Object();
+			[Bindable]public var mainObj:Object;
+			[Bindable]public var callbackFunction:Function;
+			[Bindable]public var opratestr:String;
+			[Bindable]public var user:Object = new Object();
+				//访问服务失败的方法
+			private function faultMessage(event:FaultEvent):void
+			{
+				Alert.show("服务访问失败！","错误");
+			}
+			private function init():void
+			{
+				if(user.username!=null)
+				{
+					this.deleteRock.visible = true;
+					this.title = "本服务被锁定，请输入密码";
+					this.username.editable = false;
+					this.content.editable = false;
+					this.username.text = user.username;
+					this.content.text = user.content;
+				}
+				this.IP.text = user.ip;
+			}
+			
+			private function window_close():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function doyes():void
+			{
+				userinfo.username=StringUtil.trim(this.username.text);
+				userinfo.password=this.password.text;
+				userinfo.content=StringUtil.trim(this.content.text);
+				if(this.userinfo.username.length == 0)
+				{
+					Alert.show("用户信息不能为空！","提示");
+					return;
+				}
+				callbackFunction.call(mainObj,opratestr,this.userinfo,this.deleteRock.selected);
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function sendKeyHandler(evt:KeyboardEvent):void
+			{
+				if(evt.keyCode == 13)
+				{
+				   this.doyes();
+				}
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	<mx:VBox left="0" bottom="0" right="0" top="0" horizontalAlign="center" verticalAlign="middle">
+		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+			<mx:Label text="用户信息" width="67"/>
+			<mx:TextInput id="username" width="208" height="26"/>
+		</mx:HBox>
+		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center">
+			<mx:Label text="用户密码" width="67"/>
+			<mx:TextInput id="password" width="208" height="28"/>
+		</mx:HBox>
+		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center" keyDown="sendKeyHandler(event)">
+			<mx:Label text="用户IP" width="67"  />
+			<mx:TextInput id="IP" editable="false" width="208" height="24"/>
+		</mx:HBox>
+		<mx:HBox width="100%" verticalAlign="middle" horizontalAlign="center" height="108">
+			<mx:Label text="自定义内容" width="67"/>
+			<mx:TextArea id="content" height="98" width="208"/>
+		</mx:HBox>
+		<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+			<mx:CheckBox id="deleteRock" visible="false" label="清除锁定"/>
+			<mx:Spacer width="144"/>
+			<mx:Button label="确定" click="doyes()"/>
+			<mx:Button label="取消" click="window_close()"/>
+		</mx:HBox>
+	</mx:VBox>
+</mx:TitleWindow>

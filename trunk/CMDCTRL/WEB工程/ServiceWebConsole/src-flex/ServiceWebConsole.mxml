@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"  preinitialize="pinit()" creationComplete="init()">
+	
+	<mx:Style source="mycss.css"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.rpc.http.HTTPService;
+		import mx.controls.Alert;
+		import mx.messaging.ChannelSet;
+		import mx.messaging.Consumer;
+		import mx.messaging.events.MessageEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.rpc.events.FaultEvent;
+		import mx.collections.ArrayCollection;
+		import mx.controls.Alert;
+		import mx.managers.BrowserManager;
+		import mx.managers.IBrowserManager;
+		import mx.managers.PopUpManager;
+		import mx.events.ItemClickEvent; 
+		//----------------------------------------------------------------
+		[Bindable]
+		private var cmdlist:ArrayCollection = new ArrayCollection() ;
+		private var cmdlist1:ArrayCollection = new ArrayCollection() ;
+		private var timer:Timer = new Timer(1000);
+		private var timer1:Timer = new Timer(60000);//刷新整个数据源的频率
+		private var isrefresh:Boolean=false;
+		private var isstop:Boolean = false;
+		private var userOprateStr ="";
+			
+		//private var path:String = ExternalInterface.call("getHerf");
+		private var path:String ="";
+		[Bindable]
+		public var tiaozhuanNO:ArrayCollection = new ArrayCollection();
+		private var _MODEL:String = "";
+		[Bindable] private var memnum:String ="服务器内存大小："
+		private function init():void
+		{
+			
+//			servlet.url=path+"/SendMsgServlet";
+//			
+//			_MODEL =this.parameters.model;
+			//Alert.show(ctrl_type);
+			timer.addEventListener(TimerEvent.TIMER, onTimer);
+			timer.start();
+			timer1.addEventListener(TimerEvent.TIMER, onTimer1);
+			timer1.start();
+		}
+		private function pinit():void
+		{
+//			var consumer:Consumer = new Consumer(); 
+//			consumer.destination = "CmdCtrlService"; 
+//			consumer.subtopic = "List<Cmdstat>"; 
+//			consumer.channelSet = new ChannelSet(["my-streaming-amf"]);
+//			//添加message的监听，当后台有消息发送时，调用messageHandler 
+//			consumer.addEventListener(MessageEvent.MESSAGE, messageHandler); 
+//			consumer.subscribe(); 
+			//path =path.replace("WisoftService.html","");
+//			var path1:Array = path.split("WisoftService/WisoftService.html");
+//			path = path1[0];
+			var arr:Array = Application.application.url.split('/');
+			//Alert.show(arr[0]+"//"+arr[2]+"/"+arr[3]);//http:+//+IP:duankou+/服务名/
+			path = arr[0]+"//"+arr[2]+"/"+arr[3];
+			var pathwsdl:String=path+"/services/messageForFeiQ?wsdl";
+			webservice.wsdl = pathwsdl;
+
+		}
+		private function onTimer(event:TimerEvent):void{
+         		webservice.sendinfo.send();
+   		}
+   		private function onTimer1(event:TimerEvent):void{
+     		isrefresh = true;
+   		}
+		private function statlabf(item:Object, c:DataGridColumn):String
+		{
+			var i:int = item.stat as int;
+			
+			var rtn:String = "";
+     		switch(i)
+     		{
+     			case 0 : rtn= "正在启动";
+     			break;
+     			case 1 : rtn= "已启动";
+     			if(tiaozhuanNO.contains(item.no))
+				{
+					runweb(item.netaddr);
+					tiaozhuanNO.removeItemAt(tiaozhuanNO.getItemIndex(item.no));
+				}
+     			break;
+     			case 2 : rtn= "正在停止";
+     			break;
+     			case 3 : rtn= "已停止";
+     			break;
+     		}
+     		return rtn;
+   		}
+   			
+   		//跳转网页
+   		public function runweb(netaddr:String):void
+      	{
+   			var request:URLRequest = new URLRequest(netaddr); 
+   		 	navigateToURL(request,'_blank'); //  新窗口 
+      	}
+      	
+      	//打开日志文件
+      	public function openLog(name:String):void
+      	{
+      		
+   			//var request:URLRequest = new URLRequest(path+"logfile/"+name+".log"); 
+   		 	//navigateToURL(request,'_blank'); //  新窗口 
+   			var log:LogWindow = LogWindow(PopUpManager.createPopUp(this,LogWindow,true));
+			log.logname = path+"/logfile/"+name+".log";
+			log.title = name+"日志详细";
+			//log.logname = name+".log";
+        	PopUpManager.centerPopUp(log);
+			//PopUpManager.centerPopUp(PopUpManager.createPopUp(DisplayObject(Application.application),LogWindow,true));
+      	}
+      	
+		
+		//访问服务失败的方法
+		private function faultMessage(event:FaultEvent):void
+		{
+      		if(!isstop)
+      		{
+				Alert.show("服务访问失败！","错误");
+				isstop = true;
+      		}
+		}
+		
+		//webservice执行命令回掉方法
+		private function resultdocmd(event:ResultEvent):void
+		{
+			var a:String = event.result as String;
+			Alert.show(a,"提示");
+		}
+		
+		private function resultgetAllCMD(event:ResultEvent):void
+		{
+			//var reobject:Array = event.result.cmdinfo as Array;
+			cmdlist1 = event.result.cmdinfo as ArrayCollection;
+			memnum = "服务器内存大小"+(event.result.mem as String)+"M";
+			if(cmdlist.length==0||isrefresh)//是否刷新整个数据源
+			{
+				cmdlist = cmdlist1;
+				isrefresh = false;
+			}
+			else //只刷新状态
+			{
+				for(var i:int=0;i<cmdlist1.length;i++)
+				{
+					var obj=cmdlist.getItemAt(i);
+					var obj1=cmdlist1.getItemAt(i);
+					obj.stat = obj1.stat;
+					cmdlist.setItemAt(obj,i);
+				}
+			}
+		}
+	
+		public function doROFunc_docmd(str:String):void
+		{
+			if(_MODEL == "ADMIN")
+			{
+				var pwd:EnterPwd = EnterPwd(PopUpManager.createPopUp(this,EnterPwd,true));
+				pwd.mainObj = this;
+				pwd.opratestr = str;
+				pwd.callbackFunction = operate_admin;
+	        	PopUpManager.centerPopUp(pwd);
+   			}
+   			else
+   			if(_MODEL == "USER")
+   			{
+   				userOprateStr = str;
+   				var i:Array = str.split("&");
+   				webservice.getcmdUser.send(Number(i[0]));
+   			}
+   			else
+   			 	webservice.docmd.send(str);
+		//	ro.docmd(str);
+		}
+		private function resultgetcmdUser(event:ResultEvent):void
+		{
+				var userpwd:EnterUserPwd = EnterUserPwd(PopUpManager.createPopUp(this,EnterUserPwd,true));
+   				userpwd.opratestr = userOprateStr;
+   				var i:Array = userOprateStr.split("&");
+   				userpwd.userinfo.cmdno = Number(i[0]);
+   				userpwd.user = event.result as Object;
+   				userpwd.callbackFunction = operate_user;
+	        	PopUpManager.centerPopUp(userpwd);
+		}
+		private function operate_admin(str:String,pwd:String):void
+		{
+			webservice.docmdAdmin.send(str,pwd);
+		}
+		private function operate_user(str:String,user:Object,isdelete:Boolean):void
+		{
+			webservice.docmdUser.send(str,user,isdelete);
+		}
+		
+		private function changeModel(event:ItemClickEvent):void
+		{
+			isrefresh = true;
+			if(event.label=="IP限制模式")
+			{
+				_MODEL = "IP";
+			}
+			else if(event.label=="管理员模式")
+			{
+				_MODEL = "ADMIN";
+			}
+			else if(event.label=="自定义模式")
+			{
+				_MODEL = "USER";
+			}
+		}
+		
+		
+		]]>
+</mx:Script>
+	<mx:Array id="menulist4">
+		<mx:Object name="IP限制模式" toolTip ="只有在服务器上被设置为信任的IP才能操作"></mx:Object>
+		<mx:Object name="管理员模式" toolTip ="如果您知道管理员密码可以在此模式下操作，并不受IP限制"></mx:Object>
+		<mx:Object name="自定义模式" toolTip ="如果您想取得某个服务的控制权，可以在此模式下操作，但首先您的IP是受信任的"></mx:Object>
+	</mx:Array>	
+	<mx:VBox width="100%" height="100%">
+	<mx:HBox width="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalAlign="right" verticalAlign="middle" backgroundColor="#0E7DFA" cornerRadius="50" height="33">
+	<mx:Label text="中科内部测试服务管理系统" fontStyle="italic" fontSize="20" color="#FFFFFF" fontWeight="bold" fontFamily="Times New Roman"/>
+	<mx:Spacer width="100%"/>
+	<mx:Label text="{memnum}" id="mem" width="157"/>
+	<mx:ToggleButtonBar id="mybuttons" dataProvider="{menulist4}" labelField="name"  styleName="toolButtonBar" toggleOnClick="false" itemClick="changeModel(event)">
+	</mx:ToggleButtonBar>
+	</mx:HBox>
+	<mx:Canvas  width="100%" height="100%">
+	<mx:DataGrid dataProvider="{cmdlist}" width="100%" height="100%" x="2" bottom="0">
+		<mx:columns>
+			<mx:DataGridColumn headerText="序号" dataField="no" width="50"/>
+			<mx:DataGridColumn headerText="服务名称" dataField="name"/>
+			<mx:DataGridColumn headerText="服务状态" textAlign="center" width="68"  >
+				<mx:itemRenderer>
+				            <mx:Component>
+				            	<mx:HBox verticalAlign="middle" horizontalAlign="center">
+				            		<mx:Script>
+                    			<![CDATA[
+                    			 [Bindable]private var path:String="";
+                    			 [Bindable]private var stattip:String="";
+                    			  override public function set data(value:Object):void 
+                    			  {
+								   super.data  =  value;
+								   switch(value.stat)
+					         		{
+					         			case 0 : 
+					         				stattip= "正在启动";
+					         				path = "image/purpleCircle.png";	
+					         				break;
+					         			case 1 : 
+					         				stattip= "已启动";
+					         				path = "image/greenCircle.png";
+						         			if(outerDocument.tiaozhuanNO.contains(value.no))
+											{
+												outerDocument.runweb(value.netaddr);
+												outerDocument.tiaozhuanNO.removeItemAt(outerDocument.tiaozhuanNO.getItemIndex(value.no));
+											}
+					         				break;
+					         			case 2 : 
+					         				stattip= "正在停止";
+					         				path = "image/yellowCircle.png"
+					         				break;
+					         			case 3 : 
+					         				stattip= "已停止";
+					         				path = "image/redCircle.png"
+					         				break;
+					         			
+					         		}
+								  }
+
+                    			]]>
+                    		</mx:Script>
+				            	  		<mx:Image id="image" source="{path}" toolTip="{stattip}"/>
+				            	  	</mx:HBox>
+				            </mx:Component>
+				         	</mx:itemRenderer>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn headerText="操作类型"  >
+			 <mx:itemRenderer>
+			           <mx:Component>
+			           <mx:HBox>
+			            <mx:Script>
+						<![CDATA[
+						import mx.core.Application;
+						import mx.controls.Alert;
+						import mx.events.CloseEvent;
+						
+						private var isqd:Boolean = true;
+						private var istz:Boolean = true;
+						private var data1:Object = new Object();
+						
+						private function qidong(data:Object):void
+			         	{
+			         		isqd = false;
+			         		istz = true;
+			         		tz.enabled=false;
+			         		Alert.yesLabel="是"; 
+       						Alert.noLabel="否"; 
+        					Alert.show("启动完后系统将自动引导进入"+data.name+"系统,请确定后请不要关闭本页，取消则不进入","启动完后自动进入系统?",3,null,tiaozhuan); 
+        					data1=data;
+			          	}
+			          	private function tiaozhuan(event:CloseEvent):void
+			         	{
+			         		
+                    		outerDocument.tiaozhuanNO.addItem(data1.no);
+                			var send:String= data1.no+"&"+data1.name+"&"+"1";
+			          		Application.application.doROFunc_docmd(send);
+		          		
+			          	}
+			          	
+			          	
+			          	private function tingzhi(data:Object):void
+			         	{
+			         		isqd = true;
+			         		istz = false;
+			         		tz.enabled=false;
+			         		var send:String= data.no+"&"+data.name+"&"+"2";
+			          		Application.application.doROFunc_docmd(send);
+			          	}
+			          	
+			          	
+			          	//&amp;&amp;(isqd)
+			          	//&amp;&amp;(istz)
+						]]>
+					</mx:Script>
+			           <mx:Button id="qd" click="qidong(data)" label="启动" enabled="{(data.stat==3)&amp;&amp;(isqd)}" >
+			           </mx:Button>
+			           <mx:Button id="tz" click="tingzhi(data)" label="停止" enabled="{(data.stat==1)&amp;&amp;(istz)}">
+			           </mx:Button>
+			           <mx:Button click="outerDocument.runweb(data.netaddr)" label="进入系统" >
+			           </mx:Button>
+			           <mx:Button click="outerDocument.openLog(data.name)" label="查看日志" >
+			           </mx:Button>
+			           </mx:HBox>
+			           </mx:Component>
+			          </mx:itemRenderer>
+			
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+	</mx:Canvas>
+ </mx:VBox>
+ 
+  <mx:WebService id="webservice" fault="faultMessage(event)" >
+		<mx:operation name="sendinfo" result="resultgetAllCMD(event)">
+		</mx:operation>
+		<mx:operation name="docmd" result="resultdocmd(event)"/>  
+		<mx:operation name="docmdAdmin" result="resultdocmd(event)"/> 
+		<mx:operation name="docmdUser" result="resultdocmd(event)"/> 
+		<mx:operation name="getcmdUser" result="resultgetcmdUser(event)"/>
+	</mx:WebService>
+</mx:Application>
