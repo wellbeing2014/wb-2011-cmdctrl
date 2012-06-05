@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
+	<import resource="../index_dao.xml" />
 	<import resource="../imessage/imessage_ws.xml" />
 	<import resource="../imessage/imessage_bo.xml" />
 	<import resource="../imessage/imessage_dao.xml"/>

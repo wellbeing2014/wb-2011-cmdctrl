@@ -69,7 +69,7 @@ padding:1.5px;
 </style>
 
 <script language="JavaScript1.2">
-<!--
+//<!--
 
 var dragapproved=false
 var zcor,xcor,ycor

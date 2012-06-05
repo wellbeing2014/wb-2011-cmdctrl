@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hibernate XML Mapping File -->
+<!-- Author: wjn -->
+<!-- Modified: 2009年6月5日 14:17:50 -->
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.wisoft.pojo" auto-import="true">
+   <class name="UIcheckView" table="UIcheckView">
+      <id name="id">
+         <column name="id" not-null="true" />
+      </id>
+      <property name="checkno" lazy="false">
+         <column name="checkno" length="20"/>
+      </property>
+      <property name="imageno" lazy="false">
+         <column name="imageno" length="20"/>
+      </property>
+       <property name="checkmark" lazy="false">
+         <column name="checkmark" length="500"/>
+      </property>
+      <property name="srcimage" type="org.springframework.orm.hibernate3.support.BlobByteArrayType" lazy="false">
+         <column name="srcimage"/>
+      </property>
+      <property name="checkedimage" type="org.springframework.orm.hibernate3.support.BlobByteArrayType" lazy="false">
+         <column name="checkedimage"/>
+      </property>
+    
+   </class>
+</hibernate-mapping>
+
