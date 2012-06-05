@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<something-else-entirely> 
+	<proxool>
+		<alias>DS</alias> 
+		<driver-url>jdbc:jtds:sqlserver://192.10.110.206:1433;databaseName=WisoftTestSv;characterEncoding=GBK</driver-url>
+		<driver-class>net.sourceforge.jtds.jdbc.Driver</driver-class>
+		<driver-properties>
+			<property name="user" value="sa" />
+			<property name="password" value="Wisoft2008." />
+		</driver-properties>
+		<maximum-active-time>8000</maximum-active-time> 
+		<house-keeping-sleep-time>500000</house-keeping-sleep-time> 
+		<maximum-new-connections>50</maximum-new-connections> 
+		<prototype-count>1</prototype-count> 
+		<maximum-connection-count>50</maximum-connection-count> 
+		<minimum-connection-count>5</minimum-connection-count>
+		<house-keeping-test-sql>select 1 from dual</house-keeping-test-sql>
+	</proxool>
+</something-else-entirely>
