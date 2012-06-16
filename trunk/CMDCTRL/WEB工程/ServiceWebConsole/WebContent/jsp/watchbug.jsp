@@ -3,7 +3,7 @@
     pageEncoding="UTF-8"%>
 <script type="text/javascript" src="jquery-1.6.2.js"></script>
 <script type="text/javascript">
-	$(document).
+	
 </script>
 <style>
 <!--
@@ -41,7 +41,7 @@ A:visited {COLOR: #000000; TEXT-DECORATION: none}
 <body bgcolor=#FFFFFF>
 
 <style>
-<!--
+
 .drag{position:relative;cursor:hand
 }
 #scontentmain{
@@ -60,12 +60,12 @@ font: 9pt;
 #scontentsub{
 position:absolute;
 width:100%;
-top:15;
+top:30;
 background-color:lightyellow;
 border:2px solid green;
 padding:1.5px;
 }
--->
+
 </style>
 
 <script language="JavaScript1.2">
@@ -74,34 +74,39 @@ padding:1.5px;
 var dragapproved=false
 var zcor,xcor,ycor
 function movescontentmain(){
-if (event.button==1&&dragapproved){
-zcor.style.pixelLeft=tempvar1+event.clientX-xcor
-zcor.style.pixelTop=tempvar2+event.clientY-ycor
-leftpos=document.all.scontentmain.style.pixelLeft-document.body.scrollLeft
-toppos=document.all.scontentmain.style.pixelTop-document.body.scrollTop
-return false
-}
+	if (event.button==1&&dragapproved){
+	zcor.style.pixelLeft=tempvar1+event.clientX-xcor
+	zcor.style.pixelTop=tempvar2+event.clientY-ycor
+	leftpos=document.all.scontentmain.style.pixelLeft-document.body.scrollLeft
+	toppos=document.all.scontentmain.style.pixelTop-document.body.scrollTop
+	return false
+	}
 }
 function dragscontentmain(){
-if (!document.all)
-return
-if (event.srcElement.id=="scontentbar"){
-dragapproved=true
-zcor=scontentmain
-tempvar1=zcor.style.pixelLeft
-tempvar2=zcor.style.pixelTop
-xcor=event.clientX
-ycor=event.clientY
-document.onmousemove=movescontentmain
+	if (!document.all)
+		return
+	if (event.srcElement.id=="scontentbar"){
+		dragapproved=true
+		zcor=scontentmain
+		tempvar1=zcor.style.pixelLeft
+		tempvar2=zcor.style.pixelTop
+		xcor=event.clientX
+		ycor=event.clientY
+		document.onmousemove=movescontentmain
+	}
 }
-}
-document.onmousedown=dragscontentmain
-document.onmouseup=new Function("dragapproved=false")
+	document.onmousedown=dragscontentmain
+	document.onmouseup=new Function("dragapproved=false")
 //-->
 </script>
 <div id="scontentmain">
-<div id="scontentbar" onClick="onoffdisplay()"  align="right">
-<span size=1>显示/隐藏</span>
+<div id="scontentbar"   align="left">
+<div onClick="onoffdisplay()">
+	<span size=1>显示/隐藏</span>
+</div>
+
+   		<input name="Submit1" type="button"  value="上一个" />
+   		<input name="Submit2" type="button"  value="下一个" />
 </div>
 <div id="scontentsub">
 
@@ -125,11 +130,6 @@ document.onmouseup=new Function("dragapproved=false")
    <td colspan="2" align="right"><input type="text" name="textfield" value="请输入BUG单号" />
       <input name="Submit3" type="button"  value="查询" /></td>
    </tr>
-  <tr>
-   		<td align="center"><input name="Submit1" type="button"  value="上一个" /></td>
-   		<td align="center"><input name="Submit2" type="button"  value="下一个" /></td>
-        
-  </tr>
 </table>
 </div> 
 </div>

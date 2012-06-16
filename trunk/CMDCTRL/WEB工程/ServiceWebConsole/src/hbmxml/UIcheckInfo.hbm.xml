@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.wisoft.pojo">
+  <class name="UIcheckInfo" table="UICheckInfo">
+   	  <id name="id">
+         <column name="id" not-null="true" />
+      </id>
+       <property name="checkno" lazy="false">
+         <column name="checkno" length="255"/>
+      </property>
+      <property name="packageid" lazy="false">
+         <column name="packageid" />
+      </property>
+      <property name="packagename" lazy="false">
+         <column name="packagename" length="255"/>
+      </property>
+      <property name="adminid" lazy="false">
+         <column name="adminid" />
+      </property>
+      <property name="adminname" lazy="false">
+         <column name="adminname" length="255"/>
+      </property>
+      <property name="projectid" lazy="false">
+         <column name="projectid" />
+      </property>
+      <property name="projectname" lazy="false">
+         <column name="projectname" length="255"/>
+      </property>
+      <property name="checkerid" lazy="false">
+         <column name="checkerid" />
+      </property>
+      <property name="checkername" lazy="false">
+         <column name="checkername" length="255"/>
+      </property>
+      <property name="moduleid" lazy="false">
+         <column name="moduleid" />
+      </property>
+      <property name="modulename" lazy="false">
+         <column name="modulename" length="255"/>
+      </property>
+      <property name="createtime" lazy="false">
+         <column name="createtime" length="255"/>
+      </property>
+      <property name="checkedtime" lazy="false">
+         <column name="checkedtime" length="255"/>
+      </property>
+      <property name="state" lazy="false">
+         <column name="state" length="50"/>
+      </property>
+      
+  </class>
+</hibernate-mapping>

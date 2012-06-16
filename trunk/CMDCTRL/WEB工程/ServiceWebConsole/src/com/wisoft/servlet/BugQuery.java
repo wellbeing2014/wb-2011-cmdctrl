@@ -2,7 +2,6 @@ package com.wisoft.servlet;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.wisoft.dao.UIcheckDao;
+import com.wisoft.bo.UIcheckBO;
 import com.wisoft.pojo.UIcheckView;
 //import com.wisoft.common.dao.*;
 /**
@@ -34,17 +33,16 @@ public class BugQuery extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		request.setCharacterEncoding("UTF-8");
-		String msg = request.getParameter("aaaa");
+		String checkno = request.getParameter("checkno");
+		String imgno = request.getParameter("imgno");
 		ac2 = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-		UIcheckDao uicheckdao = (UIcheckDao)ac2.getBean("UIcheckDao");
-		List<UIcheckView> viewlist = uicheckdao.find("from UIcheckView");
+		UIcheckBO bo = (UIcheckBO)ac2.getBean("UIcheckBO");
+		UIcheckView ucv = bo.getSingleView(checkno, imgno);
 		
 		response.setContentType("image/jpeg");
-		//response.setContentType("text/html;charset=GBK");
 		OutputStream outs = response.getOutputStream(); 
-		outs.write(viewlist.get(0).getSrcimage());
+		outs.write(ucv.getCheckedimage());
 		outs.flush();
-		response.getWriter().println("服务器吐出了："+msg);
 		
 	}
 
