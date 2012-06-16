@@ -41,9 +41,9 @@ function sideonclick(i) {
 		}
 		else
 			imgno = imgno + 1;
-		getview();
+		
 	}
-	
+	getview();
 	a.src = "../BugQuery?checkno="+checkno+"&imgno=" + imgno;
 }
 
