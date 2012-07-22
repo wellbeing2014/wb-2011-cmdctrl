@@ -1,0 +1,10 @@
+C:\Users\ZhuXinpei\Desktop\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\bin\Debug\ICSharpCode.TextEditor.dll
+C:\Users\ZhuXinpei\Desktop\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\bin\Debug\ICSharpCode.TextEditor.pdb
+C:\Users\ZhuXinpei\Desktop\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\ZhuXinpei\Desktop\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\obj\Debug\ICSharpCode.TextEditor.dll
+C:\Users\ZhuXinpei\Desktop\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\obj\Debug\ICSharpCode.TextEditor.pdb
+E:\SVN\WisoftUpdate\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\bin\Debug\ICSharpCode.TextEditor.dll
+E:\SVN\WisoftUpdate\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\bin\Debug\ICSharpCode.TextEditor.pdb
+E:\SVN\WisoftUpdate\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\obj\Debug\ResolveAssemblyReference.cache
+E:\SVN\WisoftUpdate\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\obj\Debug\ICSharpCode.TextEditor.dll
+E:\SVN\WisoftUpdate\Bingosoft.Workflow.XmlPad\ICSharpCode.TextEditor\obj\Debug\ICSharpCode.TextEditor.pdb
