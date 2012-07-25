@@ -29,7 +29,31 @@ namespace WisoftUpdateTool
 				MessageBox.Show("请选择备份目录","提示");
 				return false;
 			}
-			
+			if(string.IsNullOrEmpty(this.textBox1.Text)||string.IsNullOrEmpty(this.textBox4.Text))
+			{
+				MessageBox.Show("Sorry,你必须得连接数据库，否则，最后执行SQL就悲催了。");
+				return false;
+			}
+			else
+			{
+				XmlHelper.Update("root/DBConfig/username","",this.textBox1.Text);
+				XmlHelper.Update("root/DBConfig/password","",this.textBox3.Text);
+				XmlHelper.Update("root/DBConfig/SID","",this.textBox4.Text);
+				string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
+		        OracleConnection myConnection = new OracleConnection(myConnString);
+		        try {
+		        	myConnection.Open();
+		        	myConnection.Close();
+		        } catch (OracleException e1) {
+		        	if (e1.Code ==1017)
+		        		MessageBox.Show("伤不起啊，你居然把用户名密码输错了，认真点行不行？");
+		        	else if(e1.Code == 12541)
+		        		MessageBox.Show("尼玛，你给的数据库我根本连不上。");
+		        	else 
+		        		MessageBox.Show("歇菜，不知道数据库怎么了，反正是有问题。");
+		        	return false;
+		        }
+			}
 			if(!Checked)
 			{
 				DialogResult dr =MessageBox.Show("更新包版本检查不通过，是否继续","提示",MessageBoxButtons.OKCancel);
@@ -120,6 +144,9 @@ namespace WisoftUpdateTool
 		
 		void Button1Click(object sender, EventArgs e)
 		{
+			XmlHelper.Update("root/DBConfig/username","",this.textBox1.Text);
+			XmlHelper.Update("root/DBConfig/password","",this.textBox3.Text);
+			XmlHelper.Update("root/DBConfig/SID","",this.textBox4.Text);
 			string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
 	        OracleConnection myConnection = new OracleConnection(myConnString);
 	        OracleCommand catCMD = myConnection.CreateCommand();
@@ -149,9 +176,13 @@ namespace WisoftUpdateTool
 		        }
 				myReader.Close();
 	        	myConnection.Close();
-	        } catch (Exception e1) {
-	        	
-	        	MessageBox.Show(e1.ToString());
+	        } catch (OracleException e1) {
+	        	if (e1.Code ==1017)
+	        		MessageBox.Show("伤不起啊，你居然把用户名密码输错了，认真点行不行？");
+	        	else if(e1.Code == 12541)
+	        		MessageBox.Show("尼玛，你给的数据库我根本连不上。");
+	        	else 
+	        		MessageBox.Show("歇菜，不知道数据库怎么了，反正是有问题。不信？用PLSQL连连看");
 	        }
 
 		}

@@ -74,8 +74,19 @@ namespace WisoftUpdateTool
 			}
 		}
 		
+		public static string DBpassword {
+		get { return XmlHelper.Read("/root/DBConfig/password",""); }
 		
+		}
+		public static string DBusername {
+		get { return XmlHelper.Read("/root/DBConfig/username",""); }
 		
+		}
+		public static string DBSID {
+		get { return XmlHelper.Read("/root/DBConfig/SID",""); }
+		
+		}
+				
 		
 		public UpdateInfo()
 		{

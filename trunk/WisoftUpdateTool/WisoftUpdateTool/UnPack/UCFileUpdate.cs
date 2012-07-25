@@ -55,8 +55,7 @@ namespace WisoftUpdateTool
 		{
 			LinkLabel ll = sender as LinkLabel;
 			EXListViewItem ev = ll.Tag as EXListViewItem;
-			//string fileurl = this.Parent.Tag as string+@"\" + ev.SubItems[4].ToString();
-			string fileurl =@"C:\Users\wellbeing.wellbeing-PC\Desktop\wisoftintegrateframe\" + ev.SubItems[5].Text;
+			string fileurl =this.Parent.Tag as string + @"\" + ev.SubItems[5].Text;
 			XmlPad.XmlEditor xe = new XmlPad.XmlEditor();
 			xe._content =  ev.SubItems[3].Text;
 			if(!xe.LoadFile(fileurl))
