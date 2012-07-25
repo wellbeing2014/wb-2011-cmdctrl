@@ -30,6 +30,7 @@ namespace WisoftUpdateTool
 			else 
 			{
 				this.Parent.Tag = this.textBox2.Text;
+				
 				return true;
 			}
 		}

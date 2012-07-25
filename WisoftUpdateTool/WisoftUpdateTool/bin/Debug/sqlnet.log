@@ -1,0 +1,113 @@
+
+
+***********************************************************************
+Fatal NI connect error 12560, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=BEQ)(PROGRAM=oracle)(ARGV0=oracleORCL)(ARGS='(DESCRIPTION=(LOCAL=YES)(ADDRESS=(PROTOCOL=beq)))'))(CONNECT_DATA=(SID=ORCL)(CID=(PROGRAM=E:\SVN????\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe)(HOST=ZHUXINPEI-PC)(USER=ZhuXinpei))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.3.0 - Production
+	Oracle Bequeath NT Protocol Adapter for 32-bit Windows: Version 10.2.0.3.0 - Production
+  Time: 23-7月 -2012 08:47:51
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12560
+    TNS-12560: TNS: 协议适配器错误
+    ns secondary err code: 0
+    nt main err code: 530
+    TNS-00530: 协议适配器错误
+    nt secondary err code: 2
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12560, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=BEQ)(PROGRAM=oracle)(ARGV0=oracleORCL)(ARGS='(DESCRIPTION=(LOCAL=YES)(ADDRESS=(PROTOCOL=beq)))'))(CONNECT_DATA=(SID=ORCL)(CID=(PROGRAM=E:\SVN????\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe)(HOST=ZHUXINPEI-PC)(USER=ZhuXinpei))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.3.0 - Production
+	Oracle Bequeath NT Protocol Adapter for 32-bit Windows: Version 10.2.0.3.0 - Production
+  Time: 23-7月 -2012 08:48:02
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12560
+    TNS-12560: TNS: 协议适配器错误
+    ns secondary err code: 0
+    nt main err code: 530
+    TNS-00530: 协议适配器错误
+    nt secondary err code: 2
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=ZhuXinpei-PC)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(CID=(PROGRAM=E:\oracle\product\10.2.0\db_2\bin\sqlplus.exe)(HOST=ZHUXINPEI-PC)(USER=ZhuXinpei))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.3.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.3.0 - Production
+  Time: 23-7月 -2012 10:51:45
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS: 无监听程序
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: 无监听程序
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12560, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=BEQ)(PROGRAM=oracle)(ARGV0=oracleORCL)(ARGS='(DESCRIPTION=(LOCAL=YES)(ADDRESS=(PROTOCOL=beq)))'))(CONNECT_DATA=(SID=ORCL)(CID=(PROGRAM=E:\oracle\product\10.2.0\db_2\bin\sqlplus.exe)(HOST=ZHUXINPEI-PC)(USER=ZhuXinpei))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.3.0 - Production
+	Oracle Bequeath NT Protocol Adapter for 32-bit Windows: Version 10.2.0.3.0 - Production
+  Time: 23-7月 -2012 11:08:23
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12560
+    TNS-12560: TNS: 协议适配器错误
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=ZhuXinpei-PC)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(CID=(PROGRAM=E:\SVN????\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe)(HOST=ZHUXINPEI-PC)(USER=ZhuXinpei))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.3.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.3.0 - Production
+  Time: 24-7月 -2012 09:00:27
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS: 无监听程序
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: 无监听程序
+    nt secondary err code: 61
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12541, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=ZhuXinpei-PC)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=orcl)(CID=(PROGRAM=E:\SVN????\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe)(HOST=ZHUXINPEI-PC)(USER=ZhuXinpei))))
+
+  VERSION INFORMATION:
+	TNS for 32-bit Windows: Version 10.2.0.3.0 - Production
+	Windows NT TCP/IP NT Protocol Adapter for 32-bit Windows: Version 10.2.0.3.0 - Production
+  Time: 24-7月 -2012 11:15:17
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12541
+    TNS-12541: TNS: 无监听程序
+    ns secondary err code: 12560
+    nt main err code: 511
+    TNS-00511: 无监听程序
+    nt secondary err code: 61
+    nt OS err code: 0

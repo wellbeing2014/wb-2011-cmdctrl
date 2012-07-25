@@ -24,7 +24,8 @@ namespace WisoftUpdateTool
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+			//Application.Run(new MainForm());
+			Application.Run(new WisoftUpdateTool.InPack.MainForm());
 			//Application.Run(new CopyFileFrame());
 			//Application.Run(new Test());
 			//Application.Run(new MyForm());

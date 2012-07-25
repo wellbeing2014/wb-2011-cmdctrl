@@ -11,13 +11,15 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
-    <DebugSymbols>True</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <DebugType>Full</DebugType>
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
@@ -30,6 +32,16 @@
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>x86</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -49,27 +61,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContentList.cs" />
-    <Compile Include="ContentList.Designer.cs">
-      <DependentUpon>ContentList.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CopyFileFrame.cs" />
-    <Compile Include="CopyFileFrame.Designer.cs">
-      <DependentUpon>CopyFileFrame.cs</DependentUpon>
-    </Compile>
-    <Compile Include="EXComboBox.cs" />
-    <Compile Include="EXListView.cs" />
-    <Compile Include="MainForm.cs" />
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="FileInfo.cs" />
+    <Compile Include="InPack\MainForm.cs" />
+    <Compile Include="InPack\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MyForms.cs" />
+    <Compile Include="InPack\UC01_Config.cs" />
+    <Compile Include="InPack\UC01_Config.Designer.cs">
+      <DependentUpon>UC01_Config.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InPack\UC02_Select.cs" />
+    <Compile Include="InPack\UC02_Select.Designer.cs">
+      <DependentUpon>UC02_Select.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
-    <Compile Include="Test.Designer.cs">
-      <DependentUpon>Test.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextEditor\Src\Actions\BookmarkActions.cs" />
     <Compile Include="TextEditor\Src\Actions\CaretActions.cs" />
     <Compile Include="TextEditor\Src\Actions\ClipBoardActions.cs" />
@@ -205,24 +211,38 @@
     <Compile Include="TextEditor\Src\Util\TipSplitter.cs" />
     <Compile Include="TextEditor\Src\Util\TipText.cs" />
     <Compile Include="TextEditor\Src\Util\WeakCollection.cs" />
-    <Compile Include="UCCheckVersion.cs" />
-    <Compile Include="UCCheckVersion.Designer.cs">
+    <Compile Include="UnPack\ContentList.cs" />
+    <Compile Include="UnPack\ContentList.Designer.cs">
+      <DependentUpon>ContentList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnPack\CopyFileFrame.cs" />
+    <Compile Include="UnPack\CopyFileFrame.Designer.cs">
+      <DependentUpon>CopyFileFrame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnPack\EXComboBox.cs" />
+    <Compile Include="UnPack\EXListView.cs" />
+    <Compile Include="UnPack\MainForm.cs" />
+    <Compile Include="UnPack\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnPack\UCCheckVersion.cs" />
+    <Compile Include="UnPack\UCCheckVersion.Designer.cs">
       <DependentUpon>UCCheckVersion.cs</DependentUpon>
     </Compile>
-    <Compile Include="UCExecuteSQL.cs" />
-    <Compile Include="UCExecuteSQL.Designer.cs">
+    <Compile Include="UnPack\UCExecuteSQL.cs" />
+    <Compile Include="UnPack\UCExecuteSQL.Designer.cs">
       <DependentUpon>UCExecuteSQL.cs</DependentUpon>
     </Compile>
-    <Compile Include="UCFileUpdate.cs" />
-    <Compile Include="UCFileUpdate.Designer.cs">
+    <Compile Include="UnPack\UCFileUpdate.cs" />
+    <Compile Include="UnPack\UCFileUpdate.Designer.cs">
       <DependentUpon>UCFileUpdate.cs</DependentUpon>
     </Compile>
-    <Compile Include="UCFinishState.cs" />
-    <Compile Include="UCFinishState.Designer.cs">
+    <Compile Include="UnPack\UCFinishState.cs" />
+    <Compile Include="UnPack\UCFinishState.Designer.cs">
       <DependentUpon>UCFinishState.cs</DependentUpon>
     </Compile>
-    <Compile Include="UCSelectDir.cs" />
-    <Compile Include="UCSelectDir.Designer.cs">
+    <Compile Include="UnPack\UCSelectDir.cs" />
+    <Compile Include="UnPack\UCSelectDir.Designer.cs">
       <DependentUpon>UCSelectDir.cs</DependentUpon>
     </Compile>
     <Compile Include="UpdateInfo.cs" />
@@ -248,14 +268,14 @@
     <Compile Include="XMLpad\XmlFoldingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ContentList.resx">
-      <DependentUpon>ContentList.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CopyFileFrame.resx">
-      <DependentUpon>CopyFileFrame.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="InPack\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InPack\UC01_Config.resx">
+      <DependentUpon>UC01_Config.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InPack\UC02_Select.resx">
+      <DependentUpon>UC02_Select.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ASPX.xshd" />
     <EmbeddedResource Include="Resources\BAT-Mode.xshd" />
@@ -278,22 +298,28 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\VBNET-Mode.xshd" />
     <EmbeddedResource Include="Resources\XML-Mode.xshd" />
-    <EmbeddedResource Include="Test.resx">
-      <DependentUpon>Test.cs</DependentUpon>
+    <EmbeddedResource Include="UnPack\ContentList.resx">
+      <DependentUpon>ContentList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UCCheckVersion.resx">
+    <EmbeddedResource Include="UnPack\CopyFileFrame.resx">
+      <DependentUpon>CopyFileFrame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UnPack\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UnPack\UCCheckVersion.resx">
       <DependentUpon>UCCheckVersion.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UCExecuteSQL.resx">
+    <EmbeddedResource Include="UnPack\UCExecuteSQL.resx">
       <DependentUpon>UCExecuteSQL.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UCFileUpdate.resx">
+    <EmbeddedResource Include="UnPack\UCFileUpdate.resx">
       <DependentUpon>UCFileUpdate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UCFinishState.resx">
+    <EmbeddedResource Include="UnPack\UCFinishState.resx">
       <DependentUpon>UCFinishState.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UCSelectDir.resx">
+    <EmbeddedResource Include="UnPack\UCSelectDir.resx">
       <DependentUpon>UCSelectDir.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="XMLpad\FindAndReplaceForm.resx">
@@ -323,6 +349,8 @@
     <Folder Include="TextEditor\Src" />
     <Folder Include="XMLpad" />
     <Folder Include="TextEditor" />
+    <Folder Include="UnPack" />
+    <Folder Include="InPack" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>

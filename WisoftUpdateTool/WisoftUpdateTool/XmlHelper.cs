@@ -23,6 +23,16 @@ namespace WisoftUpdateTool
         public XmlHelper()
         {
         }
+        
+        public XmlHelper(string filename)
+        {
+        	XmlDocument  xmlDocument = new XmlDocument();
+			// 声明 XML
+			 XmlDeclaration xmlDeclare =xmlDocument.CreateXmlDeclaration("1.0","utf-8",null);
+			//创建根节点
+			XmlElement elementRoot =xmlDocument.CreateElement("root");
+			xmlDocument.AppendChild(elementRoot);   
+        }
 
         /// <summary>
         /// 读取数据

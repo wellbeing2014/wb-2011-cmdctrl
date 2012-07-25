@@ -1,33 +1,34 @@
 ﻿/*
  * 由SharpDevelop创建。
  * 用户： ZhuXinpei
- * 日期: 2012/7/17
- * 时间: 14:15
+ * 日期: 2012/7/24
+ * 时间: 15:54
  * 
  * 要改变这种模板请点击 工具|选项|代码编写|编辑标准头文件
  */
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WisoftUpdateTool
+namespace WisoftUpdateTool.InPack
 {
 	/// <summary>
-	/// Description of Test.
+	/// Description of UC01_Config.
 	/// </summary>
-	public partial class Test : Form
+	public partial class UC01_Config : UserControl,INextButton
 	{
-		private WisoftUpdateTool.UCExecuteSQL ucFileUpdate1;
-		public Test()
+		public bool OnNextButton()
 		{
-			this.ucFileUpdate1= new WisoftUpdateTool.UCExecuteSQL();
+			return true;
+		}
+		public UC01_Config()
+		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
 			
-			this.ucFileUpdate1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Controls.Add(this.ucFileUpdate1);
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//

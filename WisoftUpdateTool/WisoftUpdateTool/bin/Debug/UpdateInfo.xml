@@ -24,6 +24,7 @@
 	<before_configs>
 		<before_config no="1" name="aims_params.xml" fileurl="WEB-INF\classes\aims\aims_params.xml">
    <![CDATA[
+	请将下面一段 复制到相应内容下：
 	<bean id="SysParam"
 		  class="com.wisoft.aims.common.SysParam">
 		<property name="content">
@@ -74,5 +75,9 @@
 		<update_file name="aimslist.swf" action="update" fileurl="flex2\aims\aimslist.swf" />
 		<update_file name="wisoft_aims.jar" action="update" fileurl="WEB-INF\lib\wisoft_aims.jar" />
 	</update_files>
-	
+	<DBConfig>
+		<username></username>
+		<password></password>
+		<SID></SID>
+	</DBConfig>
 </root>

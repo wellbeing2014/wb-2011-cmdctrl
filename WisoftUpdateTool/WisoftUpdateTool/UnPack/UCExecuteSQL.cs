@@ -46,9 +46,10 @@ namespace WisoftUpdateTool
 		//执行SQL按钮
 		void Button1Click(object sender, EventArgs e)
 		{
+			  string sqlarg = UpdateInfo.DBusername+"/"+UpdateInfo.DBpassword+"@"+UpdateInfo.DBSID;
 			  Process p = new Process();
 			  p.StartInfo.FileName = "sqlplus";
-			  p.StartInfo.Arguments = "qlyx/wisoft@orcl @databaseupdate.sql";
+			  p.StartInfo.Arguments = sqlarg+" @databaseupdate.sql";
               p.StartInfo.UseShellExecute = false;
               p.StartInfo.RedirectStandardInput = true;
               p.StartInfo.RedirectStandardOutput = true;
