@@ -31,6 +31,9 @@ namespace WisoftUpdateTool.InPack
 			cf.frompath = this.textBox2.Text;
 			cf.Closing+= new CancelEventHandler(cf_Closing);
 			cf.ShowDialog();
+			XmlHelper.Delete("root/update_files","");
+			XmlHelper.Insert("root","update_files","","");
+			XmlHelper.InsertUpdateFiles("root/update_files",packlist);
 			return true;
 		}
 		
