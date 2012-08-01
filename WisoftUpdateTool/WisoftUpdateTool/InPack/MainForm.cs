@@ -25,21 +25,23 @@ namespace WisoftUpdateTool.InPack
 	{
 		private WisoftUpdateTool.InPack.UC01_Config uc01_Config1;
 		private WisoftUpdateTool.InPack.UC02_Select uc02_Select1;
-//		private WisoftUpdateTool ucFileUpdate1;
+		private WisoftUpdateTool.InPack.UC03_ConfFiles uc03_ConfFiles;
 //		private WisoftUpdateTool ucExecuteSQL1;
 		public MainForm()
 		{
 			
 			this.uc01_Config1 = new WisoftUpdateTool.InPack.UC01_Config();
 			this.uc02_Select1 = new WisoftUpdateTool.InPack.UC02_Select();
+			this.uc03_ConfFiles = new  WisoftUpdateTool.InPack.UC03_ConfFiles();
 			//ucCheckVersion1.Visible = false;
 			this.uc02_Select1.Visible = false;
+			this.uc03_ConfFiles.Visible = false;
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			
 			InitializeComponent();
-			this.Text = "中科更新包工具--"+UpdateInfo.Name+"("+UpdateInfo.Code+")"+UpdateInfo.Ver;
+			this.Text = "中科打包工具";
 			AddUC();
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
@@ -53,10 +55,12 @@ namespace WisoftUpdateTool.InPack
 			// 
 			this.uc02_Select1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.uc01_Config1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.uc03_ConfFiles.Dock = System.Windows.Forms.DockStyle.Fill;
 //			this.ucFileUpdate1.Dock = System.Windows.Forms.DockStyle.Fill;
 //			this.ucExecuteSQL1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Controls.Add(this.uc01_Config1);
 			this.panel2.Controls.Add(this.uc02_Select1);
+			this.panel2.Controls.Add(this.uc03_ConfFiles);
 //			this.panel2.Controls.Add(ucFileUpdate1);
 //			this.panel2.Controls.Add(ucExecuteSQL1);
 		}

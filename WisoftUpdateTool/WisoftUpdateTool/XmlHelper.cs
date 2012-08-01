@@ -24,14 +24,20 @@ namespace WisoftUpdateTool
         {
         }
         
-        public XmlHelper(string filename)
+        public static void  CreateXML()
         {
         	XmlDocument  xmlDocument = new XmlDocument();
 			// 声明 XML
 			 XmlDeclaration xmlDeclare =xmlDocument.CreateXmlDeclaration("1.0","utf-8",null);
 			//创建根节点
 			XmlElement elementRoot =xmlDocument.CreateElement("root");
-			xmlDocument.AppendChild(elementRoot);   
+			xmlDocument.AppendChild(elementRoot);
+			try {
+				xmlDocument.Save(path);
+			} catch (Exception) {
+				
+				throw new Exception("创建XML文件失败！");
+			}			
         }
 
         /// <summary>

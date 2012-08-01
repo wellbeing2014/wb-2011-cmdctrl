@@ -62,3 +62,4 @@ E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.pdb
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.MainForm.resources
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.UC01_Config.resources
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.UC02_Select.resources
+E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.CopyFileFrame.resources
