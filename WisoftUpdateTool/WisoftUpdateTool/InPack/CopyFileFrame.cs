@@ -114,8 +114,15 @@ namespace WisoftUpdateTool.InPack
 		 	this.progressBar1.Minimum = 0;
 			this.progressBar1.Maximum = TotalSize;
 			//删除原来的目录
-			if(Directory.Exists("Updates"))
-				Directory.Delete("Updates");
+			try {
+				 DirectoryInfo di = new DirectoryInfo("Updates");
+				 if(di.Exists)
+				    di.Delete(true);
+				
+			} catch (Exception e1) {
+				
+				MessageBox.Show("我日，没能删除原来打包的文件。先将就过了。");
+			}
 		 	copyCircle();
 		 	
 		 }
@@ -133,11 +140,17 @@ namespace WisoftUpdateTool.InPack
 	 			this.BeginInvoke(ac,null);
 	 			return;
 	 		}
-	 		string bakto =AutoCreateFolder(@"Updates\"+copylist[curCopyNo]);
+	 		string bakto =AutoCreateFolder(System.Environment.CurrentDirectory+@"\Updates\"+copylist[curCopyNo]);
 
-	 		FileInfo fi = new FileInfo(bakto);
-	 		if(File.Exists(bakto))
+	 		//FileInfo fi = new FileInfo(bakto);
+	 		try {
+	 			if(File.Exists(bakto))
 	 			File.Delete(bakto);
+	 		} catch (Exception e1) {
+	 			
+	 			MessageBox.Show(e1.ToString());
+	 		}
+	 		
 	 		letdo.BeginInvoke("INFO: 正在复制文件:"+frompath+copylist[curCopyNo],null,null);
 	 		//开始备份
 	 		try
@@ -257,8 +270,6 @@ namespace WisoftUpdateTool.InPack
 		            {   
 		                //截取文件路径中至此项的字符串+文件夹根目录，判断此目录是否存在   
 		               tempFolderPath = filePath.Substring(0, filePath.IndexOf(fArr[fArrItem]) + fArr[fArrItem].Length);   
-		                //tempFolderPath = root + "\\" + tempFolderPath;  
-		                //  MessageBox.Show("需要创建的目录地址：" + folderRoot+"\\"+tempFolderPath);  
 		                //检测当前目录是否存在，如果不存在则创建  
 		                DirectoryInfo tempCreateFolder = new DirectoryInfo(@tempFolderPath);  
 		                if (!tempCreateFolder.Exists)  

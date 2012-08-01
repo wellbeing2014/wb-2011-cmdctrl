@@ -1,1 +1,13 @@
-<root />
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <name>111</name>
+  <code>22</code>
+  <version>33</version>
+  <updatenote><![CDATA[fasdfas]]></updatenote>
+  <update_files>
+    <update_file name="\flex2\aims\aimslist.swf" />
+    <update_file name="\flex2\aims_comon.swf" />
+    <update_file name="\WEB-INF\classes\aims\aims_params.xml" />
+    <update_file name="\WEB-INF\web.xml" />
+  </update_files>
+</root>

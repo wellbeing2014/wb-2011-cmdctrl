@@ -20,7 +20,20 @@ namespace WisoftUpdateTool.InPack
 	{
 		public bool OnNextButton()
 		{
+			
+			if(string.IsNullOrEmpty(this.textBox1.Text)||
+			   string.IsNullOrEmpty(this.textBox2.Text)||
+			   string.IsNullOrEmpty(this.textBox3.Text))
+			{
+				MessageBox.Show("笑话，你都不知道打什么包，你点我干啥。");
+				return false;
+			}
 			XmlHelper.CreateXML();//创建XMl文件
+			XmlHelper.Insert("root","name","",this.textBox1.Text);
+			XmlHelper.Insert("root","code","",this.textBox2.Text);
+			XmlHelper.Insert("root","version","",this.textBox3.Text);
+			
+			XmlHelper.InsertCData("root","updatenote",this.textBox4.Text);
 			return true;
 		}
 		public UC01_Config()

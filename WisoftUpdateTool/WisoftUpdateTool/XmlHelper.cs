@@ -8,6 +8,7 @@
  */
 using System;
 using System.Xml;
+using System.Collections;
 
 namespace WisoftUpdateTool
 {
@@ -24,11 +25,21 @@ namespace WisoftUpdateTool
         {
         }
         
+        public static XmlDocument getXMLdoc
+        {
+        	get
+        	{
+        		XmlDocument  xmlDocument = new XmlDocument();
+        		xmlDocument.Load(path);
+        		return xmlDocument;
+        	}
+        }
         public static void  CreateXML()
         {
         	XmlDocument  xmlDocument = new XmlDocument();
 			// 声明 XML
 			 XmlDeclaration xmlDeclare =xmlDocument.CreateXmlDeclaration("1.0","utf-8",null);
+			 xmlDocument.AppendChild(xmlDeclare);
 			//创建根节点
 			XmlElement elementRoot =xmlDocument.CreateElement("root");
 			xmlDocument.AppendChild(elementRoot);
@@ -78,6 +89,39 @@ namespace WisoftUpdateTool
             }
             catch { }
             return nl;
+        }
+        
+        public static void InsertUpdateFiles(string node,ArrayList ar)
+        {
+        	try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(path);
+                XmlNode xn = doc.SelectSingleNode(node);
+                for (int i = 0; i < ar.Count; i++) {
+                	XmlElement xe = doc.CreateElement("update_file");
+                	xe.SetAttribute("name",ar[i] as string);
+                	xn.AppendChild(xe);
+                }
+                
+                doc.Save(path);
+            }
+            catch { }
+        }
+         
+        public static void InsertCData( string node, string element, string value)
+        {
+        	try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(path);
+                XmlNode xn = doc.SelectSingleNode(node);
+                XmlElement xe = doc.CreateElement(element);
+                xe.AppendChild(doc.CreateCDataSection(value));
+                xn.AppendChild(xe);
+                doc.Save(path);
+            }
+            catch { }
         }
         /// <summary>
         /// 插入数据
