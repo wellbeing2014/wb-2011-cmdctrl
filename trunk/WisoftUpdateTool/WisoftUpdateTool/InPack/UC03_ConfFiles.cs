@@ -1,8 +1,8 @@
 ﻿/*
  * 由SharpDevelop创建。
  * 用户： ZhuXinpei
- * 日期: 2012/7/24
- * 时间: 15:54
+ * 日期: 2012/7/31
+ * 时间: 15:23
  * 
  * 要改变这种模板请点击 工具|选项|代码编写|编辑标准头文件
  */
@@ -14,16 +14,15 @@ using System.Windows.Forms;
 namespace WisoftUpdateTool.InPack
 {
 	/// <summary>
-	/// Description of UC01_Config.
+	/// Description of UC03_ConfFiles.
 	/// </summary>
-	public partial class UC01_Config : UserControl,INextButton
+	public partial class UC03_ConfFiles : UserControl,INextButton
 	{
 		public bool OnNextButton()
 		{
-			XmlHelper.CreateXML();//创建XMl文件
 			return true;
 		}
-		public UC01_Config()
+		public UC03_ConfFiles()
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.

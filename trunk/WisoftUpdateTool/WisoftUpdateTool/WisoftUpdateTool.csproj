@@ -61,7 +61,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileInfo.cs" />
+    <Compile Include="InPack\CopyFileFrame.cs" />
+    <Compile Include="InPack\CopyFileFrame.Designer.cs">
+      <DependentUpon>CopyFileFrame.cs</DependentUpon>
+    </Compile>
     <Compile Include="InPack\MainForm.cs" />
     <Compile Include="InPack\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -74,8 +77,13 @@
     <Compile Include="InPack\UC02_Select.Designer.cs">
       <DependentUpon>UC02_Select.cs</DependentUpon>
     </Compile>
+    <Compile Include="InPack\UC03_ConfFiles.cs" />
+    <Compile Include="InPack\UC03_ConfFiles.Designer.cs">
+      <DependentUpon>UC03_ConfFiles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemIcon.cs" />
     <Compile Include="TextEditor\Src\Actions\BookmarkActions.cs" />
     <Compile Include="TextEditor\Src\Actions\CaretActions.cs" />
     <Compile Include="TextEditor\Src\Actions\ClipBoardActions.cs" />
@@ -268,6 +276,9 @@
     <Compile Include="XMLpad\XmlFoldingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="InPack\CopyFileFrame.resx">
+      <DependentUpon>CopyFileFrame.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InPack\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -276,6 +287,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InPack\UC02_Select.resx">
       <DependentUpon>UC02_Select.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InPack\UC03_ConfFiles.resx">
+      <DependentUpon>UC03_ConfFiles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ASPX.xshd" />
     <EmbeddedResource Include="Resources\BAT-Mode.xshd" />
@@ -337,6 +351,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\false.png" />
+    <EmbeddedResource Include="Resources\1_amscommon.ico" />
+    <EmbeddedResource Include="Resources\1_ams_bo.ico" />
+    <EmbeddedResource Include="Resources\1_EXPDAT.ico" />
+    <EmbeddedResource Include="Resources\4_shell32.ico" />
     <None Include="Resources\ICSharpCode.TextEditor.snk" />
     <EmbeddedResource Include="Resources\true.png" />
     <None Include="TextEditor\Src\Gui\ClassDiagram1.cd" />
