@@ -81,6 +81,11 @@
     <Compile Include="InPack\UC03_ConfFiles.Designer.cs">
       <DependentUpon>UC03_ConfFiles.cs</DependentUpon>
     </Compile>
+    <Compile Include="InPack\WND_ConfFileContent.cs" />
+    <Compile Include="InPack\WND_ConfFileContent.Designer.cs">
+      <DependentUpon>WND_ConfFileContent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MyForms.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemIcon.cs" />
@@ -290,6 +295,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InPack\UC03_ConfFiles.resx">
       <DependentUpon>UC03_ConfFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InPack\WND_ConfFileContent.resx">
+      <DependentUpon>WND_ConfFileContent.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ASPX.xshd" />
     <EmbeddedResource Include="Resources\BAT-Mode.xshd" />

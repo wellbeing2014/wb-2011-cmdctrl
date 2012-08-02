@@ -10,6 +10,8 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections;
+using EXControls;
 
 namespace WisoftUpdateTool.InPack
 {
@@ -22,6 +24,8 @@ namespace WisoftUpdateTool.InPack
 		{
 			return true;
 		}
+		
+		private ArrayList listviewitems = new ArrayList();
 		public UC03_ConfFiles()
 		{
 			//
@@ -32,6 +36,21 @@ namespace WisoftUpdateTool.InPack
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			for (int i = 0; i < 20; i++) {
+			
+				this.listBox1.Items.Add(i+"aaaa");
+			}
+			
+			
+			
 		}
+		
+		void Button1Click(object sender, EventArgs e)
+		{
+			
+		
+		}
+		
+		
 	}
 }

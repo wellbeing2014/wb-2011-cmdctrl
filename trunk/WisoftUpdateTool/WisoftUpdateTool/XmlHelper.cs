@@ -100,7 +100,9 @@ namespace WisoftUpdateTool
                 XmlNode xn = doc.SelectSingleNode(node);
                 for (int i = 0; i < ar.Count; i++) {
                 	XmlElement xe = doc.CreateElement("update_file");
-                	xe.SetAttribute("name",ar[i] as string);
+                	string[] filename = ((string)ar[i]).Split('\\');
+                	xe.SetAttribute("fileurl",ar[i] as string);
+                	xe.SetAttribute("name",filename[filename.Length-1]);
                 	xn.AppendChild(xe);
                 }
                 
