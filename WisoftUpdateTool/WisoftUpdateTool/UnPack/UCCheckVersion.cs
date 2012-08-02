@@ -103,12 +103,12 @@ namespace WisoftUpdateTool
 		{
 			Update_File[] ufs = UpdateInfo.UpdateFiles;
 			for (int i = 0; i <ufs.Length; i++) {
-				CreateFileTree(this.treeView1.Nodes,ufs[i].Action,ufs[i].Fileurl);
+				CreateFileTree(this.treeView1.Nodes,ufs[i].Fileurl);
 			}
 			
 		}
 		
-		public void CreateFileTree(TreeNodeCollection tr,string action,string tnname)
+		public void CreateFileTree(TreeNodeCollection tr,string tnname)
 		{
 			string firstname ="";
 			string othername ="";
@@ -119,7 +119,7 @@ namespace WisoftUpdateTool
 			}
 			else
 			{
-				firstname = tnname+"("+action+")";
+				firstname = tnname;
 			}
 			bool ishave = false;
 			foreach (TreeNode element in tr) {
@@ -127,7 +127,7 @@ namespace WisoftUpdateTool
 				{
 					ishave = true;
 					if(!string.IsNullOrEmpty(othername))
-						CreateFileTree(element.Nodes,action,othername);
+						CreateFileTree(element.Nodes,othername);
 					break;
 				}
 			}
@@ -136,7 +136,7 @@ namespace WisoftUpdateTool
 				TreeNode newtn = new TreeNode(firstname);
 				tr.Add(newtn);
 				if(!string.IsNullOrEmpty(othername))
-					CreateFileTree(newtn.Nodes,action,othername);
+					CreateFileTree(newtn.Nodes,othername);
 			}
 			
 		}

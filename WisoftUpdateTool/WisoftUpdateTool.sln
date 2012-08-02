@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-# SharpDevelop 4.0.0.7070
+# SharpDevelop 4.2.1.8805
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WisoftUpdateTool", "WisoftUpdateTool\WisoftUpdateTool.csproj", "{E10140BD-64E8-4487-B953-BD7BABBBB263}"
 EndProject
 Global

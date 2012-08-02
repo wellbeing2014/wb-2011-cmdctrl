@@ -51,7 +51,7 @@ namespace WisoftUpdateTool
 					XmlAttributeCollection jc = (xl.Item(i)).Attributes;
 					uf[i] = new Update_File();
 					uf[i].Name = jc["name"].Value;
-					uf[i].Action = jc["action"].Value;
+//					uf[i].Action = jc["action"].Value;
 					uf[i].Fileurl = jc["fileurl"].Value;
 				}
 				return uf;

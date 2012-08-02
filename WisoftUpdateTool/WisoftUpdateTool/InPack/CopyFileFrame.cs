@@ -119,7 +119,7 @@ namespace WisoftUpdateTool.InPack
 				 if(di.Exists)
 				    di.Delete(true);
 				
-			} catch (Exception e1) {
+			} catch (Exception) {
 				
 				MessageBox.Show("我日，没能删除原来打包的文件。先将就过了。");
 			}

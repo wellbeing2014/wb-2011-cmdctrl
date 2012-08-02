@@ -64,3 +64,4 @@ E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.UC02_Select.resources
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.CopyFileFrame.resources
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.UC03_ConfFiles.resources
+E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.WND_ConfFileContent.resources
