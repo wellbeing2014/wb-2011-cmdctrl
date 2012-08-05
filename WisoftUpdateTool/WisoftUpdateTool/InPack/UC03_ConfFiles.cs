@@ -36,10 +36,6 @@ namespace WisoftUpdateTool.InPack
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			for (int i = 0; i < 20; i++) {
-			
-				this.listBox1.Items.Add(i+"aaaa");
-			}
 			
 			
 			
@@ -47,7 +43,14 @@ namespace WisoftUpdateTool.InPack
 		
 		void Button1Click(object sender, EventArgs e)
 		{
-			
+			WND_ConfFileContent wc = new WND_ConfFileContent();
+			DialogResult dr = wc.ShowDialog();
+			if(dr==DialogResult.OK)
+			{
+				wc.packlist = listviewitems;
+				this.listBox1.DataSource = listviewitems;
+				//this.listBox1.Refresh();
+			}
 		
 		}
 		

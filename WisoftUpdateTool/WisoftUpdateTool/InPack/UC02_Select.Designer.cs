@@ -175,10 +175,6 @@ namespace WisoftUpdateTool.InPack
 			this.label2.Text = "脚本输出路径：";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// openFileDialog1
-			// 
-			this.openFileDialog1.FileName = "openFileDialog1";
-			// 
 			// UC02_Select
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);

@@ -37,14 +37,15 @@ namespace WisoftUpdateTool.InPack
 		private void InitializeComponent()
 		{
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.label2 = new System.Windows.Forms.Label();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.button3 = new System.Windows.Forms.Button();
+			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.button2 = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -64,52 +65,39 @@ namespace WisoftUpdateTool.InPack
 			this.panel1.Size = new System.Drawing.Size(445, 360);
 			this.panel1.TabIndex = 0;
 			// 
-			// label1
+			// button4
 			// 
-			this.label1.Location = new System.Drawing.Point(12, 9);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(71, 17);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "工程目录：】";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button4.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.button4.Location = new System.Drawing.Point(329, 334);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(52, 23);
+			this.button4.TabIndex = 4;
+			this.button4.Text = "确定";
+			this.button4.UseVisualStyleBackColor = true;
 			// 
-			// textBox1
+			// button3
 			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-									| System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.Location = new System.Drawing.Point(77, 5);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(302, 21);
-			this.textBox1.TabIndex = 1;
-			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(387, 5);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(55, 23);
-			this.button1.TabIndex = 2;
-			this.button1.Text = "浏览";
-			this.button1.UseVisualStyleBackColor = true;
+			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.button3.Location = new System.Drawing.Point(387, 334);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(55, 23);
+			this.button3.TabIndex = 4;
+			this.button3.Text = "取消";
+			this.button3.UseVisualStyleBackColor = true;
 			// 
 			// treeView1
 			// 
 			this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.treeView1.CheckBoxes = true;
 			this.treeView1.Location = new System.Drawing.Point(3, 56);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.Size = new System.Drawing.Size(439, 272);
 			this.treeView1.TabIndex = 3;
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(12, 33);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(71, 17);
-			this.label2.TabIndex = 0;
-			this.label2.Text = "选择文件：";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
 			// 
 			// button2
 			// 
@@ -120,26 +108,45 @@ namespace WisoftUpdateTool.InPack
 			this.button2.TabIndex = 2;
 			this.button2.Text = "刷新";
 			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.Button2Click);
 			// 
-			// button3
+			// button1
 			// 
-			this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button3.Location = new System.Drawing.Point(387, 334);
-			this.button3.Name = "button3";
-			this.button3.Size = new System.Drawing.Size(55, 23);
-			this.button3.TabIndex = 4;
-			this.button3.Text = "取消";
-			this.button3.UseVisualStyleBackColor = true;
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.Location = new System.Drawing.Point(387, 5);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(55, 23);
+			this.button1.TabIndex = 2;
+			this.button1.Text = "浏览";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.Button1Click);
 			// 
-			// button4
+			// textBox1
 			// 
-			this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button4.Location = new System.Drawing.Point(329, 334);
-			this.button4.Name = "button4";
-			this.button4.Size = new System.Drawing.Size(52, 23);
-			this.button4.TabIndex = 4;
-			this.button4.Text = "确定";
-			this.button4.UseVisualStyleBackColor = true;
+			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox1.Location = new System.Drawing.Point(77, 5);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(302, 21);
+			this.textBox1.TabIndex = 1;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(12, 33);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(71, 17);
+			this.label2.TabIndex = 0;
+			this.label2.Text = "选择文件：";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(12, 9);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(71, 17);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "工程目录：】";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// WND_ConfFileContent
 			// 
@@ -153,6 +160,7 @@ namespace WisoftUpdateTool.InPack
 			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
 		private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Label label1;
