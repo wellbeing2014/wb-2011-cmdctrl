@@ -142,5 +142,12 @@ namespace WisoftUpdateTool
 			get { return _fileurl; }
 			set { _fileurl = value; }
 		}
+		
+		private string _ConfContent;
+		
+		public string ConfContent {
+			get { return _ConfContent; }
+			set { _ConfContent = value; }
+		}
 	}
 }

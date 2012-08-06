@@ -56,7 +56,6 @@ E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.UCSele
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\XmlPad.FindAndReplaceForm.resources
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\XmlPad.InputBoxDialog.resources
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\XmlPad.XmlEditor.resources
-E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.csproj.GenerateResource.Cache
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.exe
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.pdb
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.MainForm.resources
@@ -91,3 +90,5 @@ E:\SVN\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\UpdateInfo.xml
 E:\SVN\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe.config
 E:\SVN\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe
 E:\SVN\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.pdb
+E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\GenerateResource.read.1.tlog
+E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\GenerateResource.write.1.tlog
