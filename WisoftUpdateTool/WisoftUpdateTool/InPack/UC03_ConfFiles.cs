@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections;
+using System.Collections.Generic;
 using EXControls;
 
 namespace WisoftUpdateTool.InPack
@@ -25,7 +26,7 @@ namespace WisoftUpdateTool.InPack
 			return true;
 		}
 		
-		private ArrayList listviewitems = new ArrayList();
+		private List<Update_File> listviewitems = new List<Update_File>();
 		public UC03_ConfFiles()
 		{
 			//
@@ -38,22 +39,89 @@ namespace WisoftUpdateTool.InPack
 			//
 			
 			
-			
 		}
 		
 		void Button1Click(object sender, EventArgs e)
 		{
 			WND_ConfFileContent wc = new WND_ConfFileContent();
+			
 			DialogResult dr = wc.ShowDialog();
 			if(dr==DialogResult.OK)
 			{
-				wc.packlist = listviewitems;
-				this.listBox1.DataSource = listviewitems;
+				
+				getAddConfFiles(wc.packlist);
 				//this.listBox1.Refresh();
 			}
+		}
 		
+		void getAddConfFiles(ArrayList al)
+		{
+			for (int i = 0; i < al.Count; i++) {
+				string filepath = al[i] as string;
+				bool ishave = false;
+				for (int j = 0; j < listviewitems.Count; j++) {
+					Update_File uf= listviewitems[j] as Update_File;
+					if (filepath.Equals(uf.Fileurl))
+					{	
+						ishave = true;
+						break;
+					}
+				}
+				if(!ishave)
+				{
+					string[] temp = filepath.Split('\\');
+					string filename = temp[temp.Length-1];
+					listviewitems.Add(new Update_File(){Name = filename,Fileurl = filepath});
+				}
+				
+			}
+			this.listBox1.DataSource =null ;
+			this.listBox1.DataSource =listviewitems ;
+			this.listBox1.DisplayMember = "Name";
+			this.listBox1.ValueMember = "Fileurl";
+			this.listBox1.SelectedItem =null;
+			this.listBox1.Refresh();
 		}
 		
 		
+		
+		void Button2Click(object sender, EventArgs e)
+		{
+			if(this.listBox1.SelectedItem!=null)
+			{
+				listviewitems.Remove(this.listBox1.SelectedItem as Update_File);
+				this.listBox1.DataSource =null ;
+				this.listBox1.DataSource =listviewitems ;
+				this.listBox1.DisplayMember = "Name";
+				this.listBox1.ValueMember = "Fileurl";
+				this.listBox1.SelectedItem =null;
+				this.listBox1.Refresh();
+				this.textBox1.Text = null;
+				this.textBox2.Text = null;
+			}
+			else
+				MessageBox.Show("请选择一个要删除的文件","提示");
+		}
+		
+		private Update_File lastFile = new Update_File();
+		void ListBox1SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(lastFile!=null&&this.textBox2.Text!=null)
+			{
+				int a=this.listviewitems.IndexOf(lastFile);
+				if(a>=0)
+				{
+					listviewitems[a].ConfContent = this.textBox2.Text;
+				}
+			}
+			if(this.listBox1.SelectedItem!=null)
+			{
+				Update_File uf = this.listBox1.SelectedItem as Update_File;
+				
+				this.textBox1.Text = uf.Fileurl;
+				this.textBox2.Text = uf.ConfContent;
+				lastFile = uf;
+			}
+		}
 	}
 }
