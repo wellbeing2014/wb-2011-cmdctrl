@@ -81,6 +81,10 @@
     <Compile Include="InPack\UC03_ConfFiles.Designer.cs">
       <DependentUpon>UC03_ConfFiles.cs</DependentUpon>
     </Compile>
+    <Compile Include="InPack\UC04_EditSql.cs" />
+    <Compile Include="InPack\UC04_EditSql.Designer.cs">
+      <DependentUpon>UC04_EditSql.cs</DependentUpon>
+    </Compile>
     <Compile Include="InPack\WND_ConfFileContent.cs" />
     <Compile Include="InPack\WND_ConfFileContent.Designer.cs">
       <DependentUpon>WND_ConfFileContent.cs</DependentUpon>

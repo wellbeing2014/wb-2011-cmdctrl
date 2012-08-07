@@ -3,6 +3,10 @@
 	<name>行政许可平台</name>
 	<code>maea</code>
 	<version>5.157.1</version>
+	<relations>
+		<relation name="事项管理平台" code="aims" version="1.42.1" />
+		<relation name="事项管理平台" code="aims" version="1.42.1" />
+	</relations>
 	<updatenote>
 	<![CDATA[
 本次更新主要针对淮安地区出现的BUG
