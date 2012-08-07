@@ -23,6 +23,11 @@ namespace WisoftUpdateTool.InPack
 	{
 		public bool OnNextButton()
 		{
+			if(this.listviewitems.Count==0)
+				MessageBox.Show("给实施造福了，没有要配置的文件。","提示");
+			XmlHelper.Delete("root/before_configs","");
+			XmlHelper.Insert("root","before_configs","","");
+			XmlHelper.InsertConfFiles("root/before_configs",this.listviewitems);
 			return true;
 		}
 		

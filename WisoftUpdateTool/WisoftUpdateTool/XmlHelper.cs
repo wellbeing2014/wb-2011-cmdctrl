@@ -9,6 +9,7 @@
 using System;
 using System.Xml;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace WisoftUpdateTool
 {
@@ -90,7 +91,11 @@ namespace WisoftUpdateTool
             catch { }
             return nl;
         }
-        
+        /// <summary>
+        /// 插入更新文件组
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="ar"></param>
         public static void InsertUpdateFiles(string node,ArrayList ar)
         {
         	try
@@ -103,6 +108,31 @@ namespace WisoftUpdateTool
                 	string[] filename = ((string)ar[i]).Split('\\');
                 	xe.SetAttribute("fileurl",ar[i] as string);
                 	xe.SetAttribute("name",filename[filename.Length-1]);
+                	xn.AppendChild(xe);
+                }
+                
+                doc.Save(path);
+            }
+            catch { }
+        }
+        /// <summary>
+        /// 插入手动配置文件组
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="ar"></param>
+        public static void InsertConfFiles(string node,List<Update_File> ar)
+        {
+        	try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(path);
+                XmlNode xn = doc.SelectSingleNode(node);
+                for (int i = 0; i < ar.Count; i++) {
+                	XmlElement xe = doc.CreateElement("before_config");
+                	xe.SetAttribute("no",i.ToString());
+                	xe.SetAttribute("fileurl",ar[i].Fileurl);
+                	xe.SetAttribute("name",ar[i].Name);
+                	xe.AppendChild(doc.CreateCDataSection(ar[i].ConfContent));
                 	xn.AppendChild(xe);
                 }
                 
