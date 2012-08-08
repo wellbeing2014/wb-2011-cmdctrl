@@ -10,6 +10,9 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
+using System.IO;
 
 namespace WisoftUpdateTool.InPack
 {
@@ -22,6 +25,34 @@ namespace WisoftUpdateTool.InPack
 		{
 			return true;
 		}
+		
+		string initstr = "/*************************************************************/\r\n"+
+								 "/**                   注         意                         **/\r\n"+
+								 "/**       直接执行本sql文件，保证能够完整执行到底。         **/\r\n"+
+								 "/**       特别注意要添加commit和存储过程加隔断符的地方      **/\r\n"+
+								 "/*************************************************************/\r\n"+
+
+								 "--※版本信息：行政许可平台(maea)5.181.1\r\n"+
+								 "--※发布日期：2012-08-08\r\n"+
+
+								 "/*********************新 建 对 象 开 始***********************/\r\n\n\n"+
+
+
+								 "/*********************新 建 对 象 结 束***********************/\r\n\n"+
+
+								 "---------------------------------------------------------------\r\n\n"+
+
+								 "/*********************修 改 对 象 开 始***********************/\r\n\n\n"+
+
+
+								 "/*********************修 改 对 象 结 束***********************/\r\n\n"+
+
+								 "---------------------------------------------------------------\r\n\n"+
+								
+								 "/*********************数 据 语 句 开 始***********************/\r\n\n\n"+
+								
+								
+								 "/*********************数 据 语 句 结 束***********************/\r\n";
 		public UC04_EditSql()
 		{
 			//
@@ -32,6 +63,34 @@ namespace WisoftUpdateTool.InPack
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
+			this.textEditorControl1.TextChanged+= new EventHandler(UC04_EditSql_TextChanged);
+			if(File.Exists("databaseupdate.sql"))
+				this.textEditorControl1.LoadFile("databaseupdate.sql");
+			else
+			{
+				this.textEditorControl1.Text = this.initstr;
+			}
+			
+		}
+		
+		
+		//恢复模板
+		void Button1Click(object sender, System.EventArgs e)
+		{
+			this.textEditorControl1.Text = this.initstr;
+		}
+		
+		void UC04_EditSql_TextChanged(object sender, System.EventArgs e)
+		{
+			this.button2.Enabled = true;
+		}
+		
+		//保存按钮
+		void Button2Click(object sender, EventArgs e)
+		{
+			this.textEditorControl1.SaveFile("databaseupdate.sql");
+			this.button2.Enabled = false;
 		}
 	}
 }

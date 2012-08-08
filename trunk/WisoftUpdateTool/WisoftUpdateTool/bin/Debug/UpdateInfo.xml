@@ -2,8 +2,10 @@
 <root>
   <name>11</name>
   <code>22</code>
-  <version>33</version>
-  <updatenote><![CDATA[444555666]]></updatenote>
+  <version>3</version>
+  <updatenote><![CDATA[fdsafas]]></updatenote>
   <update_files>
   </update_files>
+  <before_configs>
+  </before_configs>
 </root>
