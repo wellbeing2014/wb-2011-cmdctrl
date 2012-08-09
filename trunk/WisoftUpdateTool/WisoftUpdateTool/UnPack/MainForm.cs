@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 
 namespace WisoftUpdateTool
@@ -29,6 +30,11 @@ namespace WisoftUpdateTool
 		private UCExecuteSQL ucExecuteSQL1;
 		public MainForm()
 		{
+			if(File.Exists("UpdateInfo.xml"))
+			{
+				
+			
+				
 			
 			this.ucSelectDir1 = new WisoftUpdateTool.UCSelectDir();
 			ucCheckVersion1 = new UCCheckVersion();
@@ -46,6 +52,12 @@ namespace WisoftUpdateTool
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			}
+			else
+			{
+				MessageBox.Show("更新包文件错误！");
+				System.Environment.Exit(0); 
+			}
 		}
 		
 		private void AddUC()
@@ -66,17 +78,17 @@ namespace WisoftUpdateTool
 		
 		void Button2Click(object sender, EventArgs e)
 		{
-				System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
-				
-				cc[order].Visible = false;
-				cc[order-1].Visible = true;
-				order--;
-				if(order > 0)
-					this.button2.Visible = true;
-				else
-					this.button2.Visible = false;
-				if(order !=cc.Count)
-					this.button1.Text = "下一步";
+			System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
+			
+			cc[order].Visible = false;
+			cc[order-1].Visible = true;
+			order--;
+			if(order > 0)
+				this.button2.Visible = true;
+			else
+				this.button2.Visible = false;
+			if(order !=cc.Count)
+				this.button1.Text = "下一步";
 
 		}
 		

@@ -51,21 +51,23 @@ namespace WisoftUpdateTool.InPack
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.panel1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.groupBox2);
-			this.panel1.Controls.Add(this.groupBox1);
-			this.panel1.Controls.Add(this.label1);
-			this.panel1.Controls.Add(this.treeView1);
+			this.panel1.Controls.Add(this.splitContainer1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(461, 334);
+			this.panel1.Size = new System.Drawing.Size(593, 393);
 			this.panel1.TabIndex = 0;
 			// 
 			// groupBox2
@@ -75,9 +77,9 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.textEditorControl1);
 			this.groupBox2.Controls.Add(this.label10);
-			this.groupBox2.Location = new System.Drawing.Point(173, 22);
+			this.groupBox2.Location = new System.Drawing.Point(3, 3);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(285, 203);
+			this.groupBox2.Size = new System.Drawing.Size(386, 283);
 			this.groupBox2.TabIndex = 3;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "文件预览";
@@ -88,11 +90,12 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.textEditorControl1.IsReadOnly = false;
-			this.textEditorControl1.Location = new System.Drawing.Point(85, 73);
+			this.textEditorControl1.Location = new System.Drawing.Point(8, 20);
 			this.textEditorControl1.Name = "textEditorControl1";
-			this.textEditorControl1.Size = new System.Drawing.Size(100, 100);
+			this.textEditorControl1.Size = new System.Drawing.Size(372, 257);
 			this.textEditorControl1.TabIndex = 0;
 			this.textEditorControl1.Text = "textEditorControl1";
+			this.textEditorControl1.Visible = false;
 			// 
 			// label10
 			// 
@@ -100,7 +103,7 @@ namespace WisoftUpdateTool.InPack
 			this.label10.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
 			this.label10.Location = new System.Drawing.Point(3, 17);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(279, 183);
+			this.label10.Size = new System.Drawing.Size(380, 263);
 			this.label10.TabIndex = 0;
 			this.label10.Text = "文件格式不支持预览";
 			this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -117,9 +120,9 @@ namespace WisoftUpdateTool.InPack
 			this.groupBox1.Controls.Add(this.label7);
 			this.groupBox1.Controls.Add(this.label6);
 			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Location = new System.Drawing.Point(173, 231);
+			this.groupBox1.Location = new System.Drawing.Point(3, 292);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(285, 100);
+			this.groupBox1.Size = new System.Drawing.Size(383, 98);
 			this.groupBox1.TabIndex = 2;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "文件信息";
@@ -131,7 +134,7 @@ namespace WisoftUpdateTool.InPack
 			this.label5.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
 			this.label5.Location = new System.Drawing.Point(7, 69);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(86, 16);
+			this.label5.Size = new System.Drawing.Size(93, 14);
 			this.label5.TabIndex = 0;
 			this.label5.Text = "文件路径:";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -143,7 +146,7 @@ namespace WisoftUpdateTool.InPack
 			this.label4.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
 			this.label4.Location = new System.Drawing.Point(6, 53);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(86, 16);
+			this.label4.Size = new System.Drawing.Size(93, 14);
 			this.label4.TabIndex = 0;
 			this.label4.Text = "文件大小:";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -155,7 +158,7 @@ namespace WisoftUpdateTool.InPack
 			this.label3.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
 			this.label3.Location = new System.Drawing.Point(7, 37);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(86, 16);
+			this.label3.Size = new System.Drawing.Size(93, 14);
 			this.label3.TabIndex = 0;
 			this.label3.Text = "最后修改时间:";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -166,9 +169,9 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.label9.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			this.label9.Location = new System.Drawing.Point(99, 69);
+			this.label9.Location = new System.Drawing.Point(107, 69);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(138, 16);
+			this.label9.Size = new System.Drawing.Size(236, 14);
 			this.label9.TabIndex = 0;
 			this.label9.Text = "文件名:";
 			this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -179,9 +182,9 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.label8.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			this.label8.Location = new System.Drawing.Point(98, 53);
+			this.label8.Location = new System.Drawing.Point(106, 53);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(138, 16);
+			this.label8.Size = new System.Drawing.Size(236, 14);
 			this.label8.TabIndex = 0;
 			this.label8.Text = "文件名:";
 			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -192,9 +195,9 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.label7.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			this.label7.Location = new System.Drawing.Point(99, 37);
+			this.label7.Location = new System.Drawing.Point(107, 37);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(138, 16);
+			this.label7.Size = new System.Drawing.Size(236, 14);
 			this.label7.TabIndex = 0;
 			this.label7.Text = "文件名:";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -205,9 +208,9 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.label6.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-			this.label6.Location = new System.Drawing.Point(99, 21);
+			this.label6.Location = new System.Drawing.Point(107, 21);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(138, 16);
+			this.label6.Size = new System.Drawing.Size(236, 14);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "文件名:";
 			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -219,14 +222,14 @@ namespace WisoftUpdateTool.InPack
 			this.label2.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
 			this.label2.Location = new System.Drawing.Point(8, 21);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(85, 16);
+			this.label2.Size = new System.Drawing.Size(92, 14);
 			this.label2.TabIndex = 0;
 			this.label2.Text = "文件名:";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(3, 6);
+			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(100, 13);
 			this.label1.TabIndex = 1;
@@ -234,11 +237,33 @@ namespace WisoftUpdateTool.InPack
 			// 
 			// treeView1
 			// 
-			this.treeView1.Location = new System.Drawing.Point(3, 22);
+			this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+									| System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.treeView1.Location = new System.Drawing.Point(3, 16);
 			this.treeView1.Name = "treeView1";
-			this.treeView1.Size = new System.Drawing.Size(164, 309);
+			this.treeView1.Size = new System.Drawing.Size(191, 374);
 			this.treeView1.TabIndex = 0;
 			this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView1AfterSelect);
+			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.label1);
+			this.splitContainer1.Panel1.Controls.Add(this.treeView1);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
+			this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
+			this.splitContainer1.Size = new System.Drawing.Size(593, 393);
+			this.splitContainer1.SplitterDistance = 197;
+			this.splitContainer1.TabIndex = 4;
 			// 
 			// UC05_OverView
 			// 
@@ -246,12 +271,17 @@ namespace WisoftUpdateTool.InPack
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.panel1);
 			this.Name = "UC05_OverView";
-			this.Size = new System.Drawing.Size(461, 334);
+			this.Size = new System.Drawing.Size(593, 393);
 			this.panel1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.Label label10;
 		private ICSharpCode.TextEditor.TextEditorControl textEditorControl1;
 		private System.Windows.Forms.Label label6;

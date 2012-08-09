@@ -61,13 +61,13 @@ namespace WisoftUpdateTool.InPack
 			this.uc01_Config1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.uc03_ConfFiles.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.uc04_EditSql.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.uc04_EditSql.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.uc05_OverView.Dock = System.Windows.Forms.DockStyle.Fill;
 //			this.ucExecuteSQL1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Controls.Add(this.uc01_Config1);
 			this.panel2.Controls.Add(this.uc02_Select1);
 			this.panel2.Controls.Add(this.uc03_ConfFiles);
 			this.panel2.Controls.Add(this.uc04_EditSql);
-//			this.panel2.Controls.Add(ucFileUpdate1);
+			this.panel2.Controls.Add(this.uc05_OverView);
 //			this.panel2.Controls.Add(ucExecuteSQL1);
 		}
 		
