@@ -85,6 +85,10 @@
     <Compile Include="InPack\UC04_EditSql.Designer.cs">
       <DependentUpon>UC04_EditSql.cs</DependentUpon>
     </Compile>
+    <Compile Include="InPack\UC05_OverView.cs" />
+    <Compile Include="InPack\UC05_OverView.Designer.cs">
+      <DependentUpon>UC05_OverView.cs</DependentUpon>
+    </Compile>
     <Compile Include="InPack\WND_ConfFileContent.cs" />
     <Compile Include="InPack\WND_ConfFileContent.Designer.cs">
       <DependentUpon>WND_ConfFileContent.cs</DependentUpon>
@@ -298,6 +302,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InPack\UC03_ConfFiles.resx">
       <DependentUpon>UC03_ConfFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InPack\UC04_EditSql.resx">
+      <DependentUpon>UC04_EditSql.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InPack\UC05_OverView.resx">
+      <DependentUpon>UC05_OverView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InPack\WND_ConfFileContent.resx">
       <DependentUpon>WND_ConfFileContent.cs</DependentUpon>

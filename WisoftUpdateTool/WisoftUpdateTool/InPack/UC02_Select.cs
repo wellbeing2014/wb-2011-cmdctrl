@@ -25,15 +25,24 @@ namespace WisoftUpdateTool.InPack
 		{
 			this.packlist.Clear();
 			getCheckedTreeNodes(this.treeView1.Nodes);
+			if(packlist.Count==0)
+			{
+				DialogResult dr =MessageBox.Show("我了个去，这次更新啥文件都不要？","提示",MessageBoxButtons.OKCancel);
+				if(DialogResult.Cancel==dr)
+					return false;
+			}
+			else
+			{
+				InPack.CopyFileFrame cf = new InPack.CopyFileFrame();
+				cf.copylist = packlist;
+				cf.frompath = this.textBox2.Text;
+				cf.Closing+= new CancelEventHandler(cf_Closing);
+				cf.ShowDialog();
+				XmlHelper.Delete("root/update_files","");
+				XmlHelper.Insert("root","update_files","","");
+				XmlHelper.InsertUpdateFiles("root/update_files",packlist);
+			}
 			
-			InPack.CopyFileFrame cf = new InPack.CopyFileFrame();
-			cf.copylist = packlist;
-			cf.frompath = this.textBox2.Text;
-			cf.Closing+= new CancelEventHandler(cf_Closing);
-			cf.ShowDialog();
-			XmlHelper.Delete("root/update_files","");
-			XmlHelper.Insert("root","update_files","","");
-			XmlHelper.InsertUpdateFiles("root/update_files",packlist);
 			return true;
 		}
 		

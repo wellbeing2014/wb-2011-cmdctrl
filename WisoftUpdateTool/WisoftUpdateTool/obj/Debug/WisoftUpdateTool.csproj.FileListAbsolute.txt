@@ -92,3 +92,5 @@ E:\SVN\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.exe
 E:\SVN\WisoftUpdateTool\WisoftUpdateTool\bin\Debug\WisoftUpdateTool.pdb
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\GenerateResource.read.1.tlog
 E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\GenerateResource.write.1.tlog
+E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.UC04_EditSql.resources
+E:\SVN目录\WisoftUpdateTool\WisoftUpdateTool\obj\Debug\WisoftUpdateTool.InPack.UC05_OverView.resources
