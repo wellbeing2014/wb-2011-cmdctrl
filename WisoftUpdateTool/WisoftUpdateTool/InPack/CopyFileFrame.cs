@@ -23,7 +23,7 @@ namespace WisoftUpdateTool.InPack
 	{
 		public ArrayList copylist = null;
 		//private ArrayList baklist = new ArrayList();
-		public string servicespath = @"C:\Users\ZhuXinpei\Desktop\wisoftintegrateframe";
+		public string servicespath = @"";
 		//public string bakToPath = @"C:\Users\ZhuXinpei\Desktop\bak";
 		public string frompath = "";
 		public CopyFileFrame()
@@ -113,16 +113,7 @@ namespace WisoftUpdateTool.InPack
 		 	letdo.BeginInvoke("INFO:开始打包" ,null,null);
 		 	this.progressBar1.Minimum = 0;
 			this.progressBar1.Maximum = TotalSize;
-			//删除原来的目录
-			try {
-				 DirectoryInfo di = new DirectoryInfo("Updates");
-				 if(di.Exists)
-				    di.Delete(true);
-				
-			} catch (Exception) {
-				
-				MessageBox.Show("我日，没能删除原来打包的文件。先将就过了。");
-			}
+			
 		 	copyCircle();
 		 	
 		 }

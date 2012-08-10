@@ -21,6 +21,10 @@ namespace WisoftUpdateTool.InPack
 	/// </summary>
 	public partial class UC02_Select : UserControl,INextButton
 	{
+		public bool DownNextButton()
+		{
+			return true;
+		}
 		public bool OnNextButton()
 		{
 			this.packlist.Clear();
@@ -61,13 +65,13 @@ namespace WisoftUpdateTool.InPack
 		
 		public void cf_Closing(object sender,CancelEventArgs e)
 		{
-			DialogResult dr=MessageBox.Show("COPY完成了，你想详细看看日志？那就稍后按CTRL+F4","提示",MessageBoxButtons.OKCancel);
+			DialogResult dr=MessageBox.Show("要打包的文件已收集完成，是否关闭进度条？或者稍后按ALT+F4","提示",MessageBoxButtons.OKCancel);
 			if(dr== DialogResult.OK)
 			{
-				e.Cancel = true;
+				e.Cancel = false;
 			}
 			else
-				e.Cancel = false;
+				e.Cancel = true;
 		}
 		
 		public UC02_Select()

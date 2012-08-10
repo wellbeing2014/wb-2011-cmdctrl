@@ -35,6 +35,11 @@ namespace WisoftUpdateTool.InPack
 			return true;
 		}
 		
+		public bool DownNextButton()
+		{
+			return true;
+		}
+		
 		private List<Update_File> listviewitems = new List<Update_File>();
 		public UC03_ConfFiles()
 		{

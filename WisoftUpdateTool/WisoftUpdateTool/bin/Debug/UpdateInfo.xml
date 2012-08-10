@@ -1,11 +1,87 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <name>11</name>
-  <code>22</code>
-  <version>3</version>
-  <updatenote><![CDATA[fdsafas]]></updatenote>
-  <update_files>
-  </update_files>
-  <before_configs>
-  </before_configs>
+<root> 
+	<name>行政许可平台</name>
+	<code>maea</code>
+	<version>5.157.1</version>
+	<relations>
+		<relation name="事项管理平台" code="aims" version="1.42.1" />
+		<relation name="事项管理平台" code="aims" version="1.42.1" />
+	</relations>
+	<updatenote>
+	<![CDATA[
+本次更新主要针对淮安地区出现的BUG
+修改BUG:
+1、问题单号：P20120501 修改说明这样那样
+2、问题单号：P20120501 修改说明这样那样
+3、问题单号：P20120501 修改说明这样那样
+4、问题单号：P20120501 修改说明这样那样
+新增功能
+1、新增说明，那样这样……………………
+2、新增说明，那样这样……………………
+3、新增说明，那样这样……………………
+3、新增说明，那样这样……………………
+4、新增说明，那样这样……………………
+5、新增说明，那样这样……………………
+]]>
+	</updatenote>
+	<publish_date>2012-07-10</publish_date>	
+	<before_configs>
+		<before_config no="1" name="aims_params.xml" fileurl="WEB-INF\classes\aims\aims_params.xml">
+   <![CDATA[
+	请将下面一段 复制到相应内容下：
+	<bean id="SysParam"
+		  class="com.wisoft.aims.common.SysParam">
+		<property name="content">
+			<value>JS$xzqh$$wbj$-$qllx$-</value>
+		</property>
+		<property name="content1">
+			<value>P-JS$xzqh$$wbj$-$qllx$-</value>
+		</property>
+		<property name="xmpath" value="c:/qlyg/wisoftintegrateframe"></property>
+	</bean>
+]]>
+		</before_config>
+	<before_config no="3" name="aims_params1.xml" fileurl="WEB-INF\classes\aims\aims_params.xml">
+   <![CDATA[
+	<bean id="SysParam"
+		  class="com.wisoft.aims.common.SysParam">
+		<property name="content">
+			<value>JS$xzqh$$wbj$-$qllx$-</value>
+		</property>
+		<property name="content1">
+			<value>P-JS$xzqh$$wbj$-$qllx$-</value>
+		</property>
+		<property name="xmpath" value="c:/qlyg/wisoftintegrateframe"></property>
+	</bean>
+]]>
+		</before_config>
+	<before_config no="2" name="aims_params2.xml" fileurl="WEB-INF\classes\aims\aims_params.xml">
+   <![CDATA[
+	<bean id="SysParam"
+		  class="com.wisoft.aims.common.SysParam">
+		<property name="content">
+			<value>JS$xzqh$$wbj$-$qllx$-</value>
+		</property>
+		<property name="content1">
+			<value>P-JS$xzqh$$wbj$-$qllx$-</value>
+		</property>
+		<property name="xmpath" value="c:/qlyg/wisoftintegrateframe"></property>
+	</bean>
+]]>
+		</before_config>
+	</before_configs>
+	<update_files>
+		<update_file name="aims_params.xml" action="insert" fileurl="WEB-INF\classes\aims\aims_params.xml" />
+		<update_file name="aims_params1.xml" action="delete" fileurl="WEB-INF\classes\aims\aims_params1.xml" />
+		<update_file name="aims_params2.xml" action="update" fileurl="WEB-INF\classes\aims\aims_params2.xml" />
+		<update_file name="web.xml" action="update" fileurl="WEB-INF\web.xml" />
+		<update_file name="aims_comon.swf" action="update" fileurl="flex2\aims_comon.swf" />
+		<update_file name="aimslist.swf" action="update" fileurl="flex2\aims\aimslist.swf" />
+		<update_file name="wisoft_aims.jar" action="update" fileurl="WEB-INF\lib\wisoft_aims.jar" />
+	</update_files>
+	<DBConfig>
+		<username></username>
+		<password></password>
+		<SID></SID>
+	</DBConfig>
 </root>
