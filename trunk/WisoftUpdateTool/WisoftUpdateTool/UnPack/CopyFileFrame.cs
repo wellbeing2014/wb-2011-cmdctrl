@@ -98,22 +98,20 @@ namespace WisoftUpdateTool
 		 	letdo.BeginInvoke("正在分析需要备份的文件***",null,null);
 		 	for (int i = 0; i < copylist.Count; i++) {
 		 		Update_File uf = copylist[i] as Update_File;
-		 		string url = servicespath+@"\"+uf.Fileurl;
+		 		string url = servicespath+uf.Fileurl;
 		 		FileInfo fi =null;
 		 		fi = new FileInfo(url);
 		 		if(fi.Exists)
 		 		{
 		 			TotalSize+=(int)fi.Length;
-	 			   	
 		 			letdo.BeginInvoke("INFO:文件正常！将被覆盖。"+url ,null,null);
-	 			
 		 			baklist.Add(url);
 		 		}
 		 		else
 		 		{
 	 			   	letdo.BeginInvoke("WARNING:文件不存在！将以更新包内文件插入。"+url ,null,null);
 		 		}
-		 	}
+		 	} 
 		 	letdo.BeginInvoke("INFO:检查完毕，总共需要备份"+baklist.Count+"个文件，总共大小"+TotalSize ,null,null);
 		 	letdo.BeginInvoke("INFO:开始备份" ,null,null);
 		 	this.progressBar1.Minimum = 0;
@@ -122,8 +120,12 @@ namespace WisoftUpdateTool
 		 	
 		 }
 		 
+		 /// <summary>
+		 /// 更新正式开始
+		 /// </summary>
 		 private void UpdateFiles()
 		 {
+		 	//提示倒数3秒
 		 	Thread.Sleep(1000);
 		 	letdo.BeginInvoke("INFO: 开始更新***倒数 3",null,null);
 		 	Thread.Sleep(1000);
@@ -131,27 +133,37 @@ namespace WisoftUpdateTool
 		 	Thread.Sleep(1000);
 		 	letdo.BeginInvoke("INFO: 开始更新***倒数 1",null,null);
 		 	
+		 	//清空原来用作备份的数组，初始化各参数
 		 	this.baklist.Clear();
 		 	this.TotalSize = 0;
 		 	this.TotalPostion =0;
 		 	this.position = 0;
+		 	this.curCopyNo = 0;
+		 	
+		 	//从更新包里预读文件，以便确定更新和统计更新大小
 		 	foreach (Update_File element in copylist) {
-		 		if(File.Exists(element.Fileurl))
+		 		if(File.Exists(GobalParameters.UpdateFolder+element.Fileurl))
 		 		{
-		 			FileInfo fi = new FileInfo(element.Fileurl);
+		 			FileInfo fi = new FileInfo(GobalParameters.UpdateFolder+element.Fileurl);
 		 			TotalSize +=(int)fi.Length;
 		 			baklist.Add(element.Fileurl);
 		 		}
+		 		else
+		 			letdo.BeginInvoke("ERROR: 需要更新的文件："+element.Fileurl+"不在更新包中。",null,null);
 		 	}
 		 	letdo.BeginInvoke("INFO: 需要更新文件"+baklist.Count+"共"+TotalSize,null,null);
-		 	//MessageBox.Show(this.baklist.Count.ToString());
-		 	this.curCopyNo = 0;
+		 	
 		 	copyCircle();
 		 }
 		 
+		 //由于备份和更新使用同一个方法。用一个字符串来区分。
 		 private string infostr = "备份" ;
+		 //设置一个标志，以便循环复制
 		 private int curCopyNo = 0;
 		 
+		 /// <summary>
+		 /// 正式复制方法。
+		 /// </summary>
 		 private void copyCircle()
 		 {
 	 		if(curCopyNo>=baklist.Count)
@@ -161,13 +173,11 @@ namespace WisoftUpdateTool
 	 			{
 	 				AutoClose ac = AutoColseFunc;
 	 				this.BeginInvoke(ac,null);
-	 				
 	 				return;
 	 			}
 	 			else 
 	 			{
 	 				infostr = "更新";
-	 			
 	 				UpdateFiles();
 	 				return;
 	 			}
@@ -191,7 +201,10 @@ namespace WisoftUpdateTool
 	 		//开始备份
 	 		try
 	        {
-	 			FileStream fs = new FileStream((string)baklist[curCopyNo], FileMode.Open, FileAccess.Read);
+	 			string fromfile = (string)baklist[curCopyNo];
+	 			if("更新".Equals(infostr))
+	 				fromfile = GobalParameters.UpdateFolder+fromfile;
+	 			FileStream fs = new FileStream(fromfile, FileMode.Open, FileAccess.Read);
 	            Size = (int)fs.Length;
 	            position = 0;
 	            stream = fs;
@@ -201,12 +214,12 @@ namespace WisoftUpdateTool
 	        }
 	        catch (Exception Ex)
 	        {
+	        	MessageBox.Show("ERROR:"+infostr+"文件:"+baklist[curCopyNo]+"出错(" + Ex.ToString());
+	        	letdo.BeginInvoke("ERROR:"+infostr+"文件:"+baklist[curCopyNo]+"出错(" + Ex.ToString()+")",null,null);
 	        	curCopyNo++;
 	        	TotalPostion += Size;
 	        	copyCircle();
-	            
-	        	MessageBox.Show("ERROR:"+infostr+"文件:"+baklist[curCopyNo]+"出错(" + Ex.ToString());
-	        	letdo.BeginInvoke("ERROR:"+infostr+"文件:"+baklist[curCopyNo]+"出错(" + Ex.ToString()+")",null,null);
+	        	
 	        }
 		 }
 		 

@@ -58,7 +58,7 @@ namespace WisoftUpdateTool.InPack
 //			node.ImageKey = "folder";
 //            treeView1.Nodes.Add(node);
             
-            GetTreeViewData(System.IO.Directory.GetCurrentDirectory()+"/Updates",null);
+            GetTreeViewData(System.Environment.CurrentDirectory+@"\"+GobalParameters.UpdateFolder,null);
             this.treeView1.ExpandAll();
 		}
 		
@@ -111,7 +111,8 @@ namespace WisoftUpdateTool.InPack
 			if (e.Action != TreeViewAction.Unknown)
             {
 				TreeNode tn = e.Node;
-				DirectoryInfo ar = new DirectoryInfo("Updates/"+tn.FullPath);
+				string realpath = GobalParameters.UpdateFolder+tn.FullPath;
+				DirectoryInfo ar = new DirectoryInfo(realpath);
 				if(ar.Exists)
 				{
 					this.label6.Text = ar.Name;
@@ -123,7 +124,7 @@ namespace WisoftUpdateTool.InPack
 				}
 				else
 				{
-					FileInfo fi = new FileInfo("Updates/"+tn.FullPath);
+					FileInfo fi = new FileInfo(realpath);
 					if(fi.Exists)
 					{
 						float a = fi.Length;
@@ -150,21 +151,21 @@ namespace WisoftUpdateTool.InPack
 						{
 							this.textEditorControl1.Visible = true;
 							this.label10.Visible = false;
-							this.textEditorControl1.LoadFile("Updates/"+tn.FullPath);
+							this.textEditorControl1.LoadFile(realpath);
 							this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("XML");
 						}
 						if("sql".Equals(filetype))
 						{
 							this.textEditorControl1.Visible = true;
 							this.label10.Visible = false;
-							this.textEditorControl1.LoadFile("Updates/"+tn.FullPath);
+							this.textEditorControl1.LoadFile(realpath);
 							this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
 						}
 						if("txt".Equals(filetype)||"log".Equals(filetype)||"properties".Equals(filetype))
 						{
 							this.textEditorControl1.Visible = true;
 							this.label10.Visible = false;
-							this.textEditorControl1.LoadFile("Updates/"+tn.FullPath);
+							this.textEditorControl1.LoadFile(realpath);
 							//this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("");
 						}
 					}

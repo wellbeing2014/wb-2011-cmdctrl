@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GobalParameters.cs" />
     <Compile Include="InPack\CopyFileFrame.cs" />
     <Compile Include="InPack\CopyFileFrame.Designer.cs">
       <DependentUpon>CopyFileFrame.cs</DependentUpon>
@@ -380,7 +381,7 @@
     <EmbeddedResource Include="Resources\true.png" />
     <None Include="TextEditor\Src\Gui\ClassDiagram1.cd" />
     <None Include="UpdateInfo.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

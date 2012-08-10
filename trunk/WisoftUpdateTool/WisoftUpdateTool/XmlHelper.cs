@@ -21,7 +21,7 @@ namespace WisoftUpdateTool
     /// </summary>
     public class XmlHelper
     {
-    	private static string path = "Updates/UpdateInfo.xml";
+    	private static string path = GobalParameters.UpdateXmlFilePath;
         public XmlHelper()
         {
         }
@@ -106,7 +106,7 @@ namespace WisoftUpdateTool
                 for (int i = 0; i < ar.Count; i++) {
                 	XmlElement xe = doc.CreateElement("update_file");
                 	string[] filename = ((string)ar[i]).Split('\\');
-                	xe.SetAttribute("fileurl",@"Updates"+ar[i] as string);
+                	xe.SetAttribute("fileurl",ar[i] as string);
                 	xe.SetAttribute("name",filename[filename.Length-1]);
                 	xn.AppendChild(xe);
                 }

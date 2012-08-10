@@ -30,7 +30,7 @@ namespace WisoftUpdateTool
 		private UCExecuteSQL ucExecuteSQL1;
 		public MainForm()
 		{
-			if(File.Exists("Updates/UpdateInfo.xml"))
+			if(File.Exists(GobalParameters.UpdateXmlFilePath))
 			{			
 				this.ucSelectDir1 = new WisoftUpdateTool.UCSelectDir();
 				ucCheckVersion1 = new UCCheckVersion();

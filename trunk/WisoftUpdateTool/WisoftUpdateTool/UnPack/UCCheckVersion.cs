@@ -36,9 +36,11 @@ namespace WisoftUpdateTool
 			}
 			else
 			{
-				XmlHelper.Update("root/DBConfig/username","",this.textBox1.Text);
-				XmlHelper.Update("root/DBConfig/password","",this.textBox3.Text);
-				XmlHelper.Update("root/DBConfig/SID","",this.textBox4.Text);
+				XmlHelper.Delete("/root/DBConfig","");
+				XmlHelper.Insert("/root","DBConfig","","");
+				XmlHelper.Insert("/root/DBConfig","username","",this.textBox1.Text);
+				XmlHelper.Insert("/root/DBConfig","password","",this.textBox3.Text);
+				XmlHelper.Insert("/root/DBConfig","SID","",this.textBox4.Text);
 				string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
 		        OracleConnection myConnection = new OracleConnection(myConnString);
 		        try {
@@ -150,14 +152,16 @@ namespace WisoftUpdateTool
 			string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
 	        OracleConnection myConnection = new OracleConnection(myConnString);
 	        OracleCommand catCMD = myConnection.CreateCommand();
-	        catCMD.CommandText = "select * from (select version  from system_version_info where modulecode='maea'  order by version desc) where  rownum=1 ";
+	        string sql = "select * from (select version  from system_version_info where modulecode='{0}'  order by version desc) where  rownum=1 ";
+	        	catCMD.CommandText = string.Format(sql,UpdateInfo.Code);
 	        
 	        try {
 	        	myConnection.Open();
 	        	OracleDataReader myReader = catCMD.ExecuteReader();
+	        	string cur="";
 		        while (myReader.Read())
 		        {
-		        	string cur =myReader.GetString(0);
+		        	cur =myReader.GetString(0);
 		        	int should_w = Int32.Parse(cur.Substring(cur.Length-3,1))+1;
 		        	string should = cur.Substring(0,cur.Length-3)+should_w;
 		        	this.label2.Text = string.Format(checkverstr,UpdateInfo.Ver,cur);
@@ -172,7 +176,12 @@ namespace WisoftUpdateTool
 		        		this.label2.ForeColor = Color.Red;
 		        		MessageBox.Show("你所更新的版本不符合要求，先更新“"+should+"”版本！","警告");
 		        	}
-		        	
+		        }
+		        if(string.IsNullOrEmpty(cur))
+		        {
+		        	this.label2.ForeColor = Color.Red;
+		        	this.label2.Text ="未能检查到先前的版本。";
+		        	MessageBox.Show("你更新的版本从来没有更新过。");
 		        }
 				myReader.Close();
 	        	myConnection.Close();

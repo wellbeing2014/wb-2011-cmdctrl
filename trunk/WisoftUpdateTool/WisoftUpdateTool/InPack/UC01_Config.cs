@@ -31,7 +31,7 @@ namespace WisoftUpdateTool.InPack
 			}
 			//删除原来的目录
 			try {
-				 DirectoryInfo di = new DirectoryInfo("Updates");
+				 DirectoryInfo di = new DirectoryInfo(GobalParameters.UpdateFolder);
 				 if(di.Exists)
 				    di.Delete(true);
 				
@@ -39,7 +39,7 @@ namespace WisoftUpdateTool.InPack
 				
 				MessageBox.Show("我日，没能删除原来打包的文件。先将就过了。"+e.ToString());
 			}
-			Directory.CreateDirectory("Updates");
+			Directory.CreateDirectory(GobalParameters.UpdateFolder);
 			XmlHelper.CreateXML();//创建XMl文件
 			XmlHelper.Insert("root","name","",this.textBox1.Text);
 			XmlHelper.Insert("root","code","",this.textBox2.Text);
