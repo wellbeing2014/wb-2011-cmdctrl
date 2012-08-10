@@ -25,6 +25,11 @@ namespace WisoftUpdateTool.InPack
 		{
 			return true;
 		}
+		public bool DownNextButton()
+		{
+			inittree();
+			return true;
+		}
 		public UC05_OverView()
 		{
 			//
@@ -43,7 +48,7 @@ namespace WisoftUpdateTool.InPack
 			il.Images.Add("xml",SystemIcon.GetIcon(".xml",false));
 			il.Images.Add("jar",SystemIcon.GetIcon(".jar",false));
 			this.treeView1.ImageList = il;
-			inittree();
+			//inittree();
 		}
 		
 		void inittree()
@@ -53,7 +58,7 @@ namespace WisoftUpdateTool.InPack
 //			node.ImageKey = "folder";
 //            treeView1.Nodes.Add(node);
             
-            GetTreeViewData(System.IO.Directory.GetCurrentDirectory(),null);
+            GetTreeViewData(System.IO.Directory.GetCurrentDirectory()+"/Updates",null);
             this.treeView1.ExpandAll();
 		}
 		
@@ -106,7 +111,7 @@ namespace WisoftUpdateTool.InPack
 			if (e.Action != TreeViewAction.Unknown)
             {
 				TreeNode tn = e.Node;
-				DirectoryInfo ar = new DirectoryInfo(tn.FullPath);
+				DirectoryInfo ar = new DirectoryInfo("Updates/"+tn.FullPath);
 				if(ar.Exists)
 				{
 					this.label6.Text = ar.Name;
@@ -118,7 +123,7 @@ namespace WisoftUpdateTool.InPack
 				}
 				else
 				{
-					FileInfo fi = new FileInfo(tn.FullPath);
+					FileInfo fi = new FileInfo("Updates/"+tn.FullPath);
 					if(fi.Exists)
 					{
 						float a = fi.Length;
@@ -145,21 +150,21 @@ namespace WisoftUpdateTool.InPack
 						{
 							this.textEditorControl1.Visible = true;
 							this.label10.Visible = false;
-							this.textEditorControl1.LoadFile(tn.FullPath);
+							this.textEditorControl1.LoadFile("Updates/"+tn.FullPath);
 							this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("XML");
 						}
 						if("sql".Equals(filetype))
 						{
 							this.textEditorControl1.Visible = true;
 							this.label10.Visible = false;
-							this.textEditorControl1.LoadFile(tn.FullPath);
+							this.textEditorControl1.LoadFile("Updates/"+tn.FullPath);
 							this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
 						}
 						if("txt".Equals(filetype)||"log".Equals(filetype)||"properties".Equals(filetype))
 						{
 							this.textEditorControl1.Visible = true;
 							this.label10.Visible = false;
-							this.textEditorControl1.LoadFile(tn.FullPath);
+							this.textEditorControl1.LoadFile("Updates/"+tn.FullPath);
 							//this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("");
 						}
 					}

@@ -36,7 +36,7 @@ namespace WisoftUpdateTool
             ReadErrOutput += new DelReadErrOutput(ReadErrOutputAction);
 			this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
 			
-			this.textEditorControl1.LoadFile("databaseupdate.sql");
+			this.textEditorControl1.LoadFile("Updates/databaseupdate.sql");
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -49,7 +49,7 @@ namespace WisoftUpdateTool
 			  string sqlarg = UpdateInfo.DBusername+"/"+UpdateInfo.DBpassword+"@"+UpdateInfo.DBSID;
 			  Process p = new Process();
 			  p.StartInfo.FileName = "sqlplus";
-			  p.StartInfo.Arguments = sqlarg+" @databaseupdate.sql";
+			  p.StartInfo.Arguments = sqlarg+" @Updates/databaseupdate.sql";
               p.StartInfo.UseShellExecute = false;
               p.StartInfo.RedirectStandardInput = true;
               p.StartInfo.RedirectStandardOutput = true;

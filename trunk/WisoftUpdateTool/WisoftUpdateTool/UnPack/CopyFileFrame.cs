@@ -104,22 +104,14 @@ namespace WisoftUpdateTool
 		 		if(fi.Exists)
 		 		{
 		 			TotalSize+=(int)fi.Length;
-		 			if("update".Equals(uf.Action)||"delete".Equals(uf.Action))
-	 			   	{
-	 			   		letdo.BeginInvoke("INFO:文件正常！将被覆盖。"+url ,null,null);
-	 			   	}
-		 			else
-		 				letdo.BeginInvoke("WARNING:文件已存在，将被非正常覆盖！"+url ,null,null);
+	 			   	
+		 			letdo.BeginInvoke("INFO:文件正常！将被覆盖。"+url ,null,null);
+	 			
 		 			baklist.Add(url);
 		 		}
 		 		else
 		 		{
-		 			if("update".Equals(uf.Action)||"delete".Equals(uf.Action))
-	 			   	{
-	 			   		letdo.BeginInvoke("WARNING:文件不存在！将以更新包内文件插入。"+url ,null,null);
-	 			   	}
-		 			else
-		 				letdo.BeginInvoke("INFO:文件不存在，即将插入！"+url ,null,null);
+	 			   	letdo.BeginInvoke("WARNING:文件不存在！将以更新包内文件插入。"+url ,null,null);
 		 		}
 		 	}
 		 	letdo.BeginInvoke("INFO:检查完毕，总共需要备份"+baklist.Count+"个文件，总共大小"+TotalSize ,null,null);

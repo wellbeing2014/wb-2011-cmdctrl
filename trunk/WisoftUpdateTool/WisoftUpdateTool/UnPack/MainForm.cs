@@ -30,28 +30,24 @@ namespace WisoftUpdateTool
 		private UCExecuteSQL ucExecuteSQL1;
 		public MainForm()
 		{
-			if(File.Exists("UpdateInfo.xml"))
-			{
+			if(File.Exists("Updates/UpdateInfo.xml"))
+			{			
+				this.ucSelectDir1 = new WisoftUpdateTool.UCSelectDir();
+				ucCheckVersion1 = new UCCheckVersion();
+				ucFileUpdate1 = new UCFileUpdate();
+				ucExecuteSQL1 = new UCExecuteSQL();
+				ucCheckVersion1.Visible = false;
+				ucFileUpdate1.Visible = false;
+				//
+				// The InitializeComponent() call is required for Windows Forms designer support.
+				//
 				
-			
-				
-			
-			this.ucSelectDir1 = new WisoftUpdateTool.UCSelectDir();
-			ucCheckVersion1 = new UCCheckVersion();
-			ucFileUpdate1 = new UCFileUpdate();
-			ucExecuteSQL1 = new UCExecuteSQL();
-			ucCheckVersion1.Visible = false;
-			ucFileUpdate1.Visible = false;
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
-			
-			InitializeComponent();
-			this.Text = "中科更新包工具--"+UpdateInfo.Name+"("+UpdateInfo.Code+")"+UpdateInfo.Ver;
-			AddUC();
-			//
-			// TODO: Add constructor code after the InitializeComponent() call.
-			//
+				InitializeComponent();
+				this.Text = "中科更新包工具--"+UpdateInfo.Name+"("+UpdateInfo.Code+")"+UpdateInfo.Ver;
+				AddUC();
+				//
+				// TODO: Add constructor code after the InitializeComponent() call.
+				//
 			}
 			else
 			{
@@ -98,10 +94,9 @@ namespace WisoftUpdateTool
 		
 		void Button1Click(object sender, EventArgs e)
 		{
-			
+			System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
 			if(this.button1.Text!="完成")
 			{
-				System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
 				if(((INextButton)cc[order]).OnNextButton())
 				{
 				cc[order].Visible = false;
@@ -119,6 +114,7 @@ namespace WisoftUpdateTool
 			}
 			else
 			{
+				((INextButton)cc[order]).OnNextButton();
 				this.Close();
 			}
 		}

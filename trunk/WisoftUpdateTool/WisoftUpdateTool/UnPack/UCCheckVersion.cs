@@ -75,7 +75,7 @@ namespace WisoftUpdateTool
 		}
 		public void cf_Closing(object sender,CancelEventArgs e)
 		{
-			DialogResult dr=MessageBox.Show("更新完成，是否关闭进度条，或者稍后按CTRL+F4","提示",MessageBoxButtons.OKCancel);
+			DialogResult dr=MessageBox.Show("更新完成，是否关闭进度条，或者稍后按ALT+F4","提示",MessageBoxButtons.OKCancel);
 			if(dr== DialogResult.OK)
 			{
 				e.Cancel = false;

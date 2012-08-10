@@ -17,6 +17,7 @@ namespace WisoftUpdateTool.InPack
 	public interface INextButton 
 	{
 	   bool OnNextButton();
+	   bool DownNextButton();
 	}
 	/// <summary>
 	/// Description of MainForm.
@@ -94,15 +95,15 @@ namespace WisoftUpdateTool.InPack
 		
 		void Button1Click(object sender, EventArgs e)
 		{
-			
+			System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
 			if(this.button1.Text!="完成")
 			{
-				System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
 				if(((INextButton)cc[order]).OnNextButton())
 				{
-				cc[order].Visible = false;
-				cc[order+1].Visible = true;
-				order++;
+					cc[order].Visible = false;
+					((INextButton)cc[order+1]).DownNextButton();
+					cc[order+1].Visible = true;
+					order++;
 				if(cc.Count==order+1)
 				{
 					this.button1.Text ="完成";
@@ -115,6 +116,7 @@ namespace WisoftUpdateTool.InPack
 			}
 			else
 			{
+				((INextButton)cc[order]).OnNextButton();
 				this.Close();
 			}
 		}

@@ -23,6 +23,11 @@ namespace WisoftUpdateTool.InPack
 	{
 		public bool OnNextButton()
 		{
+			this.textEditorControl1.SaveFile("Updates/databaseupdate.sql");
+			return true;
+		}
+		public bool DownNextButton()
+		{
 			return true;
 		}
 		
@@ -65,8 +70,8 @@ namespace WisoftUpdateTool.InPack
 			//
 			this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
 			this.textEditorControl1.TextChanged+= new EventHandler(UC04_EditSql_TextChanged);
-			if(File.Exists("databaseupdate.sql"))
-				this.textEditorControl1.LoadFile("databaseupdate.sql");
+			if(File.Exists("Upadate/databaseupdate.sql"))
+				this.textEditorControl1.LoadFile("Updates/databaseupdate.sql");
 			else
 			{
 				this.textEditorControl1.Text = this.initstr;
@@ -89,7 +94,7 @@ namespace WisoftUpdateTool.InPack
 		//保存按钮
 		void Button2Click(object sender, EventArgs e)
 		{
-			this.textEditorControl1.SaveFile("databaseupdate.sql");
+			this.textEditorControl1.SaveFile("Updates/databaseupdate.sql");
 			this.button2.Enabled = false;
 		}
 	}

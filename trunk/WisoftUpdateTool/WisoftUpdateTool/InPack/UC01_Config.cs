@@ -10,6 +10,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace WisoftUpdateTool.InPack
 {
@@ -28,12 +29,27 @@ namespace WisoftUpdateTool.InPack
 				MessageBox.Show("笑话，你都不知道打什么包，你点我干啥。");
 				return false;
 			}
+			//删除原来的目录
+			try {
+				 DirectoryInfo di = new DirectoryInfo("Updates");
+				 if(di.Exists)
+				    di.Delete(true);
+				
+			} catch (Exception e) {
+				
+				MessageBox.Show("我日，没能删除原来打包的文件。先将就过了。"+e.ToString());
+			}
+			Directory.CreateDirectory("Updates");
 			XmlHelper.CreateXML();//创建XMl文件
 			XmlHelper.Insert("root","name","",this.textBox1.Text);
 			XmlHelper.Insert("root","code","",this.textBox2.Text);
 			XmlHelper.Insert("root","version","",this.textBox3.Text);
 			
 			XmlHelper.InsertCData("root","updatenote",this.textBox4.Text);
+			return true;
+		}
+		public bool DownNextButton()
+		{
 			return true;
 		}
 		public UC01_Config()

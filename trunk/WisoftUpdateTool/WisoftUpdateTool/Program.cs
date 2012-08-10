@@ -24,7 +24,9 @@ namespace WisoftUpdateTool
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			//解包程序
 			Application.Run(new MainForm());
+			//打包程序
 			//Application.Run(new WisoftUpdateTool.InPack.MainForm());
 			//Application.Run(new CopyFileFrame());
 			//Application.Run(new Test());
