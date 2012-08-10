@@ -96,14 +96,14 @@ namespace WisoftUpdateTool.InPack
 			this.textBox2.Location = new System.Drawing.Point(89, 29);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.Size = new System.Drawing.Size(132, 21);
-			this.textBox2.TabIndex = 1;
+			this.textBox2.TabIndex = 2;
 			// 
 			// textBox3
 			// 
 			this.textBox3.Location = new System.Drawing.Point(89, 56);
 			this.textBox3.Name = "textBox3";
 			this.textBox3.Size = new System.Drawing.Size(132, 21);
-			this.textBox3.TabIndex = 1;
+			this.textBox3.TabIndex = 3;
 			// 
 			// textBox4
 			// 
@@ -114,7 +114,7 @@ namespace WisoftUpdateTool.InPack
 			this.textBox4.Multiline = true;
 			this.textBox4.Name = "textBox4";
 			this.textBox4.Size = new System.Drawing.Size(468, 283);
-			this.textBox4.TabIndex = 1;
+			this.textBox4.TabIndex = 4;
 			// 
 			// panel1
 			// 

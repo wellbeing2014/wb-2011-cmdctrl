@@ -131,7 +131,7 @@ namespace WisoftUpdateTool.InPack
 	 			this.BeginInvoke(ac,null);
 	 			return;
 	 		}
-	 		string bakto =AutoCreateFolder(System.Environment.CurrentDirectory+@"\Updates\"+copylist[curCopyNo]);
+	 		string bakto =AutoCreateFolder(System.Environment.CurrentDirectory+@"\"+GobalParameters.UpdateFolder+copylist[curCopyNo]);
 
 	 		//FileInfo fi = new FileInfo(bakto);
 	 		try {
