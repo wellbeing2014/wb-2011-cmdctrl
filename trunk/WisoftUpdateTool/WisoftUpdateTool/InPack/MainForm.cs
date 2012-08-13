@@ -29,6 +29,7 @@ namespace WisoftUpdateTool.InPack
 		private WisoftUpdateTool.InPack.UC03_ConfFiles uc03_ConfFiles;
 		private WisoftUpdateTool.InPack.UC04_EditSql uc04_EditSql;
 		private WisoftUpdateTool.InPack.UC05_OverView uc05_OverView;
+		private WisoftUpdateTool.InPack.UC06_Thanks uc06_Thanks;
 //		private WisoftUpdateTool ucExecuteSQL1;
 		public MainForm()
 		{
@@ -38,9 +39,10 @@ namespace WisoftUpdateTool.InPack
 			this.uc03_ConfFiles = new  WisoftUpdateTool.InPack.UC03_ConfFiles();
 			this.uc04_EditSql = new WisoftUpdateTool.InPack.UC04_EditSql();
 			this.uc05_OverView = new WisoftUpdateTool.InPack.UC05_OverView();
+			this.uc06_Thanks = new WisoftUpdateTool.InPack.UC06_Thanks();
 			//ucCheckVersion1.Visible = false;
-			this.uc02_Select1.Visible = false;
-			this.uc03_ConfFiles.Visible = false;
+//			this.uc02_Select1.Visible = false;
+//			this.uc03_ConfFiles.Visible = false;
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
@@ -63,12 +65,13 @@ namespace WisoftUpdateTool.InPack
 			this.uc03_ConfFiles.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.uc04_EditSql.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.uc05_OverView.Dock = System.Windows.Forms.DockStyle.Fill;
-//			this.ucExecuteSQL1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.uc06_Thanks.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel2.Controls.Add(this.uc01_Config1);
 			this.panel2.Controls.Add(this.uc02_Select1);
 			this.panel2.Controls.Add(this.uc03_ConfFiles);
 			this.panel2.Controls.Add(this.uc04_EditSql);
 			this.panel2.Controls.Add(this.uc05_OverView);
+			this.panel2.Controls.Add(this.uc06_Thanks);
 //			this.panel2.Controls.Add(ucExecuteSQL1);
 		}
 		

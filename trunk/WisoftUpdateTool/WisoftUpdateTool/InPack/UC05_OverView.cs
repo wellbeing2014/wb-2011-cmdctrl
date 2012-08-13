@@ -13,6 +13,9 @@ using System.Windows.Forms;
 using System.IO;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
+using System.Diagnostics;
+using System.Threading;
+using Microsoft.Win32;
 
 namespace WisoftUpdateTool.InPack
 {
@@ -21,10 +24,41 @@ namespace WisoftUpdateTool.InPack
 	/// </summary>
 	public partial class UC05_OverView : UserControl,INextButton
 	{
+		
 		public bool OnNextButton()
 		{
+			RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\WinRAR.exe");
+            string winrarpath = key.GetValue("Path").ToString();
+            if(string.IsNullOrEmpty(winrarpath))
+            {
+            	MessageBox.Show("没能找到WINRAR程序，请安装后，尝试手动打包！","提示");
+            	return true;
+            }
+			Process p = new Process();
+			p.StartInfo.FileName = winrarpath+@"\WinRAR.exe";
+			p.StartInfo.Arguments = "a -r -xpacknote.txt -x"+Process.GetCurrentProcess().ProcessName+".exe -sfx -iiconsetup.ico "+UpdateInfo.Name+"("+UpdateInfo.Code+")"+UpdateInfo.Ver+".exe";
+	        p.StartInfo.UseShellExecute = false;
+	        p.StartInfo.CreateNoWindow = true;
+	      	p.EnableRaisingEvents = true;                      // 启用Exited事件   
+	       // p.Exited += new EventHandler(CmdProcess_Exited);   
+	    	p.Start();
+	    	p.WaitForExit();
+	    	Thread.Sleep(1000);
+	    	Process p1 = new Process();
+			p1.StartInfo.FileName = winrarpath+@"\Rar.exe";
+			p1.StartInfo.Arguments = "c -zpacknote.txt "+UpdateInfo.Name+"("+UpdateInfo.Code+")"+UpdateInfo.Ver+".exe";
+	        p1.StartInfo.UseShellExecute = false;
+	        p1.StartInfo.CreateNoWindow = true;
+	      	p1.EnableRaisingEvents = true;                      // 启用Exited事件   
+	    	p1.Exited += new EventHandler(CmdProcess_Exited);
+	    	p1.Start();
+	    	p1.WaitForExit();
 			return true;
 		}
+		private void CmdProcess_Exited(object sender, EventArgs e)  
+        {	    	
+			MessageBox.Show("打包完成！","提示");
+        } 
 		public bool DownNextButton()
 		{
 			inittree();
@@ -98,7 +132,6 @@ namespace WisoftUpdateTool.InPack
 					node.ImageKey=spiltstr[spiltstr.Length-1];
 					node.SelectedImageKey = spiltstr[spiltstr.Length-1];
 				}
-					
 				else
 				{
 					node.ImageKey = "other";
@@ -175,5 +208,6 @@ namespace WisoftUpdateTool.InPack
 
             }
 		}
+		
 	}
 }

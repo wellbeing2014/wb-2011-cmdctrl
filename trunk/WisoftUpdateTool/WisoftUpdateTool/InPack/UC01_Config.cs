@@ -21,7 +21,6 @@ namespace WisoftUpdateTool.InPack
 	{
 		public bool OnNextButton()
 		{
-			
 			if(string.IsNullOrEmpty(this.textBox1.Text)||
 			   string.IsNullOrEmpty(this.textBox2.Text)||
 			   string.IsNullOrEmpty(this.textBox3.Text))
@@ -34,7 +33,6 @@ namespace WisoftUpdateTool.InPack
 				 DirectoryInfo di = new DirectoryInfo(GobalParameters.UpdateFolder);
 				 if(di.Exists)
 				    di.Delete(true);
-				
 			} catch (Exception e) {
 				
 				MessageBox.Show("我日，没能删除原来打包的文件。先将就过了。"+e.ToString());
@@ -44,8 +42,8 @@ namespace WisoftUpdateTool.InPack
 			XmlHelper.Insert("root","name","",this.textBox1.Text);
 			XmlHelper.Insert("root","code","",this.textBox2.Text);
 			XmlHelper.Insert("root","version","",this.textBox3.Text);
-			
 			XmlHelper.InsertCData("root","updatenote",this.textBox4.Text);
+			XmlHelper.Insert("root","keyword","",this.textBox5.Text);
 			return true;
 		}
 		public bool DownNextButton()
