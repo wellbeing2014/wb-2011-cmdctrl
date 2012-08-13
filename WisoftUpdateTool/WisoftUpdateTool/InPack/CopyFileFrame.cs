@@ -151,8 +151,16 @@ namespace WisoftUpdateTool.InPack
 	            position = 0;
 	            stream = fs;
 	            //这里是设置缓存的大小，可以根据需要修改逻辑
-	            buffer = new byte[BUFFER_SIZE];
-	            stream.BeginRead(buffer,0,BUFFER_SIZE,new AsyncCallback( AsyncCopyFile ),bakto);  
+	            if(Size<BUFFER_SIZE)
+	            {
+	            	buffer = new byte[Size];
+	            	stream.BeginRead(buffer,0,Size,new AsyncCallback( AsyncCopyFile ),bakto);  
+	            }
+	           	else
+	           	{
+	           		buffer = new byte[BUFFER_SIZE];
+	           		stream.BeginRead(buffer,0,BUFFER_SIZE,new AsyncCallback( AsyncCopyFile ),bakto); 
+	           	}
 	        }
 	        catch (Exception Ex)
 	        {

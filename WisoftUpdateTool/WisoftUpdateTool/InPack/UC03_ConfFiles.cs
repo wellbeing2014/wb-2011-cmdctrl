@@ -26,6 +26,8 @@ namespace WisoftUpdateTool.InPack
 			if(this.listviewitems.Count==0)
 			{
 				DialogResult dr =MessageBox.Show("您给实施造福了，这次更新不要手动修改配置文件？","提示",MessageBoxButtons.OKCancel);
+				XmlHelper.Delete("root/before_configs","");
+				XmlHelper.Insert("root","before_configs","","");
 				if(DialogResult.Cancel==dr)
 					return false;
 			}

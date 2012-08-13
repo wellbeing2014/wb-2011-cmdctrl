@@ -45,6 +45,8 @@ namespace WisoftUpdateTool.InPack
 			this.textBox3 = new System.Windows.Forms.TextBox();
 			this.textBox4 = new System.Windows.Forms.TextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.textBox5 = new System.Windows.Forms.TextBox();
+			this.label5 = new System.Windows.Forms.Label();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -113,7 +115,7 @@ namespace WisoftUpdateTool.InPack
 			this.textBox4.Location = new System.Drawing.Point(3, 101);
 			this.textBox4.Multiline = true;
 			this.textBox4.Name = "textBox4";
-			this.textBox4.Size = new System.Drawing.Size(468, 283);
+			this.textBox4.Size = new System.Drawing.Size(468, 258);
 			this.textBox4.TabIndex = 4;
 			// 
 			// panel1
@@ -122,9 +124,11 @@ namespace WisoftUpdateTool.InPack
 									| System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.Controls.Add(this.textBox4);
+			this.panel1.Controls.Add(this.textBox5);
 			this.panel1.Controls.Add(this.textBox3);
 			this.panel1.Controls.Add(this.textBox2);
 			this.panel1.Controls.Add(this.textBox1);
+			this.panel1.Controls.Add(this.label5);
 			this.panel1.Controls.Add(this.label4);
 			this.panel1.Controls.Add(this.label3);
 			this.panel1.Controls.Add(this.label2);
@@ -133,6 +137,25 @@ namespace WisoftUpdateTool.InPack
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(474, 387);
 			this.panel1.TabIndex = 0;
+			// 
+			// textBox5
+			// 
+			this.textBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox5.Location = new System.Drawing.Point(88, 363);
+			this.textBox5.Name = "textBox5";
+			this.textBox5.Size = new System.Drawing.Size(383, 21);
+			this.textBox5.TabIndex = 3;
+			// 
+			// label5
+			// 
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label5.Location = new System.Drawing.Point(3, 362);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(79, 20);
+			this.label5.TabIndex = 0;
+			this.label5.Text = "更新关键字:";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// UC01_Config
 			// 
@@ -145,6 +168,8 @@ namespace WisoftUpdateTool.InPack
 			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.TextBox textBox5;
+		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox textBox3;
