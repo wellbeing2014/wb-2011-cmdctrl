@@ -20,7 +20,6 @@ namespace WisoftUpdateTool
 		
 		public static string Name {
 			get { return XmlHelper.Read("/root/name",""); }
-			set { XmlHelper.Update("/root/name","", value); }
 		}
 		
 		public static string Code {
@@ -36,6 +35,11 @@ namespace WisoftUpdateTool
 		public static string PublishDate {
 			get { return XmlHelper.Read("/root/publish_date",""); }
 			
+		}
+		
+		public static string KeyWord {
+		get { return XmlHelper.Read("/root/keyword",""); }
+		
 		}
 		
 		public static string UpdateNote {
@@ -86,6 +90,8 @@ namespace WisoftUpdateTool
 		get { return XmlHelper.Read("/root/DBConfig/SID",""); }
 		
 		}
+		
+		
 				
 		
 		public UpdateInfo()
