@@ -28,6 +28,13 @@ namespace WisoftUpdateTool.InPack
 		}
 		public bool DownNextButton()
 		{
+			initstr = string.Format(initstr,UpdateInfo.Name+"("+UpdateInfo.Code+")"+UpdateInfo.Ver,UpdateInfo.PublishDate);
+			if(File.Exists(GobalParameters.UpdateSqlFilePath))
+				this.textEditorControl1.LoadFile(GobalParameters.UpdateSqlFilePath);
+			else
+			{
+				this.textEditorControl1.Text = this.initstr;
+			}
 			return true;
 		}
 		
@@ -37,8 +44,8 @@ namespace WisoftUpdateTool.InPack
 								 "/**       特别注意要添加commit和存储过程加隔断符的地方      **/\r\n"+
 								 "/*************************************************************/\r\n"+
 
-								 "--※版本信息：行政许可平台(maea)5.181.1\r\n"+
-								 "--※发布日期：2012-08-08\r\n"+
+								 "--※版本信息：{0}\r\n"+
+								 "--※发布日期：{1}\r\n"+
 
 								 "/*********************新 建 对 象 开 始***********************/\r\n\n\n"+
 
@@ -70,12 +77,7 @@ namespace WisoftUpdateTool.InPack
 			//
 			this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
 			this.textEditorControl1.TextChanged+= new EventHandler(UC04_EditSql_TextChanged);
-			if(File.Exists(GobalParameters.UpdateSqlFilePath))
-				this.textEditorControl1.LoadFile(GobalParameters.UpdateSqlFilePath);
-			else
-			{
-				this.textEditorControl1.Text = this.initstr;
-			}
+			
 			
 		}
 		

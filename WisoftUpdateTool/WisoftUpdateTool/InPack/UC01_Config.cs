@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WisoftUpdateTool.InPack
 {
@@ -43,7 +44,10 @@ namespace WisoftUpdateTool.InPack
 			XmlHelper.Insert("root","code","",this.textBox2.Text);
 			XmlHelper.Insert("root","version","",this.textBox3.Text);
 			XmlHelper.InsertCData("root","updatenote",this.textBox4.Text);
+			Regex regex = new Regex("<>\"", RegexOptions.IgnoreCase);
+			string keyword =regex.Replace(this.textBox5.Text,"");
 			XmlHelper.Insert("root","keyword","",this.textBox5.Text);
+			XmlHelper.Insert("root","publish_date","",System.DateTime.Now.ToString("yyyy-MM-dd"));
 			return true;
 		}
 		public bool DownNextButton()

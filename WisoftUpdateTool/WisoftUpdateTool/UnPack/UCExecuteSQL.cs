@@ -78,6 +78,55 @@ namespace WisoftUpdateTool
   
 		private void CmdProcess_Exited(object sender, EventArgs e)  
         {  
+			
+			string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
+	        OracleConnection myConnection = new OracleConnection(myConnString);
+	        OracleCommand catCMD = myConnection.CreateCommand();
+	        string sql = "insert into system_version_info "+
+				"values( '','"+name+"','"+code+"','"+ver+"','"+publishdate+"',to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss'),'"+keyword+"')";;
+	        	catCMD.CommandText = string.Format(sql,UpdateInfo.Code);
+	        
+	        try {
+	        	myConnection.Open();
+	        	OracleDataReader myReader = catCMD.ExecuteReader();
+	        	string cur="";
+		        while (myReader.Read())
+		        {
+		        	cur =myReader.GetString(0);
+		        	int should_w = Int32.Parse(cur.Substring(cur.Length-3,1))+1;
+		        	string should = cur.Substring(0,cur.Length-3)+should_w;
+		        	this.label2.Text = string.Format(checkverstr,UpdateInfo.Ver,cur);
+		        	string should1 =UpdateInfo.Ver.Substring(0,UpdateInfo.Ver.Length-2);
+		        	if(should.Equals(should1))
+		        	{
+		        		this.label2.ForeColor = Color.Green;
+		        		Checked = true;
+		        	}
+		        	else
+		        	{
+		        		this.label2.ForeColor = Color.Red;
+		        		MessageBox.Show("你所更新的版本不符合要求，先更新“"+should+"”版本！","警告");
+		        	}
+		        }
+		        if(string.IsNullOrEmpty(cur))
+		        {
+		        	this.label2.ForeColor = Color.Red;
+		        	this.label2.Text ="未能检查到先前的版本。";
+		        	MessageBox.Show("你更新的版本从来没有更新过。");
+		        }
+				myReader.Close();
+	        	myConnection.Close();
+	        } catch (OracleException e1) {
+	        	if (e1.Code ==1017)
+	        		MessageBox.Show("伤不起啊，你居然把用户名密码输错了，认真点行不行？");
+	        	else if(e1.Code == 12541)
+	        		MessageBox.Show("尼玛，你给的数据库我根本连不上。");
+	        	else 
+	        		MessageBox.Show("歇菜，不知道数据库怎么了，反正是有问题。不信？用PLSQL连连看");
+	        }
+			
+			
+			
 			MessageBox.Show("SQL语句执行完毕！","提示");
         } 
 		
