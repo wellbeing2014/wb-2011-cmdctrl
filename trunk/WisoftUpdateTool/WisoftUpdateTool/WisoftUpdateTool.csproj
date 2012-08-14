@@ -98,6 +98,7 @@
     <Compile Include="InPack\WND_ConfFileContent.Designer.cs">
       <DependentUpon>WND_ConfFileContent.cs</DependentUpon>
     </Compile>
+    <Compile Include="OracleDBCom.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemIcon.cs" />
@@ -384,6 +385,7 @@
     <EmbeddedResource Include="Resources\1_ams_bo.ico" />
     <EmbeddedResource Include="Resources\1_EXPDAT.ico" />
     <EmbeddedResource Include="Resources\4_shell32.ico" />
+    <None Include="DevelopNote.txt" />
     <None Include="Resources\ICSharpCode.TextEditor.snk" />
     <EmbeddedResource Include="Resources\true.png" />
     <None Include="TextEditor\Src\Gui\ClassDiagram1.cd" />

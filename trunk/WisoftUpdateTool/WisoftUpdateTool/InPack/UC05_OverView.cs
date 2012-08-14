@@ -144,7 +144,7 @@ namespace WisoftUpdateTool.InPack
 			if (e.Action != TreeViewAction.Unknown)
             {
 				TreeNode tn = e.Node;
-				string realpath = GobalParameters.UpdateFolder+tn.FullPath;
+				string realpath = tn.FullPath;
 				DirectoryInfo ar = new DirectoryInfo(realpath);
 				if(ar.Exists)
 				{
