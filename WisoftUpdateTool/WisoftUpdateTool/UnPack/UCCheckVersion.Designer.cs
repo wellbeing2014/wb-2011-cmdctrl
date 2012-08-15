@@ -114,7 +114,7 @@ namespace WisoftUpdateTool
 			this.textBox2.Location = new System.Drawing.Point(87, 20);
 			this.textBox2.Name = "textBox2";
 			this.textBox2.Size = new System.Drawing.Size(446, 21);
-			this.textBox2.TabIndex = 4;
+			this.textBox2.TabIndex = 6;
 			// 
 			// treeView1
 			// 
@@ -179,7 +179,7 @@ namespace WisoftUpdateTool
 			this.textBox5.Location = new System.Drawing.Point(92, 124);
 			this.textBox5.Name = "textBox5";
 			this.textBox5.Size = new System.Drawing.Size(154, 21);
-			this.textBox5.TabIndex = 3;
+			this.textBox5.TabIndex = 4;
 			this.textBox5.Visible = false;
 			// 
 			// textBox4
@@ -246,7 +246,7 @@ namespace WisoftUpdateTool
 			this.button1.Location = new System.Drawing.Point(6, 158);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 6;
+			this.button1.TabIndex = 5;
 			this.button1.Text = "检测";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.Button1Click);
