@@ -86,8 +86,20 @@ namespace WisoftUpdateTool
 		get { return XmlHelper.Read("/root/DBConfig/username",""); }
 		
 		}
+		
+		/// <summary>
+		/// 如果是sqlserver那这个值为数据库名称
+		/// </summary>
 		public static string DBSID {
 		get { return XmlHelper.Read("/root/DBConfig/SID",""); }
+		
+		}
+		public static string DBType {
+		get { return XmlHelper.Read("/root/DBConfig/TYPE",""); }
+		
+		}
+		public static string DBDataSource {
+		get { return XmlHelper.Read("/root/DBConfig/DataSource",""); }
 		
 		}
 		

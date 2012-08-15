@@ -44,11 +44,11 @@ namespace WisoftUpdateTool
 			catch(OracleException e)
 			{
 				 if (e.Code ==1017)
-	        		MessageBox.Show("伤不起啊，你居然把用户名密码输错了，认真点行不行？");
+	        		throw new Exception("伤不起啊，你居然把用户名密码输错了，认真点行不行？");
 	        	else if(e.Code == 12541)
-	        		MessageBox.Show("尼玛，你给的数据库我根本连不上。");
+	        		throw new Exception("尼玛，你给的数据库我根本连不上。");
 	        	else 
-	        		MessageBox.Show("歇菜，不知道数据库怎么了，反正是有问题。");
+	        		throw new Exception("歇菜，不知道数据库怎么了，反正是有问题。");
 			}
 			
 			}
@@ -150,9 +150,9 @@ namespace WisoftUpdateTool
     OracleDataAdapter adapter=new OracleDataAdapter(sql,con);
     adapter.Fill(ds);
    }
-   catch//(Exception ex)
+   catch(Exception ex)
    {
-    
+    throw ex;
    }
    finally
    {

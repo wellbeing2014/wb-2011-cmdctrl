@@ -41,9 +41,23 @@ namespace WisoftUpdateTool
 				XmlHelper.Insert("/root/DBConfig","username","",this.textBox1.Text);
 				XmlHelper.Insert("/root/DBConfig","password","",this.textBox3.Text);
 				XmlHelper.Insert("/root/DBConfig","SID","",this.textBox4.Text);
-				string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
-		        OracleDBCom od = new OracleDBCom(myConnString);
-				od.ExecuteSql("select 1 from dual");
+				string myConnString="";
+				if(this.radioButton1.Checked)
+				{
+					XmlHelper.Insert("root/DBConfig","TYPE","","oracle");
+					myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
+			        OracleDBCom od = new OracleDBCom(myConnString);
+					od.ExecuteSql("select 1 from dual");
+				}
+				else
+				{
+					XmlHelper.Insert("/root/DBConfig","DataSource","",this.textBox5.Text);
+					XmlHelper.Insert("root/DBConfig","TYPE","","sqlserver");
+					myConnString="Initial Catalog="+this.textBox4.Text+";Data Source="+this.textBox5.Text+";User ID="+this.textBox1.Text+"; Password="+this.textBox3.Text;
+					SqlServerDBCom sd = new SqlServerDBCom(myConnString);
+					sd.ExecuteNonQuery("select 1");
+				}
+				
 			}
 			if(!Checked)
 			{
@@ -135,40 +149,85 @@ namespace WisoftUpdateTool
 		
 		void Button1Click(object sender, EventArgs e)
 		{
+			//将数据库配置写入xml，方便以后调用
 			XmlHelper.Update("root/DBConfig/username","",this.textBox1.Text);
 			XmlHelper.Update("root/DBConfig/password","",this.textBox3.Text);
 			XmlHelper.Update("root/DBConfig/SID","",this.textBox4.Text);
-			string myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
-	        string sql = "select * from (select version  from system_version_info where modulecode='{0}' and modulename='{1}'  order by version,updatetime desc) where  rownum=1 ";
-	        	
-	        
-	      OracleDBCom od = new OracleDBCom(myConnString);
-	      DataSet ds = od.GetDataSet(string.Format(sql,UpdateInfo.Code,UpdateInfo.Name));
-	     
-	        	string cur=(ds.Tables[0].Rows[0][0]).ToString();
-		        
-		        	int should_w = Int32.Parse(cur.Substring(cur.Length-3,1))+1;
-		        	string should = cur.Substring(0,cur.Length-3)+should_w;
-		        	this.label2.Text = string.Format(checkverstr,UpdateInfo.Ver,cur);
-		        	string should1 =UpdateInfo.Ver.Substring(0,UpdateInfo.Ver.Length-2);
-		        	if(should.Equals(should1))
-		        	{
-		        		this.label2.ForeColor = Color.Green;
-		        		Checked = true;
-		        	}
-		        	else
-		        	{
-		        		this.label2.ForeColor = Color.Red;
-		        		MessageBox.Show("你所更新的版本不符合要求，先更新“"+should+"”版本！","警告");
-		        	}
-		        if(string.IsNullOrEmpty(cur))
-		        {
-		        	this.label2.ForeColor = Color.Red;
-		        	this.label2.Text ="未能检查到先前的版本。";
-		        	MessageBox.Show("你更新的版本从来没有更新过。");
+			if(this.radioButton1.Checked) 
+				XmlHelper.Update("root/DBConfig/TYPE","","oracle");
+			else
+			{
+				XmlHelper.Update("root/DBConfig/DataSource","",this.textBox5.Text);
+				XmlHelper.Update("root/DBConfig/TYPE","","sqlserver");
+			}
+			//组成数据库连接字符串
+			string myConnString ="";
+	        string sql = "select * from (select version  from system_version_info where modulecode='{0}' and modulename='{1}'  order by version,update_date desc) where  rownum=1 ";
+			DataSet ds = new DataSet();
+			if(this.radioButton1.Checked)
+			{
+				myConnString = "user id="+this.textBox1.Text+";data source="+this.textBox4.Text+";password="+this.textBox3.Text;
+		     	//ORACLE数据库查询
+		        OracleDBCom od = new OracleDBCom(myConnString);
+		       
+		        try {
+		        	ds = od.GetDataSet(string.Format(sql,UpdateInfo.Code,UpdateInfo.Name));
+		        } catch (Exception e1) {
+		        	MessageBox.Show(e1.Message);
+		        	return;
 		        }
-				
-
+			}
+			else
+			{
+				sql ="select top 1 version  from system_version_info where modulecode='{0}' and modulename='{1}'  order by version,update_date desc";
+				myConnString="Initial Catalog="+this.textBox4.Text+";Data Source="+this.textBox5.Text+";User ID="+this.textBox1.Text+"; Password="+this.textBox3.Text;
+				SqlServerDBCom sd = new SqlServerDBCom(myConnString);
+				 try {
+					ds = sd.ExecuteQuery(string.Format(sql,UpdateInfo.Code,UpdateInfo.Name));
+				}
+				catch (Exception e1) {
+		        	MessageBox.Show(e1.Message);
+		        	return;
+		        }
+			}
+	     	
+	        string cur ="";
+	     	if(ds!=null&&ds.Tables.Count>0&&ds.Tables[0].Rows.Count>0)
+	        {
+	        	//根据获取到的DS转成string
+				cur=(ds.Tables[0].Rows[0][0]) as string;
+	        }
+	         
+	     	if(string.IsNullOrEmpty(cur))
+	        {
+	        	this.label2.ForeColor = Color.Red;
+	        	this.label2.Text ="未能检查到先前的版本。";
+	        	MessageBox.Show("你更新的版本从来没有更新过。");
+	        	return;
+	        }
+	     	this.label2.Text = string.Format(checkverstr,UpdateInfo.Ver,cur);
+	     	
+	     	//根据字符串cur计算出下一个版本号
+	     	string[] curtemp = cur.Split('.');
+	     	if (curtemp.Length<3)
+	     	{
+	     		MessageBox.Show("版本号规则不匹配，无法计算应更新版本。");
+	     		return;
+	     	}
+	     	int should_w = Int32.Parse(curtemp[curtemp.Length-2])+1;//计算倒数二个版本代号 并 加 1
+	     	string curTou = cur.Substring(0,cur.Length-(curtemp[curtemp.Length-1].Length+curtemp[curtemp.Length-2].Length+1));//截取出版本号头位置
+        	string should = curTou+should_w;//计算出去掉测试位的版本号
+        	if(UpdateInfo.Ver.StartsWith(should))
+        	{
+        		this.label2.ForeColor = Color.Green;
+        		Checked = true;
+        	}
+        	else
+        	{
+        		this.label2.ForeColor = Color.Red;
+        		MessageBox.Show("你所更新的版本不符合要求，先更新“"+should+"”版本！","警告");
+        	}
+	       
 		}
 		
 		void Button2Click(object sender, EventArgs e)

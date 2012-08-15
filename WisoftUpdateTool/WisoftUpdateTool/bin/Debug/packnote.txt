@@ -1,0 +1,3 @@
+Setup=WisoftUnPack.exe
+TempMode
+Silent=1
