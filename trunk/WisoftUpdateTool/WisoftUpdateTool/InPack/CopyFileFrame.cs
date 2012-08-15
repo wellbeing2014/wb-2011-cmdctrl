@@ -86,6 +86,7 @@ namespace WisoftUpdateTool.InPack
 
         }
         
+        private ArrayList NullFileFolderlist = new ArrayList();
         private  dl_async_status letdo = null;
 		 private void Form1_Load(object sender, EventArgs e)
 		 {
@@ -95,7 +96,6 @@ namespace WisoftUpdateTool.InPack
                 return;
             }
 			letdo = async_status;
-		 	
 		 	letdo.BeginInvoke("正在检查需要打包的文件***",null,null);
 		 	for (int i = 0; i < copylist.Count; i++) {
 		 		FileInfo fi =null;
@@ -104,8 +104,15 @@ namespace WisoftUpdateTool.InPack
 		 		{
 		 			TotalSize+=(int)fi.Length;
 		 		}
+		 		//有可能是一个空文件夹
+		 		else if(Directory.Exists(this.frompath+copylist[i] as string))
+		 		{
+		 			NullFileFolderlist.Add(copylist[i] as string);
+		 			copylist.RemoveAt(i);
+		 		}
 		 		else
 		 		{
+		 			copylist.RemoveAt(i);
 		 			letdo.BeginInvoke("ERROR:文件"+copylist[i] as string+"不存在",null,null);
 		 		}
 		 	}
@@ -113,7 +120,10 @@ namespace WisoftUpdateTool.InPack
 		 	letdo.BeginInvoke("INFO:开始打包" ,null,null);
 		 	this.progressBar1.Minimum = 0;
 			this.progressBar1.Maximum = TotalSize;
-			
+			//为空文件夹创建文件夹，及复制
+			for (int i = 0; i < NullFileFolderlist.Count; i++) {
+				AutoCreateFolder(System.Environment.CurrentDirectory+@"\"+GobalParameters.UpdateFolder+NullFileFolderlist[i]);
+			}
 		 	copyCircle();
 		 	
 		 }
