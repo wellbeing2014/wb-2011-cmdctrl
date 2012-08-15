@@ -389,6 +389,7 @@
     <None Include="DevelopNote.txt" />
     <None Include="Resources\ICSharpCode.TextEditor.snk" />
     <EmbeddedResource Include="Resources\true.png" />
+    <EmbeddedResource Include="Resources\setup.ico" />
     <None Include="TextEditor\Src\Gui\ClassDiagram1.cd" />
     <None Include="UpdateInfo.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
