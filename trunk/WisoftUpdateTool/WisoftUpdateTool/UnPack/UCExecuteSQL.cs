@@ -35,8 +35,11 @@ namespace WisoftUpdateTool
 			ReadStdOutput += new DelReadStdOutput(ReadStdOutputAction);  
             ReadErrOutput += new DelReadErrOutput(ReadErrOutputAction);
 			this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
+			try {
+				this.textEditorControl1.LoadFile(GobalParameters.UpdateSqlFilePath);
+			} catch (Exception) {
+			}
 			
-			this.textEditorControl1.LoadFile(GobalParameters.UpdateSqlFilePath);
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -48,8 +51,17 @@ namespace WisoftUpdateTool
 		{
 			  string sqlarg = UpdateInfo.DBusername+"/"+UpdateInfo.DBpassword+"@"+UpdateInfo.DBSID;
 			  Process p = new Process();
-			  p.StartInfo.FileName = "sqlplus";
-			  p.StartInfo.Arguments = sqlarg+" @"+GobalParameters.UpdateSqlFilePath;
+			  if(UpdateInfo.DBType.Equals("sqlserver"))
+			  {
+			  	 p.StartInfo.FileName = "osql";
+			  	 sqlarg = "-U"+UpdateInfo.DBusername+" -P"+UpdateInfo.DBpassword+" -S"+UpdateInfo.DBDataSource+" -d"+UpdateInfo.DBSID+" -i";
+			  	 p.StartInfo.Arguments = sqlarg+GobalParameters.UpdateSqlFilePath;
+			  }
+			  else
+			  {
+			  	p.StartInfo.FileName = "sqlplus";
+			  	  p.StartInfo.Arguments = sqlarg+" @"+GobalParameters.UpdateSqlFilePath;
+			  }
               p.StartInfo.UseShellExecute = false;
               p.StartInfo.RedirectStandardInput = true;
               p.StartInfo.RedirectStandardOutput = true;
@@ -57,7 +69,6 @@ namespace WisoftUpdateTool
               p.StartInfo.CreateNoWindow = true;
               p.OutputDataReceived += new DataReceivedEventHandler(p_OutputDataReceived);  
         	  p.ErrorDataReceived += new DataReceivedEventHandler(p_ErrorDataReceived);  
-              
         	  p.EnableRaisingEvents = true;                      // 启用Exited事件   
               p.Exited += new EventHandler(CmdProcess_Exited);   
         	  p.Start();
@@ -78,18 +89,33 @@ namespace WisoftUpdateTool
   
 		private void CmdProcess_Exited(object sender, EventArgs e)  
         {  
-			
 			string myConnString = "user id="+UpdateInfo.DBusername+";data source="+UpdateInfo.DBSID+";password="+UpdateInfo.DBpassword;
 	        string name = UpdateInfo.Name;
 	        string code = UpdateInfo.Code;
 	        string ver = UpdateInfo.Ver;
 	        string publishdate = UpdateInfo.PublishDate;
 	        string keyword = UpdateInfo.KeyWord;
-			string sql = "insert into system_version_info "+
-				"values( '','"+name+"','"+code+"','"+ver+"','"+publishdate+"',to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss'),'"+keyword+"')";;
-	      	
-			OracleDBCom od = new OracleDBCom(myConnString);
-			od.ExecuteSql(sql);
+			string sql = "insert into system_version_info(modulename,modulecode,version,publish_date,update_date,remark) "+
+				"values('"+name+"','"+code+"','"+ver+"','"+publishdate+"',to_char(sysdate, 'yyyy-mm-dd hh24:mi:ss'),'"+keyword+"')";
+			try {
+				if(UpdateInfo.DBType.Equals("sqlserver"))
+				{
+					sql="insert into system_version_info(modulename,modulecode,version,publish_date,update_date,remark) "+
+				"values('"+name+"','"+code+"','"+ver+"','"+publishdate+"', convert(varchar(20),getdate(),121),'"+keyword+"')";
+					myConnString="Initial Catalog="+UpdateInfo.DBSID+";Data Source="+UpdateInfo.DBDataSource+";User ID="+UpdateInfo.DBusername+"; Password="+UpdateInfo.DBpassword;
+					SqlServerDBCom sd = new SqlServerDBCom(myConnString);
+					sd.ExecuteNonQuery(sql);
+				}
+				else
+				{
+					OracleDBCom od = new OracleDBCom(myConnString);
+					od.ExecuteSql(sql);
+				}
+			} catch (Exception e1) {
+				
+				MessageBox.Show("插点版本信息你数据库里去，又不会怀孕。干嘛呢？"+e1.Message,"提示");
+			}
+			
 			MessageBox.Show("SQL语句执行完毕！","提示");
         } 
 		

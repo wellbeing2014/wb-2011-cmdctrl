@@ -76,8 +76,8 @@ namespace WisoftUpdateTool.InPack
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			this.textEditorControl1.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("TSQL");
+			this.textEditorControl1.Encoding = System.Text.Encoding.Default;
 			this.textEditorControl1.TextChanged+= new EventHandler(UC04_EditSql_TextChanged);
-			
 			
 		}
 		
