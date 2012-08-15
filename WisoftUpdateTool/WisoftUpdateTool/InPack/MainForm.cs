@@ -95,7 +95,6 @@ namespace WisoftUpdateTool.InPack
 		
 		//下一步按钮
 		int order = 0;
-		
 		void Button1Click(object sender, EventArgs e)
 		{
 			System.Windows.Forms.Control.ControlCollection cc = this.panel2.Controls as System.Windows.Forms.Control.ControlCollection;
