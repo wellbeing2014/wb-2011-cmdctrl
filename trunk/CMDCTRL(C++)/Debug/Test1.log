@@ -1,0 +1,21 @@
+﻿生成启动时间为 2012/8/16 15:18:21。
+     1>项目“c:\Users\zhuxinpei\documents\visual studio 2010\Projects\Test1\Test1\Test1.vcxproj”在节点 2 上(rebuild 个目标)。
+     1>_PrepareForClean:
+         正在删除文件“Debug\Test1.lastbuildstate”。
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output 目录未以斜杠结尾。此生成实例将添加斜杠，因为必须有这个斜杠才能正确计算 Output 目录。
+       InitializeBuildStatus:
+         正在对“Debug\Test1.unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         D:\DEVELOP\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Test1Main.cpp
+         Test1Main.cpp
+       ManifestResourceCompile:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Test1.exe.embed.manifest.res" Debug\Test1_manifest.rc 
+       Link:
+         D:\DEVELOP\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"c:\users\zhuxinpei\documents\visual studio 2010\Projects\Test1\\Debug\Test1.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Test1.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"c:\users\zhuxinpei\documents\visual studio 2010\Projects\Test1\Debug\Test1.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"c:\users\zhuxinpei\documents\visual studio 2010\Projects\Test1\\Debug\Test1.lib" /MACHINE:X86 Debug\Test1.exe.embed.manifest.res
+         Debug\Test1Main.obj
+     1>LINK : fatal error LNK1104: 无法打开文件“..\bin\DuiLib_d.lib”
+     1>已完成生成项目“c:\Users\zhuxinpei\documents\visual studio 2010\Projects\Test1\Test1\Test1.vcxproj”(rebuild 个目标)的操作 - 失败。
+
+生成失败。
+
+已用时间 00:00:00.60
