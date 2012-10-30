@@ -99,9 +99,14 @@ mso-yfti-tbllook:1184;mso-padding-alt:0cm 5.4pt 0cm 5.4pt;mso-border-insideh:
 </tr>
 <tr style='mso-yfti-irow:6;mso-yfti-lastrow:yes;height:424.3pt'>
 <td colspan="6" valign="top" width="426.1pt" >
-    <div class="picbox">
+	<div class="navbox">
+       
         <div id="imgprev" class="imgnav" title="Previous Image" onclick="sideonclick(-1)"></div>
         <div id="imgnext" class="imgnav" title="Next Image" onclick="sideonclick(1)"></div>
+    </div>
+ 		
+    <div class="picbox">
+       
         <img id="srcimgid" src="" align="middle" />
     </div>
 	<script type="text/javascript">

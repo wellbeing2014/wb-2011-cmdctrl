@@ -1,5 +1,6 @@
 body{ TEXT-ALIGN: center; }
-.picbox{position:relative; width:650px; height:500px; overflow:scroll}
+.navbox{position:relative; width:650px; height:500px; overflow:scroll;overflow:hidden; margin-bottom:-500px}
+.picbox{position:relative; width:650px; height:500px; overflow:scroll;}
 .imgnav {position:absolute; width:100px; height:500px;  cursor:pointer; z-index:150;filter:alpha(opacity=40);}
 #imgprev {left:0; background:url(images/left.gif) left center no-repeat; }
 #imgnext { right:0; background:url(images/right.gif) right center no-repeat;}
