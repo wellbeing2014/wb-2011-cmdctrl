@@ -7,7 +7,10 @@
   <script type='text/javascript' src='../dwr/util.js'> </script>
   <script charset="utf-8" language="javascript" type="text/javascript" type='text/javascript' src='../dwr/interface/UIcheckBO.js'> </script>
   <script charset="gb2312" language="javascript" type="text/javascript" src='Uicheck.js'> </script>
-<link rel="stylesheet" href="style.css" />
+  <script src="js/jquery-1.7.2.min.js"></script>
+  <script src="js/lightbox.js"></script>
+	<link rel="stylesheet" href="style.css" />
+	<link href="css/lightbox.css" rel="stylesheet" />
 <title>中科惠软软件界面检查表</title>
 <style type="text/css">
 
@@ -98,33 +101,10 @@ mso-yfti-tbllook:1184;mso-padding-alt:0cm 5.4pt 0cm 5.4pt;mso-border-insideh:
     </td>
 </tr>
 <tr style='mso-yfti-irow:6;mso-yfti-lastrow:yes;height:424.3pt'>
-<td colspan="6" valign="top" width="426.1pt" >
-	<div class="navbox">
+<td colspan="6" valign="top" width="426.1pt" >		
+    <div id="pictures" class="picbox">
        
-        <div id="imgprev" class="imgnav" title="Previous Image" onclick="sideonclick(-1)"></div>
-        <div id="imgnext" class="imgnav" title="Next Image" onclick="sideonclick(1)"></div>
     </div>
- 		
-    <div class="picbox">
-       
-        <img id="srcimgid" src="" align="middle" />
-    </div>
-	<script type="text/javascript">
-		var a=document.getElementById("imgprev");
-		a.onmouseover=function(){
-			a.style.filter='alpha(opacity=100)';
-		}
-		a.onmouseout =function(){
-			a.style.filter='alpha(opacity=40)';
-		}
-		var b=document.getElementById("imgnext");
-		b.onmouseover=function(){
-			b.style.filter='alpha(opacity=100)';
-		}
-		b.onmouseout =function(){
-			b.style.filter='alpha(opacity=40)';
-		}
-    </script>
 </td>
 </tr>
 </table>
