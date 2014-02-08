@@ -1,22 +1,22 @@
 package com.zxp.cctrl;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.MessageBox;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Iterator;
-import java.util.Vector;
-
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
+
+import com.zxp.cctrl.socket.ServerSocketHandle;
 
 /**
  * @author wellbeing
@@ -31,6 +31,7 @@ public class Cmdunit extends Composite {
 	//private StringBuffer log = new StringBuffer();
 	private int logcount = 0;
 	
+	private boolean contentSync = false;
 	
 	private Text text;
 	private Label label ;
@@ -129,8 +130,18 @@ public class Cmdunit extends Composite {
 		text.setLayoutData(gd_styledText);
 		
 		label = new Label(this, SWT.NONE);
-		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 5, 1));
+		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
 		label.setText("正在运行命令个数："+num);
+		
+		btnWeb = new Button(this, SWT.CHECK | SWT.RIGHT);
+		btnWeb.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				contentSync = btnWeb.getSelection();
+			}
+		});
+		btnWeb.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		btnWeb.setText("WEB\u5B9E\u65F6\u8F93\u51FA");
 	}
 
 	/**
@@ -346,6 +357,8 @@ public class Cmdunit extends Composite {
 						text.append(str+"\n");
 						FileConfig.writeLog(str+"\r\n",runmodule.logpath+runmodule.Modulename+".log"  );
 					}
+					if(contentSync)
+						ServerSocketHandle.getInstance().setMsgToPool(str+"\n");
 				}   
 		});   
 	}
@@ -384,6 +397,7 @@ public class Cmdunit extends Composite {
 	
 	//定义事件源容器
 	private CmdStatusChangeListener vectorListeners  ;
+	private Button btnWeb;
     
 	//添加事件方法
     public synchronized void addCmdStatusChangeListener(CmdStatusChangeListener ml)

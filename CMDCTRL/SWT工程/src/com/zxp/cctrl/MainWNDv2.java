@@ -1,11 +1,7 @@
 package com.zxp.cctrl;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,25 +27,24 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
-public class MainWND {
+import com.zxp.cctrl.socket.ServerSocketHandle;
+
+public class MainWNDv2 {
 
 	private static List<Cmdunit> allcmdunit = new ArrayList<Cmdunit>() ;
 	protected Shell shell;
 	private Image image_start; 
 	private Image image_stop; 
 	TabFolder tabFolder ;
-	static ServerSocket ss;
 	public static boolean STOPLESTEN = false;
-//	static OutputStream os;//·µ»ØÏûÏ¢
-//	static InputStream is;
-//	static Thread aaaaaa;
+	
 	/**
 	 * Launch the application.
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		try {
-			MainWND window = new MainWND();
+			MainWNDv2 window = new MainWNDv2();
 			window.open();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -265,12 +260,6 @@ public class MainWND {
 				else
 				{
 					STOPLESTEN=true;
-					try {
-						ss.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					event.doit = true; 
 				}
 			}
@@ -439,26 +428,8 @@ public class MainWND {
 		 
 	 }
 	 
-	 public static void serverListen() {
-		 Runnable r = new Runnable() {
-			
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					ss = new ServerSocket(9527);
-					 while (!ss.isClosed()) {
-						 Socket  s = ss.accept();
-			    		 new Thread(new SendServicer(s)).start();  
-			    		 new Thread(new RecServicer(s)).start();   
-					 }
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		};
-		 new Thread(r).start();
-			            
+	 public void serverListen() {
+		 
 	}
 	 
  	public static String getAllclientstr()
@@ -497,59 +468,3 @@ public class MainWND {
 	}
 }
 
-class SendServicer implements Runnable{
-	Socket s;
-	public SendServicer(Socket s){
-		this.s = s;
-	}
-	public void run(){
-		try{
-			OutputStream ops = s.getOutputStream();
-			while(true){
-				byte[] clientlist = MainWND.getAllclientstr().getBytes("GBK");
-				Thread.sleep(2000);
-				ops.write(clientlist);
-				//dos.writeBytes("bbbb");
-				if(MainWND.STOPLESTEN)
-				{
-					break;
-				}
-			}
-			ops.close();
-			s.close();
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-}
-class RecServicer implements Runnable{
-	Socket s;
-	public RecServicer(Socket s){
-		this.s = s;
-	}
-	public void run(){
-		try{
-			InputStream ips = s.getInputStream();
-			byte[] str1 = new byte[1024];
-			byte[] str2 = new byte[1024];
-			int len;
-			while(true)
-			{
-				if((len=ips.read(str1))!=-1)
-				{
-					String returnstr = new String(str1,0,len);
-					MainWND.doclientcmd(returnstr);
-					str1=str2;
-				}
-				else
-					break;
-			}
-			ips.close();
-			s.close();
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-}

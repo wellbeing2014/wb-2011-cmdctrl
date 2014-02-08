@@ -1,171 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <root>
-<RunModule name = "更新包监控系统" >
-<startcmd>
-<cmd>D:\WISOFT服务管理平台\DirWatcher.exe</cmd>
-</startcmd>
-<stopcmd>
-<cmd>taskkill /F /IM DirWatcher.exe</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7001_无锡QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7001_WuXi\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7001</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7002_新疆QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7002_DSZ\bin\startWeblogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7002</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7003_徐州QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7003_XuZhou\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7003</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7004_吴江QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7004_WuJiang\bin\startWeblogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7004</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7005_滨湖QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7005_BinHu\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7005</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7006_昆山MAEA" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7006_KunShan\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7006</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7007_锡山QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7007_XiShan\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7007</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7008_权力监控" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7008_QLYXJK\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7008</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7009_连云港QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7009_LYGQLYG\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7009</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "7010_江阴QLYG" >
-<startcmd>
-<cmd>D:\bea\user_projects\domains\7010_JYQLYG\bin\startWebLogic.cmd</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 7010</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8001_房管局内控" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8001_FangGuanJu\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8001</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8002_江阴国土内控" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8002_JiangYinGuoTu\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8002</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8003_昆山MAEA3" >
-<startcmd>
-<cmd></cmd>
-</startcmd>
-<stopcmd>
-<cmd></cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8004_上海复兴" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8004_ShangHaiFuXi\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8004</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8005_连云港上报" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8005_LianYunGang_SB\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8005</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8006_吴江政府投资" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8006_WuJiang_ZFTZ\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8006</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8007_宜兴WBS" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8007_YiXing_WBS\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8007</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8008_滨湖WBS" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8008_BinHu_WBS\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8008</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "8009_无锡上报" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_8009_WuXi_SB\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 8009</cmd>
-</stopcmd>
-</RunModule>
-<RunModule name = "9001_WisoftService" >
-<startcmd>
-<cmd>D:\Tomcat\Tomcat_9001_WisoftService\bin\startup.bat</cmd>
-</startcmd>
-<stopcmd>
-<cmd>"D:\WISOFT服务管理平台\KillProByPort.exe" 9001</cmd>
-</stopcmd>
-</RunModule>
+  <RunModule>
+    <name>默认名称</name>
+    <startcmd>
+      <cmd>fads</cmd>
+    </startcmd>
+    <stopcmd>
+      <cmd>adsf</cmd>
+    </stopcmd>
+    <CustomButton name="adsf">
+      <cmd>adsf</cmd>
+    </CustomButton>
+    <CustomButton name="asdf">
+      <cmd>adsf</cmd>
+    </CustomButton>
+    <netaddr>adsf</netaddr>
+    <logpath>asdfa</logpath>
+  </RunModule>
 </root>
