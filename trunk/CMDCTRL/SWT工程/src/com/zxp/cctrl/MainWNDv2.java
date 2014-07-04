@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
-import com.zxp.cctrl.socket.ServerSocketHandle;
+import wisoft.server.model.ServerStatusMinaModel;
 
 public class MainWNDv2 {
 
@@ -36,7 +36,9 @@ public class MainWNDv2 {
 	private Image image_start; 
 	private Image image_stop; 
 	TabFolder tabFolder ;
-	public static boolean STOPLESTEN = false;
+	
+	GobalConfDialog gcd ;
+	//public static boolean STOPLESTEN = false;
 	
 	/**
 	 * Launch the application.
@@ -60,6 +62,8 @@ public class MainWNDv2 {
 		image_stop =this.getImage(display,"com/zxp/icon/CDAudioStopTime.png");
 		createContents();
 		serverListen();
+		
+		
 		shell.open();
 		shell.layout();
 		while (!shell.isDisposed()) {
@@ -78,6 +82,8 @@ public class MainWNDv2 {
 		shell.setText("WISOFT服务管理平台");
 		shell.setLayout(new GridLayout());
 		shell.setImage(this.getImage(shell.getDisplay(),"com/zxp/icon/adminpower.png"));
+		gcd = new GobalConfDialog(shell);
+		
 		ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
 		toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
@@ -190,6 +196,19 @@ public class MainWNDv2 {
 			}
 		});
 		textItem2.setText("删除");
+		
+		ToolItem textItem3 = new ToolItem(toolBar, SWT.NONE);
+		textItem3.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int i = gcd.open();
+				if(i==IDialogConstants.OK_ID)
+				{
+					System.out.println("确定");
+				}
+			}
+		});
+		textItem3.setText("\u914D\u7F6E");
 		List<RunModule> rmlist =null;
 		if(new File("config.xml").exists())
 		{
@@ -259,7 +278,7 @@ public class MainWNDv2 {
 				}
 				else
 				{
-					STOPLESTEN=true;
+					serverListenStop();
 					event.doit = true; 
 				}
 			}
@@ -428,22 +447,40 @@ public class MainWNDv2 {
 		 
 	 }
 	 
-	 public void serverListen() {
-		 
+	/**
+	 * 开启MINA与WEB服务端进行通讯，告知客户端服务信息
+	 */
+	public void serverListen() {
+		 MinaConnServer.getInstance().start();
+		 WriteStatusToServer.getInstance().start();
 	}
 	 
- 	public static String getAllclientstr()
+	/**
+	 * 停止MINA与WEB服务端进行通讯进程
+	 */
+	public void serverListenStop() {
+		WriteStatusToServer.getInstance().close();
+		MinaConnServer.getInstance().close();
+	}
+	
+	
+	
+ 	public static List<ServerStatusMinaModel> getAllclientstr()
  	{
- 		String returnstr="";
- 		for(int i =0;i<allcmdunit.size();i++)
+ 		List<ServerStatusMinaModel> ret = new ArrayList<ServerStatusMinaModel>();
+ 		for(Cmdunit cu:allcmdunit)
  		{
- 			String name = allcmdunit.get(i).runmodule.Modulename;
- 			String state =String.valueOf(allcmdunit.get(i).state);
- 			String netaddr= allcmdunit.get(i).runmodule.netaddr;
- 			returnstr+=i+"&"+name+"&"+state+"&"+netaddr+"|";
+ 			ServerStatusMinaModel ssm = new ServerStatusMinaModel();
+ 			ssm.setDburl(cu.runmodule.DBurl);
+ 			ssm.setName(cu.runmodule.Modulename);
+ 			ssm.setNo(String.valueOf(allcmdunit.indexOf(cu)));
+ 			ssm.setOperation(cu.state);
+ 			ssm.setPath(cu.runmodule.appPath);
+ 			ssm.setUrl(cu.runmodule.netaddr);
+ 			ssm.setSid(cu.runmodule.sid);
+ 			ret.add(ssm);
  		}
- 		returnstr=returnstr.substring(0, returnstr.length()-1);
- 		return 	returnstr;
+ 		return ret;
  	}
 	 
  	public static void doclientcmd(final String clientcmd)
@@ -466,5 +503,6 @@ public class MainWNDv2 {
 			}  
 		});   
 	}
+ 	
 }
 

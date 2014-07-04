@@ -15,6 +15,8 @@
 	<classpathentry kind="lib" path="D:/Eclipse_RCP_3.6/plugins/com.ibm.icu_4.2.1.v20100412.jar" sourcepath="D:/Eclipse_RCP_3.6/plugins/com.ibm.icu.source_4.2.1.v20100412.jar"/>
 	<classpathentry kind="lib" path="D:/Eclipse_RCP_3.6/plugins/org.eclipse.ui.forms_3.5.2.r36_v20100702.jar" sourcepath="D:/Eclipse_RCP_3.6/plugins/org.eclipse.ui.forms.source_3.5.2.r36_v20100702.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/dom4jv2"/>
-	<classpathentry kind="lib" path="lib/wisoft_mina.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mina2.0.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/slf4j-1.7.2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j 1.2.17"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

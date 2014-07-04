@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root>
-  <RunModule>
+<root> 
+  <GobalConfig> 
+    <webip>127.0.0.1</webip>  
+    <webport>9527</webport> 
+  </GobalConfig>  
+  <RunModule sid="f10baad43acc4186b4f38ddaeb27e526">
     <name>默认名称</name>
     <startcmd>
-      <cmd>fads</cmd>
+      <cmd>1214241</cmd>
     </startcmd>
     <stopcmd>
-      <cmd>adsf</cmd>
+      <cmd>12</cmd>
     </stopcmd>
-    <CustomButton name="adsf">
-      <cmd>adsf</cmd>
-    </CustomButton>
-    <CustomButton name="asdf">
-      <cmd>adsf</cmd>
-    </CustomButton>
-    <netaddr>adsf</netaddr>
-    <logpath>asdfa</logpath>
+    <netaddr>1115</netaddr>
+    <logpath>16</logpath>
+    <dburl>13</dburl>
+    <appPath>14</appPath>
   </RunModule>
 </root>

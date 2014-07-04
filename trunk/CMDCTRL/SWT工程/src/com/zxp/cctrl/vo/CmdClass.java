@@ -1,8 +1,5 @@
 package com.zxp.cctrl.vo;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
