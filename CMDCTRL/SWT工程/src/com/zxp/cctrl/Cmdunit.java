@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
-import com.zxp.cctrl.socket.ServerSocketHandle;
 
 /**
  * @author wellbeing
@@ -25,13 +24,14 @@ import com.zxp.cctrl.socket.ServerSocketHandle;
 public class Cmdunit extends Composite {
 
 	public RunModule runmodule = new RunModule();
+	private CmdUnitLog cmdlog = new CmdUnitLog();
 	private String errormessage = "";
 	public int num = 0;
 	public int state = 3;//0表示正在启动，1表示已启动,2表示正在停止，3表示已停止
 	//private StringBuffer log = new StringBuffer();
 	private int logcount = 0;
 	
-	private boolean contentSync = false;
+	//private boolean contentSync = false;
 	
 	private Text text;
 	private Label label ;
@@ -47,6 +47,7 @@ public class Cmdunit extends Composite {
 	public Cmdunit(final Composite parent, int style,RunModule rm) {
 		super(parent, style);
 		runmodule = rm;
+		cmdlog.setRm(rm);
 		setLayout(new GridLayout(5, false));
 		button = new Button(this, SWT.NONE);
 		button.addSelectionListener(new SelectionAdapter() {
@@ -133,15 +134,7 @@ public class Cmdunit extends Composite {
 		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
 		label.setText("正在运行命令个数："+num);
 		
-		btnWeb = new Button(this, SWT.CHECK | SWT.RIGHT);
-		btnWeb.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				contentSync = btnWeb.getSelection();
-			}
-		});
-		btnWeb.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		btnWeb.setText("WEB\u5B9E\u65F6\u8F93\u51FA");
+		
 	}
 
 	/**
@@ -356,9 +349,9 @@ public class Cmdunit extends Composite {
 					{
 						text.append(str+"\n");
 						FileConfig.writeLog(str+"\r\n",runmodule.logpath+runmodule.Modulename+".log"  );
+						cmdlog.setLog(str);
+						MinaConnServer.getInstance().addMessage(cmdlog);
 					}
-					if(contentSync)
-						ServerSocketHandle.getInstance().setMsgToPool(str+"\n");
 				}   
 		});   
 	}

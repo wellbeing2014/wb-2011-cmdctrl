@@ -6,23 +6,24 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+
 import com.swtdesigner.SWTResourceManager;
 
 public class ConfigDlg extends Dialog {
@@ -33,6 +34,8 @@ public class ConfigDlg extends Dialog {
 	private Text text_2;
 	private Text text_3;
 	private Text text_4;
+	private Text text_5;
+	private Text text_6;
 
 	protected ConfigDlg(Shell parentShell) {
 		super(parentShell);
@@ -70,6 +73,22 @@ public class ConfigDlg extends Dialog {
 		
 		text_1 = new Text(shell, SWT.BORDER);
 		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		new Label(shell, SWT.NONE);
+		
+		Label label_6 = new Label(shell, SWT.NONE);
+		label_6.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_6.setText("\u6570\u636E\u5E93\u5730\u5740\uFF1A");
+		
+		text_5 = new Text(shell, SWT.BORDER);
+		text_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		new Label(shell, SWT.NONE);
+		
+		Label label_7 = new Label(shell, SWT.NONE);
+		label_7.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_7.setText("\u670D\u52A1\u5730\u5740\uFF1A");
+		
+		text_6 = new Text(shell, SWT.BORDER);
+		text_6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		new Label(shell, SWT.NONE);
 		
 		Label label_4 = new Label(shell, SWT.NONE);
@@ -204,6 +223,16 @@ public class ConfigDlg extends Dialog {
 			}
 			text_1.setText(readstop);
 		}
+		
+		if(rm.DBurl!=null&&rm.DBurl.length()>0)
+		{
+			this.text_5.setText(rm.DBurl);
+		}
+		
+		if(rm.appPath!=null&&rm.appPath.length()>0)
+		{
+			this.text_6.setText(rm.appPath);
+		}
 		if(rm.custombutton.size()>0)
 		{
 		//	Iterator cbit = rm.custombutton.keySet().iterator();
@@ -245,8 +274,13 @@ public class ConfigDlg extends Dialog {
 				String[] rmstart = text.getText().split(";");
 				String[] rmstop = text_1.getText().split(";");
 				String netaddr = text_3.getText();
+				String dburl = text_5.getText();
+				String appPath = text_6.getText();
+				
 				rm.startcmd = rmstart;
 				rm.stopcmd = rmstop;
+				rm.DBurl = dburl;
+				rm.appPath = appPath;
 				rm.Modulename = rmname;
 				rm.netaddr = netaddr;
 				rm.logpath = text_4.getText();

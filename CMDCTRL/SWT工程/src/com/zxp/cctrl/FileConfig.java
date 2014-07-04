@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -33,7 +34,13 @@ public  class FileConfig {
 	private static String RunModuleCmdCustomName= "name";
 	private static String RunModuleNetUrl= "netaddr";
 	private static String RunModuleDBUrl= "dburl";
+	private static String RunModuleAppPath = "appPath";
 	private static String RunModuleLogUrl ="logpath";
+	private static String RunModuleSid ="sid";
+	
+	private static String GobalConf = "GobalConfig";
+	private static String GobalConfWebIp = "webip";
+	private static String GobalConfWebPort = "webport";
 	
 	
 	private static String RunModulecmd= "cmd";
@@ -99,9 +106,14 @@ public  class FileConfig {
 					custombuttons.put(buttonname, buttoncmd.toArray(new String[0]));
 				}
 				rm.custombutton=custombuttons;
-				rm.netaddr = foo.element(RunModuleNetUrl).getText();
-				rm.logpath = foo.element(RunModuleLogUrl).getText();
+				rm.netaddr = foo.elementText(RunModuleNetUrl);
+				rm.logpath = foo.elementText(RunModuleLogUrl);
 				
+				rm.DBurl = foo.elementText(RunModuleDBUrl);
+				rm.appPath = foo.elementText(RunModuleAppPath);
+				rm.sid = foo.attributeValue(RunModuleSid);
+				if(rm.sid.isEmpty())
+					rm.setSID();
 				runmodules.add(rm);
 			} 
 			return runmodules;
@@ -125,23 +137,106 @@ public  class FileConfig {
 	}
 	
 	
+	public static void writeGobalConfig(GobalConfigParameter cp)
+	{
+		Element root = null;
+		try {
+			root = getRootElement();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Element gobal = getOnlyElement(root,GobalConf);
+		Element gobal_webip = getOnlyElement(gobal,GobalConfWebIp);
+		gobal_webip.setText(cp.webip);
+		Element gobal_webport = getOnlyElement(gobal,GobalConfWebPort);
+		gobal_webport.setText(cp.webport);
+		saveConfig(root.getDocument());
+	}
 	
+	public static GobalConfigParameter readGobalConfig(){
+		GobalConfigParameter cp = new GobalConfigParameter();
+		Element root = null;
+		try {
+			root = getRootElement();
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String port = getOnlyElement(getOnlyElement(root,GobalConf),GobalConfWebPort).getText();
+		String ip = getOnlyElement(getOnlyElement(root,GobalConf),GobalConfWebIp).getText();
+		if(!ip.isEmpty())
+			cp.webip = ip;
+		if(!port.isEmpty())
+			cp.webport = port;
+		return cp;
+	}
+	
+	private static Element getOnlyElement(Element parent,String elementName)
+	{
+		List<Element> children = parent.elements(elementName);
+		if(children.size()==0)
+			return parent.addElement(elementName);
+		else if (children.size()>1)
+		{	
+			children.remove(0);
+			for(Element child:children)
+			{
+				parent.remove(child);
+			}
+		}
+		return children.get(0);
+		
+	}
+	
+	public static Element getRootElement() throws DocumentException
+	{
+		SAXReader reader = new SAXReader();
+		Document doc = null;
+		doc = reader.read(new File(configName));
+		Element root = doc.getRootElement();
+		return root;
+	}
+	
+	public static boolean saveConfig(Document doc)
+	{
+		OutputFormat format = OutputFormat.createPrettyPrint();
+		format.setEncoding("UTF-8"); 
+		XMLWriter writer;
+		try {
+			writer = new XMLWriter( new FileOutputStream(configName), format );
+			writer.write(doc);
+			writer.close();
+			return true;
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	/**
 	 * ±£¥Ê≈‰÷√Œƒº˛
 	 * */
 	public static boolean writeConfig(RunModule[] rms)
 	{
-		SAXReader reader = new SAXReader();
-		Document doc = null;
+		Element root  = null;
 		try {
-			doc = reader.read(new File(configName));
-			Element root = doc.getRootElement();
-			root.clearContent();
+			root = getRootElement();
+			for(Element a:root.elements(RunModule)){
+				a.detach();
+			}
 			for(RunModule rm:rms)
 			{
 				Element e_rm = root.addElement(RunModule);
-				Element e_rm_name = e_rm.addElement(RunModuleName).addText(rm.Modulename);
+				e_rm.addAttribute(RunModuleSid, rm.sid);
+				e_rm.addElement(RunModuleName).addText(rm.Modulename);
 				Element e_rm_cmdstart = e_rm.addElement(RunModuleCmdStart);
 				for(String cmd:rm.startcmd)
 				{
@@ -152,8 +247,6 @@ public  class FileConfig {
 				{
 					e_rm_cmdstop.addElement(RunModulecmd).addText(cmd); 
 				}
-				Iterator<String> itctmbtns = rm.custombutton.keySet().iterator();
-			
 				for (Map.Entry<String, String[]> entry : rm.custombutton.entrySet()) {  
 		            
 					Element e_rm_cmdCustom = e_rm.addElement(RunModuleCmdCustom);
@@ -168,29 +261,21 @@ public  class FileConfig {
 				
 				e_rm.addElement(RunModuleNetUrl).addText(rm.netaddr);
 				e_rm.addElement(RunModuleLogUrl).addText(rm.logpath);
+				
+				e_rm.addElement(RunModuleDBUrl).addText(rm.DBurl);
+				e_rm.addElement(RunModuleAppPath).addText(rm.appPath);
+
 			}
-			OutputFormat format = OutputFormat.createPrettyPrint();
-			format.setEncoding("UTF-8"); 
-			XMLWriter writer;
-			writer = new XMLWriter( new FileOutputStream(configName), format );
-			writer.write(doc);
-			writer.close();
 			
+			saveConfig(root.getDocument());
+			return true;
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
+		} 
 		
-		return true;
+		
+		return false;
 /*		StringBuffer xmlcontent =  new StringBuffer();
 		BufferedWriter bw = null;
 		try {
