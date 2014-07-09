@@ -334,6 +334,8 @@ public class Cmdunit extends Composite {
 		if(str.contains("Server startup in")||str.contains("Server started in RUNNING mode"))
 		{
 			state = 1;// 启动完成。
+			//由于状态改变向服务器发送我的状态
+			MinaConnServer.getInstance().addMessage(MainWNDv2.getAllclientstr());
 		}
 		
 		Display.getDefault().asyncExec(new Runnable() {   

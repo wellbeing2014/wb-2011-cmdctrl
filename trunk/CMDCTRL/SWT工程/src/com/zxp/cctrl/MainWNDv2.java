@@ -111,6 +111,8 @@ public class MainWNDv2 {
 						tabItem.setControl(control);
 						allcmdunit.add(control);
 						shell.layout(true);
+						//由于状态改变向服务器发送我的状态
+						MinaConnServer.getInstance().addMessage(MainWNDv2.getAllclientstr());
 						saveConfig();
 					}
 				}
@@ -151,6 +153,8 @@ public class MainWNDv2 {
 							tabItem.setText(newrm.Modulename);
 							tabItem.setControl(newcmd);
 							allcmdunit.add(no,newcmd);
+							//由于状态改变向服务器发送我的状态
+							MinaConnServer.getInstance().addMessage(MainWNDv2.getAllclientstr());
 							saveConfig();
 						}
 					}
@@ -185,6 +189,8 @@ public class MainWNDv2 {
 							int no=tabFolder.getSelectionIndex();
 							allcmdunit.remove(no);
 							tabItem.dispose();
+							//由于状态改变向服务器发送我的状态
+							MinaConnServer.getInstance().addMessage(MainWNDv2.getAllclientstr());
 							shell.layout(true);
 							saveConfig();
 						}
@@ -443,7 +449,10 @@ public class MainWNDv2 {
 			}
 			else
 				tabItem.setImage(image_stop);
+			//由于状态改变向服务器发送我的状态
+			MinaConnServer.getInstance().addMessage(MainWNDv2.getAllclientstr());
 		}
+		
 		 
 	 }
 	 
@@ -452,14 +461,14 @@ public class MainWNDv2 {
 	 */
 	public void serverListen() {
 		 MinaConnServer.getInstance().start();
-		 WriteStatusToServer.getInstance().start();
+		 //WriteStatusToServer.getInstance().start();
 	}
 	 
 	/**
 	 * 停止MINA与WEB服务端进行通讯进程
 	 */
 	public void serverListenStop() {
-		WriteStatusToServer.getInstance().close();
+		//WriteStatusToServer.getInstance().close();
 		MinaConnServer.getInstance().close();
 	}
 	
