@@ -20,8 +20,13 @@ public class RunModule implements Serializable{
 	public String DBurl = "";
 	public String appPath = "";
 	
+	public RunModule() {
+		// TODO Auto-generated constructor stub
+		//sid = setSID();
+	}
+	
 	public Map<String,String[]> custombutton= new HashMap<String,String[]>();
-
+	
 	public  String setSID() {  
         UUID uuid = UUID.randomUUID();  
         String str = uuid.toString();  

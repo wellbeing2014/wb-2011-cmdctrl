@@ -39,9 +39,15 @@ public class MinaConnServer extends Thread{
 				break;
 			case 1:
 				if(paused)
+				{
 					event.setStatus("已暂停");
+				}
 				else
+				{
 					event.setStatus("正常");
+					//由于状态改变向服务器发送我的状态
+					MinaConnServer.getInstance().addMessage(MainWNDv2.getAllclientstr());
+				}
 				break;
 			case 2:
 				event.setStatus("连接失败");
