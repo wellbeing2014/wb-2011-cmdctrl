@@ -18,7 +18,7 @@
     <dburl>13</dburl>
     <appPath>14</appPath>
   </RunModule>
-  <RunModule sid="">
+  <RunModule sid="3271bb50c6e84187803936115ce1a384">
     <name>我了去</name>
     <startcmd>
       <cmd>1</cmd>
@@ -30,5 +30,34 @@
     <logpath>发送</logpath>
     <dburl>请问亲</dburl>
     <appPath>饶蔚然</appPath>
+  </RunModule>
+  <RunModule sid="eeb400bb012b49af89a52550b816d9b9">
+    <name>CCCC</name>
+    <startcmd>
+      <cmd>111</cmd>
+    </startcmd>
+    <stopcmd>
+      <cmd>222</cmd>
+    </stopcmd>
+    <CustomButton name="111">
+      <cmd>222</cmd>
+    </CustomButton>
+    <netaddr>666</netaddr>
+    <logpath>111</logpath>
+    <dburl>444</dburl>
+    <appPath>555</appPath>
+  </RunModule>
+  <RunModule sid="081180d1c71840f1a49db228aaf0ae92">
+    <name>测试</name>
+    <startcmd>
+      <cmd>ping 127.0.0.1</cmd>
+    </startcmd>
+    <stopcmd>
+      <cmd>fff</cmd>
+    </stopcmd>
+    <netaddr>344</netaddr>
+    <logpath>111</logpath>
+    <dburl>11</dburl>
+    <appPath>22</appPath>
   </RunModule>
 </root>
