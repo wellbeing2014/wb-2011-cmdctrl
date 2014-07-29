@@ -22,7 +22,7 @@ public class RunModule implements Serializable{
 	
 	public RunModule() {
 		// TODO Auto-generated constructor stub
-		//sid = setSID();
+		sid = setSID();
 	}
 	
 	public Map<String,String[]> custombutton= new HashMap<String,String[]>();
